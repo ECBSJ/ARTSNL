@@ -26,13 +26,23 @@
     "@babel/core": "^7.20.12",
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
+    "@mempool/mempool.js": "^2.3.0",
     "babel-loader": "^9.1.2",
+    "bip32": "^3.1.0",
     "bitcoinjs-lib": "^6.1.0",
+    "browserify": "^17.0.0",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "ecpair": "^2.1.0",
     "immer": "^9.0.19",
+    "js-sha256": "^0.9.0",
     "postcss-mixins": "^9.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.1",
-    "use-immer": "^0.8.1"
+    "stream-browserify": "^3.0.0",
+    "tiny-secp256k1": "^2.2.1",
+    "use-immer": "^0.8.1",
+    "wif": "^2.0.6"
   }
 }

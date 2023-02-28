@@ -1,4 +1,5 @@
 const path = require("path")
+const webpack = require("webpack")
 
 const postCSSPlugins = [require("postcss-import"), require("postcss-simple-vars"), require("postcss-nested"), require("autoprefixer"), require("postcss-mixins")]
 
@@ -17,6 +18,7 @@ module.exports = {
     hot: true,
     port: 666,
     host: "0.0.0.0",
+    historyApiFallback: { index: "index.html" },
   },
   module: {
     rules: [
@@ -52,4 +54,15 @@ module.exports = {
       },
     ],
   },
+  resolve: {
+    fallback: { stream: require.resolve("stream-browserify"), crypto: require.resolve("crypto-browserify") },
+  },
+  experiments: {
+    asyncWebAssembly: true,
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      Buffer: ["buffer", "Buffer"],
+    }),
+  ],
 }
