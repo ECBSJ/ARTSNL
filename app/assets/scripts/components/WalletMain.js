@@ -1,6 +1,9 @@
 import React, { useEffect, useContext, useState } from "react"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+import ECPairFactory from "ecpair"
+import * as ecc from "tiny-secp256k1"
+import * as bitcoin from "../../../../bitcoinjs-lib"
 
 // IMPORT REACT COMPONENTS
 import AddressDetailsPage from "./AddressDetailsPage"
@@ -8,6 +11,9 @@ import AddressDetailsPage from "./AddressDetailsPage"
 function WalletMain() {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
+
+  const ECPair = ECPairFactory(ecc)
+  const Mainnet = bitcoin.networks.bitcoin
 
   const [bitcoinAddressData, setBitcoinAddressData] = useState({})
   const [isAddressDetailsPageOpen, setIsAddressDetailsPageOpen] = useState(false)
@@ -28,6 +34,13 @@ function WalletMain() {
       console.log(addressResult)
     }
   }
+
+  useEffect(() => {
+    let keyPair = ECPair.fromPrivateKey(appState.bitcoin.bufferPrivKey, Mainnet)
+    appDispatch({ type: "setKeyPair", value: keyPair })
+    const { address } = bitcoin.payments.p2wpkh({ pubkey: keyPair.publicKey })
+    appDispatch({ type: "setBitcoinAddress", value: address })
+  }, [])
 
   return (
     <>

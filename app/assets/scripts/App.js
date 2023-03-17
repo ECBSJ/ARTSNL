@@ -17,26 +17,24 @@ import WalletMain from "./components/WalletMain"
 
 function App() {
   const initialState = {
-    account: {
-      address: null,
-    },
     bitcoin: {
       address: null,
-      Uint8ArrayKey: null,
-      privKey: null,
+      bufferPrivKey: null,
+      bufferPubKey: null,
+      keyPair: null,
     },
   }
 
   function ourReducer(draft, action) {
     switch (action.type) {
-      case "setBitcoinKey":
-        draft.bitcoin.privKey = action.value
+      case "setBufferPrivKey":
+        draft.bitcoin.bufferPrivKey = action.value
         return
-      case "setUint8ArrayKey":
-        draft.bitcoin.Uint8ArrayKey = action.value
+      case "setBufferPubKey":
+        draft.bitcoin.bufferPubKey = action.value
         return
-      case "setAccountAddress":
-        draft.account.address = action.value
+      case "setKeyPair":
+        draft.bitcoin.keyPair = action.value
         return
       case "setBitcoinAddress":
         draft.bitcoin.address = action.value
