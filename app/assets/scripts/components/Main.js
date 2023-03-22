@@ -7,16 +7,36 @@ import { sha256 } from "js-sha256"
 import ECPairFactory from "ecpair"
 import * as ecc from "tiny-secp256k1"
 import * as uint8arraytools from "uint8array-tools"
+import * as base58 from "bs58"
+import * as base58check from "bs58check"
 
 function Main() {
   const ECPair = ECPairFactory(ecc)
   const Mainnet = bitcoin.networks.bitcoin
 
   let privateKey = crypto.randomBytes(32)
-  let result = ecc.pointFromScalar(privateKey, false)
-  let xCoordinate = result.slice(1, 33)
-  let yCoordinate = result.slice(33, 65)
-  console.log("(" + uint8arraytools.toHex(xCoordinate) + ", " + uint8arraytools.toHex(yCoordinate) + ")")
+  let result = ecc.pointFromScalar(privateKey, true)
+  console.log(uint8arraytools.toHex(result))
+
+  let riped = bitcoin.crypto.hash160(result)
+
+  console.log(uint8arraytools.toHex(riped))
+  let prefix = Buffer.from("00", "hex")
+  let prefix_riped = [prefix, riped]
+  let combined_prefix_riped = Buffer.concat(prefix_riped)
+  let checksum = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped)).slice(0, 4)
+  console.log(checksum)
+
+  let arr = [prefix, riped, checksum]
+  let combinedBuff = Buffer.concat(arr)
+  console.log(combinedBuff)
+
+  let address = base58.encode(combinedBuff)
+  console.log(address)
+
+  // let xCoordinate = result.slice(1, 33)
+  // let yCoordinate = result.slice(33, 65)
+  // console.log("(" + uint8arraytools.toHex(xCoordinate) + ", " + uint8arraytools.toHex(yCoordinate) + ")")
 
   // proper binary to decimal to hex to buffer conversion
   // let binary = "1010100101000101011010101101010010100101010010010100111010100101001010010101110010100100101010010100101001111011001010100101001010010100101001010010100111100001010101001010101010010101011001111100101010010101010010101111001010100101010010100101111010101010"
