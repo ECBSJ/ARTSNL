@@ -8,31 +8,41 @@ import ECPairFactory from "ecpair"
 import * as ecc from "tiny-secp256k1"
 import * as uint8arraytools from "uint8array-tools"
 import * as base58 from "bs58"
-import * as base58check from "bs58check"
+import { ethers } from "ethers"
+
+// import * as dotenv from "dotenv"
+// dotenv.config()
 
 function Main() {
   const ECPair = ECPairFactory(ecc)
   const Mainnet = bitcoin.networks.bitcoin
 
   let privateKey = crypto.randomBytes(32)
-  let result = ecc.pointFromScalar(privateKey, true)
-  console.log(uint8arraytools.toHex(result))
+  let result = ecc.pointFromScalar(privateKey, false)
+  console.log(result)
+
+  // btc pubkey to address
 
   let riped = bitcoin.crypto.hash160(result)
-
-  console.log(uint8arraytools.toHex(riped))
   let prefix = Buffer.from("00", "hex")
   let prefix_riped = [prefix, riped]
   let combined_prefix_riped = Buffer.concat(prefix_riped)
   let checksum = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped)).slice(0, 4)
-  console.log(checksum)
-
   let arr = [prefix, riped, checksum]
   let combinedBuff = Buffer.concat(arr)
-  console.log(combinedBuff)
-
   let address = base58.encode(combinedBuff)
-  console.log(address)
+
+  // eth pubkey to address
+
+  let provider = new ethers.InfuraProvider(1, "19e6398ef2ee4861bfa95987d08fbc50")
+  let prepareETHpubKey = result.slice(1, 65)
+  let keccakPubKey = ethers.keccak256(prepareETHpubKey)
+  let removed_0x = keccakPubKey.slice(2)
+  let prepareETHpubAdd = Buffer.from(removed_0x, "hex")
+  let ETHpubAdd = prepareETHpubAdd.slice(-20)
+  console.log(uint8arraytools.toHex(ETHpubAdd))
+
+  console.log(ethers.isAddress("0x358a7871AfED157A50846394E6aDC3226cBBB0DC"))
 
   // let xCoordinate = result.slice(1, 33)
   // let yCoordinate = result.slice(33, 65)
