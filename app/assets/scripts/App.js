@@ -1,37 +1,39 @@
 import "../styles/styles.css"
 
-// IMPORTING OF REACT COMPONENTS
-import React, { useEffect, useState } from "react"
+// IMPORTING OF REACT PACKAGES
+import React from "react"
 import ReactDOM from "react-dom/client"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import StateContext from "./StateContext"
 import DispatchContext from "./DispatchContext"
 import { useImmerReducer } from "use-immer"
+import { IconContext } from "react-icons"
 
 // IMPORTING OF COMPONENTS
 import Main from "./components/Main"
-import Bitcoin from "./components/Bitcoin"
-import WalletSelection from "./components/WalletSelection"
-import Ethereum from "./components/Ethereum"
+import CreateKeys from "./components/CreateKeys"
+import AddressSelection from "./components/AddressSelection"
 import WalletMain from "./components/WalletMain"
 
 function App() {
   const initialState = {
-    bitcoin: {
-      address: null,
+    keys: {
       bufferPrivKey: null,
-      bufferPubKey: null,
-      keyPair: null,
+      bufferPubKey: null
     },
+    bitcoin: {
+      keyPair: null,
+      address: null
+    }
   }
 
   function ourReducer(draft, action) {
     switch (action.type) {
       case "setBufferPrivKey":
-        draft.bitcoin.bufferPrivKey = action.value
+        draft.keys.bufferPrivKey = action.value
         return
       case "setBufferPubKey":
-        draft.bitcoin.bufferPubKey = action.value
+        draft.keys.bufferPubKey = action.value
         return
       case "setKeyPair":
         draft.bitcoin.keyPair = action.value
@@ -48,15 +50,18 @@ function App() {
     <>
       <StateContext.Provider value={state}>
         <DispatchContext.Provider value={dispatch}>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Main />} />
-              <Route path="/WalletSelection" element={<WalletSelection />} />
-              <Route path="/bitcoin" element={<Bitcoin />} />
-              <Route path="/ethereum" element={<Ethereum />} />
-              <Route path="/WalletMain" element={<WalletMain />} />
-            </Routes>
-          </BrowserRouter>
+          <IconContext.Provider value={{ size: "3rem" }}>
+            <div className="container">
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Main />} />
+                  <Route path="/CreateKeys" element={<CreateKeys />} />
+                  <Route path="/AddressSelection" element={<AddressSelection />} />
+                  <Route path="/WalletMain" element={<WalletMain />} />
+                </Routes>
+              </BrowserRouter>
+            </div>
+          </IconContext.Provider>
         </DispatchContext.Provider>
       </StateContext.Provider>
     </>

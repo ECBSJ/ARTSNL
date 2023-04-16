@@ -4,17 +4,26 @@ import * as uint8arraytools from "uint8array-tools"
 import DispatchContext from "../DispatchContext"
 import { useNavigate } from "react-router-dom"
 
+// IMPORT COMPONENTS
+import GeneratePubKey from "./GeneratePubKey"
+
 function DisplayMultipleRaw({ bits, entropy }) {
   const navigate = useNavigate()
   const appDispatch = useContext(DispatchContext)
 
+  // all types are string
   const [binary, setBinary] = useState()
   const [decimal, setDecimal] = useState()
   const [hex, setHex] = useState()
+
   const [privKeyBuf, setPrivKeyBuf] = useState()
+
+  // type string
   const [pubKeyX, setPubKeyX] = useState()
   const [pubKeyY, setPubKeyY] = useState()
+  // type string
   const [compressedPubKey, setCompressedPubKey] = useState()
+  // type Uint8Array
   const [uncompressedBufferPub, setUncompressedBufferPub] = useState()
   const [showCompressed, setShowCompressed] = useState(false)
 
@@ -54,6 +63,8 @@ function DisplayMultipleRaw({ bits, entropy }) {
 
     let result = ecc.pointFromScalar(privateKeyBuffer, false)
     setUncompressedBufferPub(result)
+
+    // GENERATE X AND Y COORDINATES OF PUBKEY
     let xCoordinate = result.slice(1, 33)
     let yCoordinate = result.slice(33, 65)
     let xCoordHexString = uint8arraytools.toHex(xCoordinate)
@@ -82,17 +93,14 @@ function DisplayMultipleRaw({ bits, entropy }) {
   function handleAccept() {
     appDispatch({ type: "setBufferPrivKey", value: privKeyBuf })
     appDispatch({ type: "setBufferPubKey", value: uncompressedBufferPub })
-    navigate("/WalletMain")
+    navigate("/AddressSelection")
   }
 
   return (
     <>
       {displayPubKey ? (
         <>
-          <div>{showCompressed ? compressedPubKey : "(" + pubKeyX + ", " + pubKeyY + ")"}</div>
-          <div>This is your public key as a point on the secp256k1 elliptic cryptography curve.</div>
-          <button onClick={handleShowCompressedPubKey}>{showCompressed ? "Show Uncompressed" : "Show Compressed"}</button>
-          <button onClick={handleDisplayAccept}>Next</button>
+          <GeneratePubKey showCompressed={showCompressed} compressedPubKey={compressedPubKey} pubKeyX={pubKeyX} pubKeyY={pubKeyY} handleShowCompressedPubKey={handleShowCompressedPubKey} handleDisplayAccept={handleDisplayAccept} />
         </>
       ) : displayAccept ? (
         <>

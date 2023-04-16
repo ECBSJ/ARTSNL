@@ -8,17 +8,17 @@ module.exports = {
   output: {
     publicPath: "/",
     filename: "bundled.js",
-    path: path.resolve(__dirname, "app"),
+    path: path.resolve(__dirname, "app")
   },
   mode: "development",
-  watch: true,
+  devtool: "source-map",
   devServer: {
     watchFiles: ["./app/**/*.html"],
     static: "app",
     hot: true,
     port: 666,
     host: "0.0.0.0",
-    historyApiFallback: { index: "index.html" },
+    historyApiFallback: { index: "index.html" }
   },
   module: {
     rules: [
@@ -28,9 +28,9 @@ module.exports = {
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-react", ["@babel/preset-env", { targets: { node: "12" } }]],
-          },
-        },
+            presets: ["@babel/preset-react", ["@babel/preset-env", { targets: { node: "12" } }]]
+          }
+        }
       },
       {
         test: /\.css$/i,
@@ -39,30 +39,30 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              url: false,
-            },
+              url: false
+            }
           },
           {
             loader: "postcss-loader",
             options: {
               postcssOptions: {
-                plugins: postCSSPlugins,
-              },
-            },
-          },
-        ],
-      },
-    ],
+                plugins: postCSSPlugins
+              }
+            }
+          }
+        ]
+      }
+    ]
   },
   resolve: {
-    fallback: { stream: require.resolve("stream-browserify"), crypto: require.resolve("crypto-browserify") },
+    fallback: { stream: require.resolve("stream-browserify"), crypto: require.resolve("crypto-browserify") }
   },
   experiments: {
-    asyncWebAssembly: true,
+    asyncWebAssembly: true
   },
   plugins: [
     new webpack.ProvidePlugin({
-      Buffer: ["buffer", "Buffer"],
-    }),
-  ],
+      Buffer: ["buffer", "Buffer"]
+    })
+  ]
 }

@@ -22,9 +22,9 @@ function WalletMain() {
     setIsAddressDetailsPageOpen(true)
 
     const {
-      bitcoin: { addresses },
+      bitcoin: { addresses }
     } = await mempoolJS({
-      hostname: "mempool.space",
+      hostname: "mempool.space"
     })
 
     const addressResult = await addresses.getAddress({ address })
@@ -36,7 +36,7 @@ function WalletMain() {
   }
 
   useEffect(() => {
-    let keyPair = ECPair.fromPrivateKey(appState.bitcoin.bufferPrivKey, Mainnet)
+    let keyPair = ECPair.fromPrivateKey(appState.keys.bufferPrivKey, Mainnet)
     appDispatch({ type: "setKeyPair", value: keyPair })
     const { address } = bitcoin.payments.p2wpkh({ pubkey: keyPair.publicKey })
     appDispatch({ type: "setBitcoinAddress", value: address })

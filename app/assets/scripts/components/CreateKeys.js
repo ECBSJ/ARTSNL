@@ -1,18 +1,22 @@
 import React, { useEffect, useState, useContext } from "react"
-import * as bitcoin from "../../../../bitcoinjs-lib"
-import DisplayMultipleRaw from "./DisplayMultipleRaw"
-
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 
+// IMPORTING 3RD PARTY TOOLS
+import * as bitcoin from "../../../../bitcoinjs-lib"
+
+// IMPORTING COMPONENTS
 import CreateEntropyPage from "./CreateEntropyPage"
 import CreateBitsPage from "./CreateBitsPage"
+import DisplayMultipleRaw from "./DisplayMultipleRaw"
 
 function Bitcoin() {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
+  // bits type is string
   const [bits, setBits] = useState("")
+  // entropy type is a Uint8Array
   const [entropy, setEntropy] = useState("")
 
   const [onCreateEntropyPage, setOnCreateEntropyPage] = useState(false)

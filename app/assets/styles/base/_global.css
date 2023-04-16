@@ -1,0 +1,16 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: white;
+  font-family: $text;
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

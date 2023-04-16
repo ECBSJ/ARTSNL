@@ -1,0 +1,9 @@
+.icon {
+  color: rgb(97, 97, 97);
+  transition: all 300ms ease-in-out;
+
+  &:hover {
+    color: white;
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,17 @@
+.container {
+  width: 95vw;
+  height: 750px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid white;
+  border-radius: 30px;
+  background-color: #101115;
+
+  @mixin atSmall {
+    width: 400px;
+    height: 750px;
+  }
+}

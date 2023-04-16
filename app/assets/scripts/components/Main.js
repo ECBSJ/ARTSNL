@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import * as bitcoin from "../../../../bitcoinjs-lib"
 import * as crypto from "crypto"
 import { Link } from "react-router-dom"
@@ -9,41 +9,42 @@ import * as ecc from "tiny-secp256k1"
 import * as uint8arraytools from "uint8array-tools"
 import * as base58 from "bs58"
 import { ethers } from "ethers"
+import { MdNavigateNext } from "react-icons/md"
 
 // import * as dotenv from "dotenv"
 // dotenv.config()
 
 function Main() {
+  const [page, setPage] = useState(1)
+
   const ECPair = ECPairFactory(ecc)
   const Mainnet = bitcoin.networks.bitcoin
 
   let privateKey = crypto.randomBytes(32)
   let result = ecc.pointFromScalar(privateKey, false)
-  console.log(result)
 
   // btc pubkey to address
-
-  let riped = bitcoin.crypto.hash160(result)
-  let prefix = Buffer.from("00", "hex")
-  let prefix_riped = [prefix, riped]
-  let combined_prefix_riped = Buffer.concat(prefix_riped)
-  let checksum = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped)).slice(0, 4)
-  let arr = [prefix, riped, checksum]
-  let combinedBuff = Buffer.concat(arr)
-  let address = base58.encode(combinedBuff)
+  // let riped = bitcoin.crypto.hash160(result)
+  // let prefix = Buffer.from("00", "hex")
+  // let prefix_riped = [prefix, riped]
+  // let combined_prefix_riped = Buffer.concat(prefix_riped)
+  // let checksum = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped)).slice(0, 4)
+  // let arr = [prefix, riped, checksum]
+  // let combinedBuff = Buffer.concat(arr)
+  // let address = base58.encode(combinedBuff)
 
   // eth pubkey to address
+  // let provider = new ethers.InfuraProvider(1, "19e6398ef2ee4861bfa95987d08fbc50")
+  // let prepareETHpubKey = result.slice(1, 65)
+  // let keccakPubKey = ethers.keccak256(prepareETHpubKey)
+  // let removed_0x = keccakPubKey.slice(2)
+  // let prepareETHpubAdd = Buffer.from(removed_0x, "hex")
+  // let ETHpubAdd = prepareETHpubAdd.slice(-20)
+  // let finalETHpubAdd = "0x" + uint8arraytools.toHex(ETHpubAdd)
+  // console.log(finalETHpubAdd)
+  // console.log(ethers.isAddress(finalETHpubAdd))
 
-  let provider = new ethers.InfuraProvider(1, "19e6398ef2ee4861bfa95987d08fbc50")
-  let prepareETHpubKey = result.slice(1, 65)
-  let keccakPubKey = ethers.keccak256(prepareETHpubKey)
-  let removed_0x = keccakPubKey.slice(2)
-  let prepareETHpubAdd = Buffer.from(removed_0x, "hex")
-  let ETHpubAdd = prepareETHpubAdd.slice(-20)
-  console.log(uint8arraytools.toHex(ETHpubAdd))
-
-  console.log(ethers.isAddress("0x358a7871AfED157A50846394E6aDC3226cBBB0DC"))
-
+  // PUBLIC KEY POINT ON CURVE
   // let xCoordinate = result.slice(1, 33)
   // let yCoordinate = result.slice(33, 65)
   // console.log("(" + uint8arraytools.toHex(xCoordinate) + ", " + uint8arraytools.toHex(yCoordinate) + ")")
@@ -57,6 +58,7 @@ function Main() {
   // let keyPair = ECPair.fromPrivateKey(privateKeyBuffer, Mainnet)
   // let eccPubKeyBuffer = ecc.pointFromScalar(privateKeyBuffer, true)
 
+  // USING OBJECTS IN USESTATE
   // const [someObject, setSomeObject] = useState({
   //   key0: "value0",
   // })
@@ -79,9 +81,23 @@ function Main() {
 
   return (
     <>
-      <div>Welcome to artisanal.</div>
-      <Link to="/WalletSelection">Start</Link>
-      {/* <button onClick={() => handleObjectUpdate()}>click</button> */}
+      {page == 2 ? (
+        <>
+          <div style={{ textAlign: "center", fontSize: "2rem" }}>
+            Your Keys. <br /> Your TX. <br /> DIY'ed, by you.
+          </div>
+          <Link to="/CreateKeys">
+            <MdNavigateNext className="icon" />
+          </Link>
+        </>
+      ) : (
+        <>
+          <div style={{ fontSize: "3rem" }}>ARTSNL</div>
+          <div onClick={() => setPage(2)}>
+            <MdNavigateNext className="icon" />
+          </div>
+        </>
+      )}
     </>
   )
 }
