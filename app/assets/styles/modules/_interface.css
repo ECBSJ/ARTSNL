@@ -34,11 +34,13 @@
       &--thin {
         flex: 1;
         font-size: 1.3rem;
+        padding-bottom: 10px;
       }
 
       &--thick {
         flex: 2;
         font-size: 0.6rem;
+        color: darkgray;
       }
     }
   }

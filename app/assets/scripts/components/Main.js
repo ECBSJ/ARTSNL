@@ -101,9 +101,10 @@ function Main() {
 
           <div className="interface__block">
             <div className="interface__block-cell interface__block-cell--space-between">
-              <div style={{ borderBottom: "1px solid #5A5A5A" }} className="title-font title-font--large">
+              <div className="title-font title-font--large">
+                <div className="title__subtitle">Create your private & public key pair.</div>
                 <div style={{ display: "inline-block" }} className="purple-font">
-                  Key
+                  🧙Key
                 </div>{" "}
                 Creation
               </div>
@@ -118,7 +119,7 @@ function Main() {
           </div>
           <div className="interface__block">
             <div className="interface__block-cell">
-              <input className="input-purple" onChange={(e) => setBits(e.target.value)} type="text" />
+              <input className="input-purple" onChange={e => setBits(e.target.value)} type="text" required />
               <span>Input 256 bits</span>
               <div className="input-validation">bit count: 0</div>
             </div>
@@ -127,10 +128,10 @@ function Main() {
           <div className="interface__block">
             <div className="interface__block-cell"></div>
             <div className="interface__block-cell">
-              <button className="button-purple">Next: Private Key</button>
+              <button className="button-purple">Next: Private Key 🗝️</button>
             </div>
             <div className="interface__block-cell">
-              <div>ARTSNL</div>
+              <div className="icon">ARTSNL</div>
             </div>
           </div>
         </>

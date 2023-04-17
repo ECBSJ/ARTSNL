@@ -5,11 +5,17 @@ input {
   height: 80%;
   border: 1px solid white;
   border-radius: 15px;
-  background: transparent;
+  background: black;
   padding: 0px 15px 0px 15px;
   font-family: $text;
   font-size: 1.5rem;
   color: white;
+  outline: none;
+
+  &:hover,
+  &:focus {
+    box-shadow: 0 0 10px 0px rgb(105, 105, 105);
+  }
 }
 
 span {
@@ -19,12 +25,16 @@ span {
   display: inline-block;
   transition: 0.5s;
   pointer-events: none;
+  color: rgb(105, 105, 105);
 }
 
-input:focus ~ span {
-  transform: translateX(-10px) translateY(-38px);
-  font-size: 0.8rem;
+input:focus ~ span,
+input:valid ~ span {
+  transform: translateX(250px) translateY(-36px);
+  font-size: 0.6rem;
+  color: white;
 }
+
 /* INPUT CLASS */
 .input {
   &-purple {
@@ -32,7 +42,7 @@ input:focus ~ span {
 
     &:hover,
     &:focus {
-      border: 1px solid blue;
+      border: 1px solid #d57aff;
     }
   }
 
