@@ -1,0 +1,45 @@
+.interface {
+  &__block {
+    width: 100%;
+    flex: 1;
+    margin: 1px;
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+
+    &-cell {
+      width: 100%;
+      flex: 1;
+      background-color: transparent;
+      border-radius: 15px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &--space-between {
+        justify-content: space-between;
+      }
+
+      &__description-block {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: left;
+      }
+
+      &--thin {
+        flex: 1;
+        font-size: 1.3rem;
+      }
+
+      &--thick {
+        flex: 2;
+        font-size: 0.6rem;
+      }
+    }
+  }
+}

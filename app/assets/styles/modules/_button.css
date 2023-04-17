@@ -1,0 +1,27 @@
+/* BUTTON ELEMENT */
+button {
+  width: 100%;
+  height: 80%;
+  border: 1px solid white;
+  border-radius: 15px;
+  background: transparent;
+  font-family: $text;
+  font-size: 1.5rem;
+  color: white;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+/* BUTTON CLASS */
+.button {
+  &-purple {
+    border: 1px solid #b01af7;
+    background-color: #b11af783;
+
+    &:hover {
+      background-color: #b01af7;
+    }
+  }
+}

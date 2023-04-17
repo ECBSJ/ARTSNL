@@ -19,12 +19,12 @@ function App() {
   const initialState = {
     keys: {
       bufferPrivKey: null,
-      bufferPubKey: null
+      bufferPubKey: null,
     },
     bitcoin: {
       keyPair: null,
-      address: null
-    }
+      address: null,
+    },
   }
 
   function ourReducer(draft, action) {

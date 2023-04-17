@@ -1,0 +1,15 @@
+.title-font {
+  font-family: $title;
+
+  &--large {
+    font-size: 1.5rem;
+  }
+}
+
+.text-font {
+  font-family: $text;
+}
+
+.purple-font {
+  color: #b01af7;
+}
