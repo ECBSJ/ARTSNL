@@ -9,7 +9,8 @@ import * as ecc from "tiny-secp256k1"
 import * as uint8arraytools from "uint8array-tools"
 import * as base58 from "bs58"
 import { ethers } from "ethers"
-import { MdNavigateNext, MdMenu } from "react-icons/md"
+import { MdNavigateNext, MdMenu, MdLibraryBooks } from "react-icons/md"
+import { TbRefresh } from "react-icons/tb"
 
 // import * as dotenv from "dotenv"
 // dotenv.config()
@@ -119,7 +120,7 @@ function Main() {
           </div>
           <div className="interface__block">
             <div className="interface__block-cell">
-              <input className="input-purple" onChange={e => setBits(e.target.value)} type="text" required />
+              <input className="input-purple" onChange={(e) => setBits(e.target.value)} type="text" required />
               <span>Input 256 bits</span>
               <div className="input-validation">bit count: 0</div>
             </div>
@@ -130,8 +131,10 @@ function Main() {
             <div className="interface__block-cell">
               <button className="button-purple">Next: Private Key 🗝️</button>
             </div>
-            <div className="interface__block-cell">
+            <div className="interface__block-cell interface__block-cell__footer">
+              <TbRefresh className="icon" />
               <div className="icon">ARTSNL</div>
+              <MdLibraryBooks className="icon" />
             </div>
           </div>
         </>

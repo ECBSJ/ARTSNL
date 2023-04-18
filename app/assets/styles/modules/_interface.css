@@ -20,6 +20,10 @@
       justify-content: center;
       align-items: center;
 
+      &__footer {
+        justify-content: space-between;
+      }
+
       &--space-between {
         justify-content: space-between;
       }
