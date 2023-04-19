@@ -46,10 +46,26 @@ input:valid ~ span {
     }
   }
 
+  &-white {
+    border: 1px solid rgb(126, 126, 126);
+    transition: all 200ms ease;
+
+    &:hover,
+    &:focus {
+      border: 1px solid white;
+    }
+  }
+
   &-validation {
     position: absolute;
     bottom: -6;
     left: 20;
     font-size: 0.5rem;
+
+    &--error {
+      color: red;
+      bottom: -23;
+      font-size: 0.7rem;
+    }
   }
 }

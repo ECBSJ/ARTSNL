@@ -1,19 +1,48 @@
 import React, { useEffect, useContext, useState } from "react"
-import { Link } from "react-router-dom"
 import { MdMenu, MdLibraryBooks } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
 
 function CreateBitsPage({ bits, setBits, setOnCreateBitsPage, setOnDisplayMultipleRaw }) {
   const [hasErrors, setHasErrors] = useState()
+  const [errorMessage, setErrorMessage] = useState("")
 
-  function checkErrors() {
-    if (bits.length == 256) {
+  let regEx_binary = /^[0-1]+$/
+
+  function validateBits(inputtedBits) {
+    if (!inputtedBits.trim()) {
       setHasErrors(false)
+      setBits("")
+    } else {
+      if (!regEx_binary.test(inputtedBits)) {
+        setHasErrors(true)
+        setErrorMessage("Only binary numbers are allowed.")
+      } else {
+        setHasErrors(false)
+        setBits(inputtedBits)
+      }
     }
   }
 
+  function validateBitsDelay() {
+    if (bits.length == 256) {
+      setHasErrors(false)
+    } else {
+      setHasErrors(true)
+      setErrorMessage("Entropy of bits needs to be exactly 256 in length.")
+    }
+  }
+
+  useEffect(() => {
+    if (bits.length > 0 && !hasErrors) {
+      const delay = setTimeout(() => validateBitsDelay(), 1000)
+      return () => clearTimeout(delay)
+    }
+  }, [bits])
+
   function handleAccept() {
-    checkErrors()
+    if (bits.length == 256 && regEx_binary.test(bits)) {
+      setHasErrors(false)
+    }
 
     if (!hasErrors) {
       setOnCreateBitsPage(false)
@@ -43,9 +72,10 @@ function CreateBitsPage({ bits, setBits, setOnCreateBitsPage, setOnDisplayMultip
       </div>
       <div className="interface__block">
         <div className="interface__block-cell">
-          <input className="input-purple" onChange={(e) => setBits(e.target.value)} type="text" required />
+          <input className="input-purple" onChange={e => validateBits(e.target.value)} type="text" required />
           <span>Input 256 bits</span>
           <div className="input-validation">bit count: {bits.length}</div>
+          {hasErrors ? <div className="input-validation input-validation--error">{errorMessage}</div> : ""}
         </div>
         <div className="interface__block-cell interface__block-cell--thick"></div>
       </div>

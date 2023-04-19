@@ -29,4 +29,9 @@ button {
       background-color: #b01af7;
     }
   }
+
+  &--active {
+    background-color: white;
+    color: black;
+  }
 }

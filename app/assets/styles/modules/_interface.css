@@ -20,12 +20,22 @@
       justify-content: center;
       align-items: center;
 
+      &--display-block {
+        display: block;
+        padding: 7px;
+        overflow-wrap: break-word;
+      }
+
       &__footer {
         justify-content: space-between;
       }
 
       &--space-between {
         justify-content: space-between;
+      }
+
+      &--column-gap {
+        column-gap: 8px;
       }
 
       &__description-block {

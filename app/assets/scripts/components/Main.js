@@ -51,7 +51,7 @@ function Main() {
   // console.log("(" + uint8arraytools.toHex(xCoordinate) + ", " + uint8arraytools.toHex(yCoordinate) + ")")
 
   // proper binary to decimal to hex to buffer conversion
-  // let binary = "1010100101000101011010101101010010100101010010010100111010100101001010010101110010100100101010010100101001111011001010100101001010010100101001010010100111100001010101001010101010010101011001111100101010010101010010101111001010100101010010100101111010101010"
+  let binary = "1010100101000101011010101101010010100101010010010100111010100101001010010101110010100100101010010100101001111011001010100101001010010100101001010010100111100001010101001010101010010101011001111100101010010101010010101111001010100101010010100101111010101010"
   // let bigIntBinary = BigInt("0b" + binary)
   // let decimalString = bigIntBinary.toString(10)
   // let hexString = bigIntBinary.toString(16)
@@ -80,7 +80,7 @@ function Main() {
   //   console.log(someObject)
   // }
 
-  const [bits, setBits] = useState("")
+  const [active, setActive] = useState(2)
 
   return (
     <>
@@ -113,23 +113,31 @@ function Main() {
             </div>
             <div className="interface__block-cell">
               <div className="interface__block-cell__description-block">
-                <div className="interface__block-cell--thin">Step 1: Title</div>
+                <div className="interface__block-cell--thin">Step x: Your Private Key</div>
                 <div className="interface__block-cell--thick">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil nisi et hic impedit perspiciatis minima voluptas vel quam pariatur distinctio officia id, itaque ratione nemo eveniet recusandae a excepturi natus?</div>
               </div>
             </div>
           </div>
           <div className="interface__block">
-            <div className="interface__block-cell">
-              <input className="input-purple" onChange={(e) => setBits(e.target.value)} type="text" required />
-              <span>Input 256 bits</span>
-              <div className="input-validation">bit count: 0</div>
+            <div className="interface__block-cell interface__block-cell--column-gap">
+              <button onClick={() => setActive(1)} className={active == 1 ? "button--active" : ""}>
+                BIN
+              </button>
+              <button onClick={() => setActive(2)} className={active == 2 ? "button--active" : ""}>
+                HEX
+              </button>
+              <button onClick={() => setActive(3)} className={active == 3 ? "button--active" : ""}>
+                DEC
+              </button>
             </div>
-            <div className="interface__block-cell interface__block-cell--thick"></div>
+            <div className="interface__block-cell interface__block-cell--display-block interface__block-cell--thick input-white">
+              <div>{binary}</div>
+            </div>
           </div>
           <div className="interface__block">
             <div className="interface__block-cell"></div>
             <div className="interface__block-cell">
-              <button className="button-purple">Next: Private Key 🗝️</button>
+              <button className="button-purple">Next: Public Key 🔑</button>
             </div>
             <div className="interface__block-cell interface__block-cell__footer">
               <TbRefresh className="icon" />

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom"
 
 // IMPORT COMPONENTS
 import GeneratePubKey from "./GeneratePubKey"
+import Display3Formats from "./Display3Formats"
 
 function DisplayMultipleRaw({ bits, entropy }) {
   const navigate = useNavigate()
@@ -111,13 +112,7 @@ function DisplayMultipleRaw({ bits, entropy }) {
         </>
       ) : (
         <>
-          <div>Here are 3 formats to your private key.</div>
-          <div>{binary}</div>
-          <br />
-          <div>{decimal}</div>
-          <br />
-          <div>{hex}</div>
-          <button onClick={handlePublicKeyGen}>Generate Public Key</button>
+          <Display3Formats binary={binary} decimal={decimal} hex={hex} handlePublicKeyGen={handlePublicKeyGen} />
         </>
       )}
     </>
