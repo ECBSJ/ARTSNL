@@ -1,9 +1,22 @@
 import React, { useEffect, useState } from "react"
-import { MdMenu, MdLibraryBooks } from "react-icons/md"
+import { MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
+import { CopyToClipboard } from "react-copy-to-clipboard"
 
 function Display3Formats({ binary, decimal, hex, handlePublicKeyGen }) {
   const [active, setActive] = useState(2)
+
+  function handleCopyPopup() {
+    document.querySelector(".icon-copy").classList.toggle("icon")
+    document.querySelector(".icon-copy").classList.toggle("icon-copy--active")
+    document.querySelector("#copiedElement").classList.toggle("copied-popup")
+
+    setTimeout(() => {
+      document.querySelector(".icon-copy").classList.toggle("icon")
+      document.querySelector(".icon-copy").classList.toggle("icon-copy--active")
+      document.querySelector("#copiedElement").classList.toggle("copied-popup")
+    }, 1000)
+  }
 
   return (
     <>
@@ -37,10 +50,16 @@ function Display3Formats({ binary, decimal, hex, handlePublicKeyGen }) {
             DEC
           </button>
         </div>
-        <div className="interface__block-cell interface__block-cell--thick input-white">
+        <div className="interface__block-cell interface__block-cell--display-block interface__block-cell--thick interface__block-cell--thick--font-large input-white">
           <div>{active == 1 ? binary : ""}</div>
           <div>{active == 2 ? hex : ""}</div>
           <div>{active == 3 ? decimal : ""}</div>
+          <br />
+          <CopyToClipboard text={active == 1 ? binary : active == 2 ? hex : decimal} onCopy={handleCopyPopup}>
+            <div id="copiedElement">
+              <MdCopyAll className="icon icon-copy" />
+            </div>
+          </CopyToClipboard>
         </div>
       </div>
       <div className="interface__block">

@@ -10,4 +10,33 @@
   &:active {
     transform: scale(0.85);
   }
+
+  &-copy {
+    &--active {
+      color: lightseagreen;
+
+      &:hover {
+        cursor: pointer;
+        color: lightseagreen;
+      }
+    }
+  }
+}
+
+.copied-popup {
+  position: relative;
+
+  &::before {
+    content: "Copied!";
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 15;
+    left: 60;
+    width: 70px;
+    height: 30px;
+    font-size: 1.2rem;
+    color: lightseagreen;
+  }
 }

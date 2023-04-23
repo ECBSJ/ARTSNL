@@ -9,8 +9,9 @@ import * as ecc from "tiny-secp256k1"
 import * as uint8arraytools from "uint8array-tools"
 import * as base58 from "bs58"
 import { ethers } from "ethers"
-import { MdNavigateNext, MdMenu, MdLibraryBooks } from "react-icons/md"
+import { MdNavigateNext, MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
+import { CopyToClipboard } from "react-copy-to-clipboard"
 
 // import * as dotenv from "dotenv"
 // dotenv.config()
@@ -80,8 +81,6 @@ function Main() {
   //   console.log(someObject)
   // }
 
-  const [active, setActive] = useState(2)
-
   return (
     <>
       {page == 2 ? (
@@ -95,12 +94,12 @@ function Main() {
         </>
       ) : (
         <>
-          {/* <div style={{ fontSize: "3rem" }}>ARTSNL</div>
+          <div style={{ fontSize: "3rem" }}>ARTSNL</div>
           <div onClick={() => setPage(2)}>
             <MdNavigateNext className="icon" />
-          </div> */}
+          </div>
 
-          <div className="interface__block">
+          {/* <div className="interface__block">
             <div className="interface__block-cell interface__block-cell--space-between">
               <div className="title-font title-font--large">
                 <div className="title__subtitle">Create your private & public key pair.</div>
@@ -113,38 +112,28 @@ function Main() {
             </div>
             <div className="interface__block-cell">
               <div className="interface__block-cell__description-block">
-                <div className="interface__block-cell--thin">Step x: Your Private Key</div>
+                <div className="interface__block-cell--thin">Step x: Derive Public Key</div>
                 <div className="interface__block-cell--thick">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil nisi et hic impedit perspiciatis minima voluptas vel quam pariatur distinctio officia id, itaque ratione nemo eveniet recusandae a excepturi natus?</div>
               </div>
             </div>
           </div>
           <div className="interface__block">
-            <div className="interface__block-cell interface__block-cell--column-gap">
-              <button onClick={() => setActive(1)} className={active == 1 ? "button--active" : ""}>
-                BIN
-              </button>
-              <button onClick={() => setActive(2)} className={active == 2 ? "button--active" : ""}>
-                HEX
-              </button>
-              <button onClick={() => setActive(3)} className={active == 3 ? "button--active" : ""}>
-                DEC
-              </button>
-            </div>
-            <div className="interface__block-cell interface__block-cell--display-block interface__block-cell--thick input-white">
-              <div>{binary}</div>
-            </div>
+            <div className="interface__block-cell">Public Key Generated!</div>
+            <div className="interface__block-cell interface__block-cell--display-block interface__block-cell--thick interface__block-cell--thick--font-large input-white"></div>
           </div>
           <div className="interface__block">
-            <div className="interface__block-cell"></div>
             <div className="interface__block-cell">
-              <button className="button-purple">Next: Public Key 🔑</button>
+              <button className="capsule ">Show Compressed</button>
+            </div>
+            <div className="interface__block-cell">
+              <button className="button-purple">Next: Key Pair 🛠️</button>
             </div>
             <div className="interface__block-cell interface__block-cell__footer">
               <TbRefresh className="icon" />
               <div className="icon">ARTSNL</div>
               <MdLibraryBooks className="icon" />
             </div>
-          </div>
+          </div> */}
         </>
       )}
     </>

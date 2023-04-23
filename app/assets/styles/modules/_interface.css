@@ -22,8 +22,12 @@
 
       &--display-block {
         display: block;
+        max-height: 157px;
         padding: 7px;
+        overflow: auto;
         overflow-wrap: break-word;
+        border-radius: 5px;
+        position: relative;
       }
 
       &__footer {
@@ -55,6 +59,10 @@
         flex: 2;
         font-size: 0.6rem;
         color: darkgray;
+
+        &--font-large {
+          font-size: 1rem;
+        }
       }
     }
   }

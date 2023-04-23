@@ -35,3 +35,36 @@ button {
     color: black;
   }
 }
+
+.capsule {
+  font-size: 1rem;
+  border: 1px solid #b01af7;
+
+  &__progress-1 {
+    display: none;
+    background-color: #b11af736;
+  }
+
+  &__progress-2 {
+    display: none;
+    background-color: #b11af775;
+  }
+
+  &__progress-3 {
+    display: none;
+    background-color: #b11af7bd;
+  }
+
+  &__progress-4 {
+    display: none;
+    background-color: #b01af7;
+  }
+
+  &--visible {
+    display: block;
+  }
+
+  &:hover {
+    box-shadow: 0 0 10px 0px rgb(105, 105, 105);
+  }
+}
