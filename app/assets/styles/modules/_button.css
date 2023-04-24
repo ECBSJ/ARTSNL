@@ -34,6 +34,17 @@ button {
     background-color: white;
     color: black;
   }
+
+  &--disabled {
+    background-color: #4e246183;
+    color: rgb(87, 87, 87);
+
+    &:hover {
+      background-color: #4e246183;
+      color: rgb(87, 87, 87);
+      cursor: not-allowed;
+    }
+  }
 }
 
 .capsule {

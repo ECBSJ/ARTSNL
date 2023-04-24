@@ -9,6 +9,7 @@ import * as bitcoin from "../../../../bitcoinjs-lib"
 import CreateEntropyPage from "./CreateEntropyPage"
 import CreateBitsPage from "./CreateBitsPage"
 import DisplayMultipleRaw from "./DisplayMultipleRaw"
+import EntropySelection from "./EntropySelection"
 
 function Bitcoin() {
   const appState = useContext(StateContext)
@@ -31,8 +32,7 @@ function Bitcoin() {
         <CreateBitsPage bits={bits} setBits={setBits} setOnCreateBitsPage={setOnCreateBitsPage} setOnDisplayMultipleRaw={setOnDisplayMultipleRaw} />
       ) : !onDisplayMultipleRaw ? (
         <>
-          <button onClick={() => setOnCreateEntropyPage(true)}>Random 32 Bytes</button>
-          <button onClick={() => setOnCreateBitsPage(true)}>DIY 256 bits</button>
+          <EntropySelection setOnCreateBitsPage={setOnCreateBitsPage} setOnCreateEntropyPage={setOnCreateEntropyPage} />
         </>
       ) : (
         ""

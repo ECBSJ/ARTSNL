@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom"
 // IMPORT COMPONENTS
 import GeneratePubKey from "./GeneratePubKey"
 import Display3Formats from "./Display3Formats"
+import AcceptKeyPair from "./AcceptKeyPair"
 
 function DisplayMultipleRaw({ bits, entropy }) {
   const navigate = useNavigate()
@@ -94,7 +95,6 @@ function DisplayMultipleRaw({ bits, entropy }) {
   function handleAccept() {
     appDispatch({ type: "setBufferPrivKey", value: privKeyBuf })
     appDispatch({ type: "setBufferPubKey", value: uncompressedBufferPub })
-    navigate("/AddressSelection")
   }
 
   return (
@@ -105,10 +105,7 @@ function DisplayMultipleRaw({ bits, entropy }) {
         </>
       ) : displayAccept ? (
         <>
-          <div>Private Key: {uint8arraytools.toHex(privKeyBuf)}</div>
-          <div>Public Key: {compressedPubKey}</div>
-          <div>Click below to accept your bitcoin private and public key pair</div>
-          <button onClick={handleAccept}>Accept</button>
+          <AcceptKeyPair compressedPubKey={compressedPubKey} privKeyBuf={privKeyBuf} uint8arraytools={uint8arraytools} handleAccept={handleAccept} navigate={navigate} />
         </>
       ) : (
         <>

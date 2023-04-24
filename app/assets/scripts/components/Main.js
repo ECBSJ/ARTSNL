@@ -81,6 +81,21 @@ function Main() {
   //   console.log(someObject)
   // }
 
+  function handleCopyPopup() {
+    document.querySelector(".icon-copy").classList.toggle("icon")
+    document.querySelector(".icon-copy").classList.toggle("icon-copy--active")
+    document.querySelector("#copiedElement").classList.toggle("copied-popup")
+
+    setTimeout(() => {
+      document.querySelector(".icon-copy").classList.toggle("icon")
+      document.querySelector(".icon-copy").classList.toggle("icon-copy--active")
+      document.querySelector("#copiedElement").classList.toggle("copied-popup")
+    }, 1000)
+  }
+
+  let privKey = "258560C8C0426A64918F649EB8FB0A04FB4D827860A142705B2CA32460C50588"
+  let pubKey = "0330E85058628138EAB80F8C785B166AE5A92E1F051C552E1419D0DA9B601B7981"
+
   return (
     <>
       {page == 2 ? (
@@ -94,46 +109,34 @@ function Main() {
         </>
       ) : (
         <>
-          <div style={{ fontSize: "3rem" }}>ARTSNL</div>
+          {/* <div style={{ fontSize: "3rem" }}>ARTSNL</div>
           <div onClick={() => setPage(2)}>
             <MdNavigateNext className="icon" />
-          </div>
+          </div> */}
 
-          {/* <div className="interface__block">
-            <div className="interface__block-cell interface__block-cell--space-between">
-              <div className="title-font title-font--large">
-                <div className="title__subtitle">Create your private & public key pair.</div>
-                <div style={{ display: "inline-block" }} className="purple-font">
-                  🧙Key
-                </div>{" "}
-                Creation
-              </div>
-              <MdMenu className="icon" />
-            </div>
-            <div className="interface__block-cell">
-              <div className="interface__block-cell__description-block">
-                <div className="interface__block-cell--thin">Step x: Derive Public Key</div>
-                <div className="interface__block-cell--thick">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil nisi et hic impedit perspiciatis minima voluptas vel quam pariatur distinctio officia id, itaque ratione nemo eveniet recusandae a excepturi natus?</div>
-              </div>
-            </div>
-          </div>
           <div className="interface__block">
-            <div className="interface__block-cell">Public Key Generated!</div>
-            <div className="interface__block-cell interface__block-cell--display-block interface__block-cell--thick interface__block-cell--thick--font-large input-white"></div>
+            <div className="interface__block-cell"></div>
+            <div className="interface__block-cell"></div>
+            <div className="interface__block-cell"></div>
           </div>
           <div className="interface__block">
             <div className="interface__block-cell">
-              <button className="capsule ">Show Compressed</button>
+              <button>Bitcoin Address</button>
             </div>
+            <div className="interface__block-cell">OR</div>
             <div className="interface__block-cell">
-              <button className="button-purple">Next: Key Pair 🛠️</button>
+              <button>Ethereum Address</button>
             </div>
+          </div>
+          <div className="interface__block">
+            <div className="interface__block-cell"></div>
+            <div className="interface__block-cell"></div>
             <div className="interface__block-cell interface__block-cell__footer">
               <TbRefresh className="icon" />
               <div className="icon">ARTSNL</div>
               <MdLibraryBooks className="icon" />
             </div>
-          </div> */}
+          </div>
         </>
       )}
     </>
