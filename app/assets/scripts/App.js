@@ -8,6 +8,7 @@ import StateContext from "./StateContext"
 import DispatchContext from "./DispatchContext"
 import { useImmerReducer } from "use-immer"
 import { IconContext } from "react-icons"
+import "react-tooltip/dist/react-tooltip.css"
 
 // IMPORTING OF COMPONENTS
 import Main from "./components/Main"
@@ -19,12 +20,12 @@ function App() {
   const initialState = {
     keys: {
       bufferPrivKey: null,
-      bufferPubKey: null,
+      bufferPubKey: null
     },
     bitcoin: {
       keyPair: null,
-      address: null,
-    },
+      address: null
+    }
   }
 
   function ourReducer(draft, action) {

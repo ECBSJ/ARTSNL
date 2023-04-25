@@ -30,6 +30,26 @@ button {
     }
   }
 
+  &-orange {
+    position: relative;
+    border: 1px solid orange;
+    background-color: rgba(255, 166, 0, 0.5);
+
+    &:hover {
+      background-color: orange;
+    }
+  }
+
+  &-blue {
+    position: relative;
+    border: 1px solid blue;
+    background-color: rgba(0, 0, 255, 0.493);
+
+    &:hover {
+      background-color: blue;
+    }
+  }
+
   &--active {
     background-color: white;
     color: black;
@@ -44,6 +64,10 @@ button {
       color: rgb(87, 87, 87);
       cursor: not-allowed;
     }
+  }
+
+  &--smaller-font {
+    font-size: 1.2rem;
   }
 }
 
@@ -78,4 +102,16 @@ button {
   &:hover {
     box-shadow: 0 0 10px 0px rgb(105, 105, 105);
   }
+}
+
+.btc-logo {
+  position: absolute;
+  right: 13;
+  bottom: 5;
+}
+
+.eth-logo {
+  position: absolute;
+  right: 13;
+  bottom: 5;
 }

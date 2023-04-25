@@ -11,7 +11,9 @@ import * as base58 from "bs58"
 import { ethers } from "ethers"
 import { MdNavigateNext, MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
+import { SiBitcoin, SiEthereum } from "react-icons/si"
 import { CopyToClipboard } from "react-copy-to-clipboard"
+import { Tooltip } from "react-tooltip"
 
 // import * as dotenv from "dotenv"
 // dotenv.config()
@@ -95,6 +97,7 @@ function Main() {
 
   let privKey = "258560C8C0426A64918F649EB8FB0A04FB4D827860A142705B2CA32460C50588"
   let pubKey = "0330E85058628138EAB80F8C785B166AE5A92E1F051C552E1419D0DA9B601B7981"
+  let uncompressed_pubKey = uint8arraytools.toHex(result)
 
   return (
     <>
@@ -115,18 +118,34 @@ function Main() {
           </div> */}
 
           <div className="interface__block">
-            <div className="interface__block-cell"></div>
-            <div className="interface__block-cell"></div>
-            <div className="interface__block-cell"></div>
+            <div className="interface__block-cell interface__block-cell--space-between">
+              <div className="title-font title-font--small">
+                <div className="title__subtitle">With your public key, derive your public address.</div>
+                <div style={{ display: "inline-block" }} className="orange-font">
+                  📭BTC
+                </div>{" "}
+                Public Address
+              </div>
+              <MdMenu className="icon" />
+            </div>
+            <div className="interface__block-cell">
+              <div data-tooltip-id="uncompressed_pubKey" data-tooltip-content={uncompressed_pubKey}>
+                {"{ " + uncompressed_pubKey.slice(0, 10) + "..." + uncompressed_pubKey.slice(-10) + " }"}
+              </div>
+              <Tooltip id="uncompressed_pubKey" style={{ fontSize: "0.6rem" }} delayHide={200} variant="info" />
+              <div className="interface__block-cell__annotation interface__block-cell__annotation--orange">Uncompressed Public Key</div>
+            </div>
+            <div className="interface__block-cell">
+              <button data-tooltip-id="hash160-button" data-tooltip-content="Click to apply a hash160 on your public key." className="button-orange button--smaller-font">
+                SHA256 + RIPEMD160
+              </button>
+              <Tooltip id="hash160-button" style={{ fontSize: "0.7rem" }} delayHide={200} variant="info" />
+            </div>
           </div>
           <div className="interface__block">
-            <div className="interface__block-cell">
-              <button>Bitcoin Address</button>
-            </div>
-            <div className="interface__block-cell">OR</div>
-            <div className="interface__block-cell">
-              <button>Ethereum Address</button>
-            </div>
+            <div className="interface__block-cell"></div>
+            <div className="interface__block-cell"></div>
+            <div className="interface__block-cell"></div>
           </div>
           <div className="interface__block">
             <div className="interface__block-cell"></div>
