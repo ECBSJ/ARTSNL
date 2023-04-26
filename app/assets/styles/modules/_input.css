@@ -72,4 +72,18 @@ input:valid ~ span {
   &--position-off {
     position: relative;
   }
+
+  &--focus-red {
+    &:focus {
+      border-color: red;
+    }
+  }
+
+  &--focus-green {
+    border-color: green;
+
+    &:focus {
+      border-color: green;
+    }
+  }
 }

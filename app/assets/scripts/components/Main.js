@@ -99,6 +99,8 @@ function Main() {
   let hex_hash160 = uint8arraytools.toHex(riped)
 
   const [showHash160, setShowHash160] = useState(false)
+  const [versionPrefix, setVersionPrefix] = useState("")
+  const [hash160, setHash160] = useState("")
 
   async function handleHash160() {
     document.querySelector("#setLoading").classList.add("text--loading")
@@ -129,6 +131,26 @@ function Main() {
       document.querySelector("#hash160").classList.add("orange-capsule__progress-4")
       setShowHash160(true)
     }, 3000)
+  }
+
+  async function handleVersionInput(inputtedValue) {
+    if (!inputtedValue.trim()) {
+      setVersionPrefix("")
+    } else {
+      if (inputtedValue == "00") {
+        setVersionPrefix(inputtedValue)
+      }
+    }
+  }
+
+  function handleHash160Input(inputtedValue) {
+    if (!inputtedValue.trim()) {
+      setHash160("")
+    } else {
+      if (inputtedValue == hex_hash160) {
+        setHash160(inputtedValue)
+      }
+    }
   }
 
   return (
@@ -169,7 +191,7 @@ function Main() {
                     </div>
                   </CopyToClipboard>
                   <div data-tooltip-id="hex_hash160" data-tooltip-content={hex_hash160}>
-                    {"{ " + hex_hash160.slice(0, 10) + "..." + hex_hash160.slice(-10) + " }"}
+                    {"{ " + hex_hash160.slice(0, 9) + "..." + hex_hash160.slice(-9) + " }"}
                   </div>
                   <Tooltip id="hex_hash160" style={{ fontSize: "0.6rem" }} delayHide={200} variant="info" />
                   <div className="interface__block-cell__annotation interface__block-cell__annotation--orange">HASH160 of Public Key</div>
@@ -192,18 +214,28 @@ function Main() {
             </div>
           </div>
           <div className="interface__block">
-            <div className="interface__block-cell interface__block-cell--space-between">
+            <div className="interface__block-cell interface__block-cell--space-between interface__block-cell--column-gap">
               {showHash160 ? (
                 <>
-                  <input className="input--position-off" type="text" placeholder="version" />
+                  <input onChange={e => handleVersionInput(e.target.value)} id="Tooltip" data-tooltip-content="Input the version prefix of < 00 >" className={"input--position-off " + (versionPrefix ? "input--focus-green" : "input--focus-red")} type="text" placeholder="version" />
                   +
-                  <input className="input--position-off" type="text" placeholder="hash160" />
+                  <input onChange={e => handleHash160Input(e.target.value)} id="Tooltip" data-tooltip-content="Input the hash160 result here" className={"input--position-off " + (hash160 ? "input--focus-green" : "input--focus-red")} type="text" placeholder="hash160" />
                 </>
               ) : (
                 ""
               )}
             </div>
-            <div className="interface__block-cell"></div>
+            <div className="interface__block-cell">
+              {showHash160 ? (
+                <>
+                  <button id="Tooltip" data-tooltip-content="Apply SHA256 x2 to a concatenation of the version prefix & hash160 to generate a checksum." className="button-orange button--smaller-font">
+                    SHA256 x2
+                  </button>
+                </>
+              ) : (
+                ""
+              )}
+            </div>
             <div className="interface__block-cell"></div>
           </div>
           <div className="interface__block">
@@ -215,6 +247,7 @@ function Main() {
               <MdLibraryBooks className="icon" />
             </div>
           </div>
+          <Tooltip anchorSelect="#Tooltip" style={{ fontSize: "0.7rem" }} delayHide={200} variant="info" />
         </>
       )}
     </>
