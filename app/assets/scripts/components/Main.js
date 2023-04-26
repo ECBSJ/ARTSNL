@@ -86,12 +86,10 @@ function Main() {
   function handleCopyPopup() {
     document.querySelector(".icon-copy").classList.toggle("icon")
     document.querySelector(".icon-copy").classList.toggle("icon-copy--active")
-    document.querySelector("#copiedElement").classList.toggle("copied-popup")
 
     setTimeout(() => {
       document.querySelector(".icon-copy").classList.toggle("icon")
       document.querySelector(".icon-copy").classList.toggle("icon-copy--active")
-      document.querySelector("#copiedElement").classList.toggle("copied-popup")
     }, 1000)
   }
 
@@ -103,6 +101,7 @@ function Main() {
   const [showHash160, setShowHash160] = useState(false)
 
   async function handleHash160() {
+    document.querySelector("#setLoading").classList.add("text--loading")
     document.querySelector("#hash160").innerText = "Applying SHA256..."
     document.querySelector("#hash160").classList.remove("button-orange")
     document.querySelector("#hash160").classList.add("orange-capsule")
@@ -164,6 +163,11 @@ function Main() {
             <div className="interface__block-cell">
               {showHash160 ? (
                 <>
+                  <CopyToClipboard text={hex_hash160} onCopy={handleCopyPopup}>
+                    <div id="copiedElement">
+                      <MdCopyAll className="icon icon-copy" />
+                    </div>
+                  </CopyToClipboard>
                   <div data-tooltip-id="hex_hash160" data-tooltip-content={hex_hash160}>
                     {"{ " + hex_hash160.slice(0, 10) + "..." + hex_hash160.slice(-10) + " }"}
                   </div>
@@ -172,8 +176,8 @@ function Main() {
                 </>
               ) : (
                 <>
-                  <div data-tooltip-id="uncompressed_pubKey" data-tooltip-content={uncompressed_pubKey}>
-                    {"{ " + uncompressed_pubKey.slice(0, 10) + "..." + uncompressed_pubKey.slice(-10) + " }"}
+                  <div id="setLoading" data-text={"{" + uncompressed_pubKey.slice(0, 10) + "..." + uncompressed_pubKey.slice(-10) + "}"} data-tooltip-id="uncompressed_pubKey" data-tooltip-content={uncompressed_pubKey}>
+                    {"{" + uncompressed_pubKey.slice(0, 10) + "..." + uncompressed_pubKey.slice(-10) + "}"}
                   </div>
                   <Tooltip id="uncompressed_pubKey" style={{ fontSize: "0.6rem" }} delayHide={200} variant="info" />
                   <div className="interface__block-cell__annotation interface__block-cell__annotation--orange">Uncompressed Public Key</div>
@@ -188,7 +192,17 @@ function Main() {
             </div>
           </div>
           <div className="interface__block">
-            <div className="interface__block-cell"></div>
+            <div className="interface__block-cell interface__block-cell--space-between">
+              {showHash160 ? (
+                <>
+                  <input className="input--position-off" type="text" placeholder="version" />
+                  +
+                  <input className="input--position-off" type="text" placeholder="hash160" />
+                </>
+              ) : (
+                ""
+              )}
+            </div>
             <div className="interface__block-cell"></div>
             <div className="interface__block-cell"></div>
           </div>

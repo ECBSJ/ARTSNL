@@ -36,3 +36,26 @@
 .orange-font {
   color: orange;
 }
+
+.text--loading {
+  color: white;
+  position: relative;
+
+  &:before {
+    content: attr(data-text);
+    position: absolute;
+    width: 100%;
+    color: rgb(92, 92, 92);
+    overflow: hidden;
+    animation: loading 1s linear infinite;
+  }
+}
+
+@keyframes loading {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
