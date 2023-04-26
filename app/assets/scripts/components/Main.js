@@ -28,7 +28,7 @@ function Main() {
   let result = ecc.pointFromScalar(privateKey, false)
 
   // btc pubkey to address
-  // let riped = bitcoin.crypto.hash160(result)
+  let riped = bitcoin.crypto.hash160(result)
   // let prefix = Buffer.from("00", "hex")
   // let prefix_riped = [prefix, riped]
   // let combined_prefix_riped = Buffer.concat(prefix_riped)
@@ -98,6 +98,39 @@ function Main() {
   let privKey = "258560C8C0426A64918F649EB8FB0A04FB4D827860A142705B2CA32460C50588"
   let pubKey = "0330E85058628138EAB80F8C785B166AE5A92E1F051C552E1419D0DA9B601B7981"
   let uncompressed_pubKey = uint8arraytools.toHex(result)
+  let hex_hash160 = uint8arraytools.toHex(riped)
+
+  const [showHash160, setShowHash160] = useState(false)
+
+  async function handleHash160() {
+    document.querySelector("#hash160").innerText = "Applying SHA256..."
+    document.querySelector("#hash160").classList.remove("button-orange")
+    document.querySelector("#hash160").classList.add("orange-capsule")
+    document.querySelector("#hash160").classList.add("orange-capsule--visible")
+    document.querySelector("#hash160").classList.add("orange-capsule__progress-1")
+
+    setTimeout(() => {
+      document.querySelector("#hash160").classList.remove("orange-capsule__progress-1")
+
+      document.querySelector("#hash160").innerText = "Applying RIPEMD160..."
+      document.querySelector("#hash160").classList.add("orange-capsule__progress-2")
+    }, 1000)
+
+    setTimeout(() => {
+      document.querySelector("#hash160").classList.remove("orange-capsule__progress-2")
+
+      document.querySelector("#hash160").innerText = "Formatting hash result..."
+      document.querySelector("#hash160").classList.add("orange-capsule__progress-3")
+    }, 2000)
+
+    setTimeout(() => {
+      document.querySelector("#hash160").classList.remove("orange-capsule__progress-3")
+
+      document.querySelector("#hash160").innerText = "Completed HASH160!"
+      document.querySelector("#hash160").classList.add("orange-capsule__progress-4")
+      setShowHash160(true)
+    }, 3000)
+  }
 
   return (
     <>
@@ -129,14 +162,26 @@ function Main() {
               <MdMenu className="icon" />
             </div>
             <div className="interface__block-cell">
-              <div data-tooltip-id="uncompressed_pubKey" data-tooltip-content={uncompressed_pubKey}>
-                {"{ " + uncompressed_pubKey.slice(0, 10) + "..." + uncompressed_pubKey.slice(-10) + " }"}
-              </div>
-              <Tooltip id="uncompressed_pubKey" style={{ fontSize: "0.6rem" }} delayHide={200} variant="info" />
-              <div className="interface__block-cell__annotation interface__block-cell__annotation--orange">Uncompressed Public Key</div>
+              {showHash160 ? (
+                <>
+                  <div data-tooltip-id="hex_hash160" data-tooltip-content={hex_hash160}>
+                    {"{ " + hex_hash160.slice(0, 10) + "..." + hex_hash160.slice(-10) + " }"}
+                  </div>
+                  <Tooltip id="hex_hash160" style={{ fontSize: "0.6rem" }} delayHide={200} variant="info" />
+                  <div className="interface__block-cell__annotation interface__block-cell__annotation--orange">HASH160 of Public Key</div>
+                </>
+              ) : (
+                <>
+                  <div data-tooltip-id="uncompressed_pubKey" data-tooltip-content={uncompressed_pubKey}>
+                    {"{ " + uncompressed_pubKey.slice(0, 10) + "..." + uncompressed_pubKey.slice(-10) + " }"}
+                  </div>
+                  <Tooltip id="uncompressed_pubKey" style={{ fontSize: "0.6rem" }} delayHide={200} variant="info" />
+                  <div className="interface__block-cell__annotation interface__block-cell__annotation--orange">Uncompressed Public Key</div>
+                </>
+              )}
             </div>
             <div className="interface__block-cell">
-              <button data-tooltip-id="hash160-button" data-tooltip-content="Click to apply a hash160 on your public key." className="button-orange button--smaller-font">
+              <button onClick={handleHash160} id="hash160" data-tooltip-id="hash160-button" data-tooltip-content={showHash160 ? "Input the HASH160 result into the field below." : "Click to apply a hash160 on your public key."} className="button-orange button--smaller-font">
                 SHA256 + RIPEMD160
               </button>
               <Tooltip id="hash160-button" style={{ fontSize: "0.7rem" }} delayHide={200} variant="info" />
