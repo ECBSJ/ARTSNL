@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useTransition } from "react"
 import * as bitcoin from "../../../../bitcoinjs-lib"
 import * as crypto from "crypto"
 import { Link } from "react-router-dom"
@@ -113,6 +113,7 @@ function Main() {
   const [versionPrefix, setVersionPrefix] = useState("")
   const [hash160, setHash160] = useState("")
   const [showChecksum, setShowChecksum] = useState(false)
+  const [isChecksumPending, setIsChecksumPending] = useState(false)
 
   async function handleHash160() {
     document.querySelector("#setLoading").classList.add("text--loading")
@@ -146,7 +147,10 @@ function Main() {
   }
 
   async function handleSha256Twice() {
-    // document.querySelector("#setLoading").classList.add("text--loading")
+    document.querySelector("#checksum-display").classList.remove("interface__block-cell--space-between")
+    document.querySelector("#checksum-display").classList.remove("interface__block-cell--column-gap")
+    setIsChecksumPending(true)
+
     document.querySelector(".sha256twice").innerText = "Preparing message block & schedule..."
     document.querySelector(".sha256twice").classList.remove("button-orange")
     document.querySelector(".sha256twice").classList.add("orange-capsule")
@@ -172,8 +176,7 @@ function Main() {
 
       document.querySelector(".sha256twice").innerText = "SHA256 x2 Completed!"
       document.querySelector(".sha256twice").classList.add("orange-capsule__progress-4")
-      document.querySelector("#checksum-display").classList.remove("interface__block-cell--space-between")
-      document.querySelector("#checksum-display").classList.remove("interface__block-cell--column-gap")
+      setIsChecksumPending(false)
       setShowChecksum(true)
     }, 3000)
   }
@@ -250,7 +253,7 @@ function Main() {
               )}
             </div>
             <div className="interface__block-cell">
-              <button onClick={handleHash160} id="hash160" data-tooltip-id="hash160-button" data-tooltip-content={showHash160 ? "Input the HASH160 result into the field below." : "Click to apply a hash160 on your public key."} className="button-orange button--smaller-font">
+              <button onClick={handleHash160} id="hash160" data-tooltip-id="hash160-button" data-tooltip-content={showHash160 ? "Input the HASH160 into the field below." : "Click to apply a hash160 on your public key."} className="button-orange button--smaller-font">
                 SHA256 + RIPEMD160
               </button>
               <Tooltip id="hash160-button" style={{ fontSize: "0.7rem" }} delayHide={200} variant="info" />
@@ -273,9 +276,20 @@ function Main() {
                     </>
                   ) : (
                     <>
-                      <input onChange={e => handleVersionInput(e.target.value)} id="Tooltip" data-tooltip-content="Input the version prefix of < 00 >" className={"input--position-off " + (versionPrefix ? "input--focus-green" : "input--focus-red")} type="text" placeholder="version" />
-                      +
-                      <input onChange={e => handleHash160Input(e.target.value)} id="Tooltip" data-tooltip-content="Input the hash160 result here" className={"input--position-off " + (hash160 ? "input--focus-green" : "input--focus-red")} type="text" placeholder="hash160" />
+                      {isChecksumPending ? (
+                        <>
+                          <div id="setChecksumLoading" data-text={"hashing..."} className="text--loading">
+                            {/* {"{00}+" + "{" + static_hash160.slice(0, 4) + "..." + static_hash160.slice(-4) + "}"} */}
+                            hashing...
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <input onChange={e => handleVersionInput(e.target.value)} id="Tooltip" data-tooltip-content="Input the version prefix of < 00 >" className={"input--position-off " + (versionPrefix ? "input--focus-green" : "input--focus-red")} type="text" placeholder="version" />
+                          +
+                          <input onChange={e => handleHash160Input(e.target.value)} id="Tooltip" data-tooltip-content="Input the hash160 result here" className={"input--position-off " + (hash160 ? "input--focus-green" : "input--focus-red")} type="text" placeholder="hash160" />
+                        </>
+                      )}
                     </>
                   )}
                 </>
@@ -286,7 +300,7 @@ function Main() {
             <div className="interface__block-cell">
               {showHash160 ? (
                 <>
-                  <button onClick={handleSha256Twice} id="Tooltip" data-tooltip-content="Apply SHA256 x2 to a concatenation of the version prefix & hash160 to generate a checksum." className="button-orange button--smaller-font sha256twice">
+                  <button onClick={handleSha256Twice} id="Tooltip" data-tooltip-content={showChecksum ? "Input the checksum into the corresponding field below." : "Apply SHA256 x2 to a concatenation of the version prefix & hash160 to generate a checksum."} className="button-orange button--smaller-font sha256twice">
                     SHA256 x2
                   </button>
                 </>
