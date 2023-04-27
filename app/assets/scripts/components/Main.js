@@ -29,13 +29,13 @@ function Main() {
 
   // btc pubkey to address
   let riped = bitcoin.crypto.hash160(result)
-  // let prefix = Buffer.from("00", "hex")
-  // let prefix_riped = [prefix, riped]
-  // let combined_prefix_riped = Buffer.concat(prefix_riped)
-  // let checksum = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped)).slice(0, 4)
-  // let arr = [prefix, riped, checksum]
-  // let combinedBuff = Buffer.concat(arr)
-  // let address = base58.encode(combinedBuff)
+  let prefix = Buffer.from("00", "hex")
+  let prefix_riped = [prefix, riped]
+  let combined_prefix_riped = Buffer.concat(prefix_riped)
+  let checksum = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped)).slice(0, 4)
+  let arr = [prefix, riped, checksum]
+  let combinedBuff = Buffer.concat(arr)
+  let address = base58.encode(combinedBuff)
 
   // eth pubkey to address
   // let provider = new ethers.InfuraProvider(1, "19e6398ef2ee4861bfa95987d08fbc50")
@@ -93,14 +93,26 @@ function Main() {
     }, 1000)
   }
 
-  let privKey = "258560C8C0426A64918F649EB8FB0A04FB4D827860A142705B2CA32460C50588"
-  let pubKey = "0330E85058628138EAB80F8C785B166AE5A92E1F051C552E1419D0DA9B601B7981"
-  let uncompressed_pubKey = uint8arraytools.toHex(result)
-  let hex_hash160 = uint8arraytools.toHex(riped)
+  function handleCopyPopup_2() {
+    document.querySelector(".icon-copy-2").classList.toggle("icon")
+    document.querySelector(".icon-copy-2").classList.toggle("icon-copy--active")
+
+    setTimeout(() => {
+      document.querySelector(".icon-copy-2").classList.toggle("icon")
+      document.querySelector(".icon-copy-2").classList.toggle("icon-copy--active")
+    }, 1000)
+  }
+
+  let static_privKey = "5e6cca2c25d67950acee3324d41ebef7d886b6762eaadb92210a3604a6188110"
+  let static_pubKey = "0465034a033e228fc298f4be365cdc4555b9ef4a7a53ae9f72a88383a4712095c2cad1d12366842198e6fd4a884bd5f899c3c41f0c105aed2e470b7d0993aa2a27"
+  let static_hash160 = "c47bef1873ec058afeccf205d36e16ba6d336bf0"
+  let static_checksum = "fef7d72e"
+  let static_address = "1JuuugYPD2DjVj99pN5vKkQbbWhVng7nwX"
 
   const [showHash160, setShowHash160] = useState(false)
   const [versionPrefix, setVersionPrefix] = useState("")
   const [hash160, setHash160] = useState("")
+  const [showChecksum, setShowChecksum] = useState(false)
 
   async function handleHash160() {
     document.querySelector("#setLoading").classList.add("text--loading")
@@ -133,6 +145,39 @@ function Main() {
     }, 3000)
   }
 
+  async function handleSha256Twice() {
+    // document.querySelector("#setLoading").classList.add("text--loading")
+    document.querySelector(".sha256twice").innerText = "Preparing message block & schedule..."
+    document.querySelector(".sha256twice").classList.remove("button-orange")
+    document.querySelector(".sha256twice").classList.add("orange-capsule")
+    document.querySelector(".sha256twice").classList.add("orange-capsule--visible")
+    document.querySelector(".sha256twice").classList.add("orange-capsule__progress-1")
+
+    setTimeout(() => {
+      document.querySelector(".sha256twice").classList.remove("orange-capsule__progress-1")
+
+      document.querySelector(".sha256twice").innerText = "Applying 1st SHA256..."
+      document.querySelector(".sha256twice").classList.add("orange-capsule__progress-2")
+    }, 1000)
+
+    setTimeout(() => {
+      document.querySelector(".sha256twice").classList.remove("orange-capsule__progress-2")
+
+      document.querySelector(".sha256twice").innerText = "Applying 2nd SHA256..."
+      document.querySelector(".sha256twice").classList.add("orange-capsule__progress-3")
+    }, 2000)
+
+    setTimeout(() => {
+      document.querySelector(".sha256twice").classList.remove("orange-capsule__progress-3")
+
+      document.querySelector(".sha256twice").innerText = "SHA256 x2 Completed!"
+      document.querySelector(".sha256twice").classList.add("orange-capsule__progress-4")
+      document.querySelector("#checksum-display").classList.remove("interface__block-cell--space-between")
+      document.querySelector("#checksum-display").classList.remove("interface__block-cell--column-gap")
+      setShowChecksum(true)
+    }, 3000)
+  }
+
   async function handleVersionInput(inputtedValue) {
     if (!inputtedValue.trim()) {
       setVersionPrefix("")
@@ -147,7 +192,7 @@ function Main() {
     if (!inputtedValue.trim()) {
       setHash160("")
     } else {
-      if (inputtedValue == hex_hash160) {
+      if (inputtedValue == static_hash160) {
         setHash160(inputtedValue)
       }
     }
@@ -185,24 +230,22 @@ function Main() {
             <div className="interface__block-cell">
               {showHash160 ? (
                 <>
-                  <CopyToClipboard text={hex_hash160} onCopy={handleCopyPopup}>
-                    <div id="copiedElement">
-                      <MdCopyAll className="icon icon-copy" />
-                    </div>
+                  <CopyToClipboard text={static_hash160} onCopy={() => handleCopyPopup()}>
+                    <MdCopyAll className="icon icon-copy" />
                   </CopyToClipboard>
-                  <div data-tooltip-id="hex_hash160" data-tooltip-content={hex_hash160}>
-                    {"{ " + hex_hash160.slice(0, 9) + "..." + hex_hash160.slice(-9) + " }"}
+                  <div data-tooltip-id="static_hash160" data-tooltip-content={static_hash160}>
+                    {"{ " + static_hash160.slice(0, 9) + "..." + static_hash160.slice(-9) + " }"}
                   </div>
-                  <Tooltip id="hex_hash160" style={{ fontSize: "0.6rem" }} delayHide={200} variant="info" />
-                  <div className="interface__block-cell__annotation interface__block-cell__annotation--orange">HASH160 of Public Key</div>
+                  <Tooltip id="static_hash160" style={{ fontSize: "0.6rem" }} delayHide={200} variant="info" />
+                  <div className="interface__block-cell__annotation interface__block-cell__annotation--orange">HASH160 of Public Key:</div>
                 </>
               ) : (
                 <>
-                  <div id="setLoading" data-text={"{" + uncompressed_pubKey.slice(0, 10) + "..." + uncompressed_pubKey.slice(-10) + "}"} data-tooltip-id="uncompressed_pubKey" data-tooltip-content={uncompressed_pubKey}>
-                    {"{" + uncompressed_pubKey.slice(0, 10) + "..." + uncompressed_pubKey.slice(-10) + "}"}
+                  <div id="setLoading" data-text={"{" + static_pubKey.slice(0, 10) + "..." + static_pubKey.slice(-10) + "}"} data-tooltip-id="static_pubKey" data-tooltip-content={static_pubKey}>
+                    {"{" + static_pubKey.slice(0, 10) + "..." + static_pubKey.slice(-10) + "}"}
                   </div>
-                  <Tooltip id="uncompressed_pubKey" style={{ fontSize: "0.6rem" }} delayHide={200} variant="info" />
-                  <div className="interface__block-cell__annotation interface__block-cell__annotation--orange">Uncompressed Public Key</div>
+                  <Tooltip id="static_pubKey" style={{ fontSize: "0.6rem" }} delayHide={200} variant="info" />
+                  <div className="interface__block-cell__annotation interface__block-cell__annotation--orange">Uncompressed Public Key:</div>
                 </>
               )}
             </div>
@@ -214,12 +257,27 @@ function Main() {
             </div>
           </div>
           <div className="interface__block">
-            <div className="interface__block-cell interface__block-cell--space-between interface__block-cell--column-gap">
+            <div id="checksum-display" className="interface__block-cell interface__block-cell--space-between interface__block-cell--column-gap">
               {showHash160 ? (
                 <>
-                  <input onChange={e => handleVersionInput(e.target.value)} id="Tooltip" data-tooltip-content="Input the version prefix of < 00 >" className={"input--position-off " + (versionPrefix ? "input--focus-green" : "input--focus-red")} type="text" placeholder="version" />
-                  +
-                  <input onChange={e => handleHash160Input(e.target.value)} id="Tooltip" data-tooltip-content="Input the hash160 result here" className={"input--position-off " + (hash160 ? "input--focus-green" : "input--focus-red")} type="text" placeholder="hash160" />
+                  {showChecksum ? (
+                    <>
+                      <CopyToClipboard text={static_checksum} onCopy={() => handleCopyPopup_2()}>
+                        <MdCopyAll className="icon icon-copy icon-copy-2" />
+                      </CopyToClipboard>
+
+                      <div id="Tooltip" data-tooltip-content={static_checksum}>
+                        {"{ " + static_checksum + " }"}
+                      </div>
+                      <div className="interface__block-cell__annotation interface__block-cell__annotation--orange">Checksum:</div>
+                    </>
+                  ) : (
+                    <>
+                      <input onChange={e => handleVersionInput(e.target.value)} id="Tooltip" data-tooltip-content="Input the version prefix of < 00 >" className={"input--position-off " + (versionPrefix ? "input--focus-green" : "input--focus-red")} type="text" placeholder="version" />
+                      +
+                      <input onChange={e => handleHash160Input(e.target.value)} id="Tooltip" data-tooltip-content="Input the hash160 result here" className={"input--position-off " + (hash160 ? "input--focus-green" : "input--focus-red")} type="text" placeholder="hash160" />
+                    </>
+                  )}
                 </>
               ) : (
                 ""
@@ -228,7 +286,7 @@ function Main() {
             <div className="interface__block-cell">
               {showHash160 ? (
                 <>
-                  <button id="Tooltip" data-tooltip-content="Apply SHA256 x2 to a concatenation of the version prefix & hash160 to generate a checksum." className="button-orange button--smaller-font">
+                  <button onClick={handleSha256Twice} id="Tooltip" data-tooltip-content="Apply SHA256 x2 to a concatenation of the version prefix & hash160 to generate a checksum." className="button-orange button--smaller-font sha256twice">
                     SHA256 x2
                   </button>
                 </>

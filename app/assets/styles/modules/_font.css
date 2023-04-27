@@ -45,7 +45,7 @@
     content: attr(data-text);
     position: absolute;
     width: 100%;
-    color: rgb(92, 92, 92);
+    color: red;
     overflow: hidden;
     animation: loading 1s linear infinite;
   }
