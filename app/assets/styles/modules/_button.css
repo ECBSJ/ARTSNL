@@ -35,6 +35,10 @@ button {
     border: 1px solid orange;
     background-color: rgba(255, 166, 0, 0.5);
 
+    &--pulsing {
+      animation: orange-bg-pulse 2s linear infinite reverse;
+    }
+
     &:hover {
       background-color: orange;
     }
@@ -111,21 +115,45 @@ button {
   &__progress-1 {
     display: none;
     background-color: rgba(255, 166, 0, 0.201);
+
+    &:hover {
+      cursor: wait;
+    }
   }
 
   &__progress-2 {
     display: none;
     background-color: rgba(255, 166, 0, 0.391);
+
+    &:hover {
+      cursor: wait;
+    }
   }
 
   &__progress-3 {
     display: none;
     background-color: rgba(255, 166, 0, 0.653);
+    &:hover {
+      cursor: wait;
+    }
   }
 
   &__progress-4 {
     display: none;
     background-color: orange;
+    &:hover {
+      cursor: wait;
+    }
+  }
+
+  &__progress-done {
+    display: none;
+    background-color: none;
+    color: rgba(255, 166, 0, 0.575);
+    border-color: rgba(255, 166, 0, 0.24);
+    &:hover {
+      cursor: default;
+    }
   }
 
   &--visible {
@@ -147,4 +175,19 @@ button {
   position: absolute;
   right: 13;
   bottom: 5;
+}
+
+/* ANIMATIONS */
+@keyframes orange-bg-pulse {
+  0% {
+    background-color: orange;
+  }
+
+  50% {
+    background-color: rgba(255, 166, 0, 0.5);
+  }
+
+  100% {
+    background-color: orange;
+  }
 }
