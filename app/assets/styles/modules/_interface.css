@@ -75,6 +75,38 @@
           font-size: 1rem;
         }
       }
+
+      &--appear {
+        position: relative;
+
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: -15;
+          width: 400px;
+          animation: appear-pulse 1s linear;
+        }
+      }
     }
+  }
+}
+
+@keyframes appear-pulse {
+  0% {
+    background-color: rgba(255, 255, 255, 0.781);
+  }
+
+  33% {
+    background-color: rgba(255, 255, 255, 0.171);
+  }
+
+  66% {
+    background-color: rgba(255, 255, 255, 0.781);
+  }
+
+  100% {
+    background-color: rgba(255, 255, 255, 0.171);
   }
 }

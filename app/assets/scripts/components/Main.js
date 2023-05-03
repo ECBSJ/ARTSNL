@@ -157,12 +157,18 @@ function Main() {
       document.querySelector("#hash160").innerText = "Completed HASH160!"
       document.querySelector("#hash160").classList.add("orange-capsule__progress-4")
       document.querySelector("#hash160").disabled = true
+      document.querySelectorAll(".appear-grab").forEach(el => {
+        el.classList.toggle("interface__block-cell--appear")
+      })
       setShowHash160(true)
     }, 3000)
 
     setTimeout(() => {
       document.querySelector("#hash160").classList.remove("orange-capsule__progress-4")
       document.querySelector("#hash160").classList.add("orange-capsule__progress-done")
+      document.querySelectorAll(".appear-grab").forEach(el => {
+        el.classList.toggle("interface__block-cell--appear")
+      })
     }, 4000)
   }
 
@@ -200,11 +206,17 @@ function Main() {
         document.querySelector(".sha256twice").disabled = true
         setIsChecksumPending(false)
         setShowChecksum(true)
+        document.querySelectorAll(".appear-grab-2").forEach(el => {
+          el.classList.toggle("interface__block-cell--appear")
+        })
       }, 3000)
 
       setTimeout(() => {
         document.querySelector(".sha256twice").classList.remove("orange-capsule__progress-4")
         document.querySelector(".sha256twice").classList.add("orange-capsule__progress-done")
+        document.querySelectorAll(".appear-grab-2").forEach(el => {
+          el.classList.toggle("interface__block-cell--appear")
+        })
       }, 4000)
     } else {
       null
@@ -245,11 +257,13 @@ function Main() {
         document.querySelector(".base58encode").disabled = true
         setIsBase58EncodePending(true)
         setShowAddress(true)
+        document.querySelector("#base58encode-display").classList.toggle("interface__block-cell--appear")
       }, 3000)
 
       setTimeout(() => {
         document.querySelector(".base58encode").classList.remove("orange-capsule__progress-4")
         document.querySelector(".base58encode").classList.add("orange-capsule__progress-done")
+        document.querySelector("#base58encode-display").classList.toggle("interface__block-cell--appear")
       }, 4000)
     } else {
       null
@@ -348,7 +362,7 @@ function Main() {
               </div>
             </div>
             <div className="interface__block">
-              <div id="checksum-display" className="interface__block-cell interface__block-cell--space-between interface__block-cell--column-gap">
+              <div id="checksum-display" className="interface__block-cell interface__block-cell--space-between interface__block-cell--column-gap appear-grab">
                 {showHash160 ? (
                   <>
                     {showChecksum ? (
@@ -384,7 +398,7 @@ function Main() {
                   ""
                 )}
               </div>
-              <div className="interface__block-cell">
+              <div className="interface__block-cell appear-grab">
                 {showHash160 ? (
                   <>
                     <button onClick={handleSha256Twice} id="Tooltip" data-tooltip-content={showChecksum ? "Input the checksum into the corresponding field below." : "Apply SHA256 x2 to a concatenation of the version prefix & hash160 to generate a checksum."} className="button-orange button--smaller-font sha256twice">
@@ -395,7 +409,7 @@ function Main() {
                   ""
                 )}
               </div>
-              <div id="base58encode-display" className="interface__block-cell interface__block-cell--space-between interface__block-cell--column-gap">
+              <div id="base58encode-display" className="interface__block-cell interface__block-cell--space-between interface__block-cell--column-gap appear-grab-2">
                 {showChecksum ? (
                   <>
                     {showAddress ? (
@@ -421,7 +435,7 @@ function Main() {
                           <>
                             <input id="Tooltip" data-tooltip-content="Version prefix of < 00 >" className="input--position-off" type="text" placeholder="00" disabled={true} />
                             +
-                            <input id="Tooltip" data-tooltip-content="HASH160" className="input--position-off" type="text" placeholder={static_hash160.slice(0, 2) + "..." + static_hash160.slice(-2)} disabled={true} />
+                            <input id="Tooltip" data-tooltip-content="HASH160" className="input--position-off" type="text" placeholder={static_hash160} disabled={true} />
                             +
                             <input onChange={e => handleChecksumInput(e.target.value)} id="Tooltip" data-tooltip-content="Input the checksum" className={"input--position-off " + (checksum ? "input--focus-green" : "input--focus-red")} type="text" placeholder="checksum" required />
                           </>
@@ -437,7 +451,7 @@ function Main() {
           </IconContext.Provider>
 
           <div className="interface__block">
-            <div className="interface__block-cell">
+            <div className="interface__block-cell appear-grab-2">
               {showChecksum ? (
                 <>
                   <button onClick={handleBase58Encode} id="Tooltip" data-tooltip-content={"Base58 encode a concatenation of the version prefix, hash160, & checksum."} className="button-orange button--smaller-font base58encode">
