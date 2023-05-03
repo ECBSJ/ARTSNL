@@ -15,6 +15,7 @@ import { IconContext } from "react-icons"
 import { SiBitcoin, SiEthereum } from "react-icons/si"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import { Tooltip } from "react-tooltip"
+import ModalDropDown from "./ModalDropDown"
 
 // import * as dotenv from "dotenv"
 // dotenv.config()
@@ -128,6 +129,7 @@ function Main() {
   const [checksum, setChecksum] = useState("")
   const [isBase58EncodePending, setIsBase58EncodePending] = useState(false)
   const [showAddress, setShowAddress] = useState(false)
+  const [isModalDropDownOpen, setIsModalDropDownOpen] = useState(false)
 
   async function handleHash160() {
     document.querySelector("#setLoading").classList.add("text--loading")
@@ -255,7 +257,8 @@ function Main() {
         document.querySelector(".base58encode").innerText = "Completed Base58 encoding!"
         document.querySelector(".base58encode").classList.add("orange-capsule__progress-4")
         document.querySelector(".base58encode").disabled = true
-        setIsBase58EncodePending(true)
+        setIsBase58EncodePending(false)
+        setIsModalDropDownOpen(true)
         setShowAddress(true)
         document.querySelector("#base58encode-display").classList.toggle("interface__block-cell--appear")
       }, 3000)
@@ -317,6 +320,8 @@ function Main() {
           <div onClick={() => setPage(2)}>
             <MdNavigateNext className="icon" />
           </div> */}
+
+          {isModalDropDownOpen ? <ModalDropDown static_address={static_address} /> : ""}
 
           <IconContext.Provider value={{ size: "1.5rem" }}>
             <div className="interface__block">
