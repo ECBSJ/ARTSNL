@@ -6,7 +6,8 @@ function GeneratePubKey({ showCompressed, compressedPubKey, pubKeyX, pubKeyY, ha
   const [completedSequentialProgress, setCompletedSequentialProgress] = useState(false)
 
   function handleSequentialProgress() {
-    document.querySelector(".capsule__progress-0").innerText = "Preparing Private Key..."
+    document.querySelector("#capsule-grab").classList.toggle("capsule__progress-0")
+    document.querySelector("#capsule-grab").innerText = "Preparing Private Key..."
 
     setTimeout(() => document.querySelector(".capsule__progress-1").classList.toggle("capsule--visible"), 2000)
     setTimeout(() => document.querySelector(".capsule__progress-2").classList.toggle("capsule--visible"), 3500)
@@ -64,7 +65,7 @@ function GeneratePubKey({ showCompressed, compressedPubKey, pubKeyX, pubKeyY, ha
         <>
           <div className="interface__block">
             <div className="interface__block-cell">
-              <button className="capsule capsule__progress-0" onClick={handleSequentialProgress}>
+              <button id="capsule-grab" className="capsule" onClick={handleSequentialProgress}>
                 Generate Public Key
               </button>
             </div>

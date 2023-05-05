@@ -79,19 +79,34 @@ button {
   font-size: 1rem;
   border: 1px solid #b01af7;
 
+  &__progress-0 {
+    &:hover {
+      cursor: wait;
+    }
+  }
+
   &__progress-1 {
     display: none;
     background-color: #b11af736;
+    &:hover {
+      cursor: wait;
+    }
   }
 
   &__progress-2 {
     display: none;
     background-color: #b11af775;
+    &:hover {
+      cursor: wait;
+    }
   }
 
   &__progress-3 {
     display: none;
     background-color: #b11af7bd;
+    &:hover {
+      cursor: wait;
+    }
   }
 
   &__progress-4 {

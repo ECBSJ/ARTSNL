@@ -3,12 +3,12 @@ import { MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 
-function AcceptKeyPair({ compressedPubKey, privKeyBuf, uint8arraytools, handleAccept, navigate }) {
+function AcceptKeyPair({ uncompressedBufferPub, privKeyBuf, uint8arraytools, handleAccept, navigate }) {
   const [buttonDisabled, setButtonDisabled] = useState(true)
 
   const keyPair = {
     privateKey_hex: uint8arraytools.toHex(privKeyBuf),
-    publicKey_hexCompressed: compressedPubKey
+    publicKey_hex_Uncompressed: uint8arraytools.toHex(uncompressedBufferPub)
   }
 
   function handleCopyPopup() {
@@ -79,7 +79,7 @@ function AcceptKeyPair({ compressedPubKey, privKeyBuf, uint8arraytools, handleAc
         <div className="interface__block-cell interface__block-cell--display-block interface__block-cell--thick interface__block-cell--thick--font-large input-white">
           <div>Private Key: {uint8arraytools.toHex(privKeyBuf)}</div>
           <br />
-          <div>Public Key: {compressedPubKey}</div>
+          <div>Public Key: {uint8arraytools.toHex(uncompressedBufferPub)}</div>
           <br />
           <CopyToClipboard text={JSON.stringify(keyPair)} onCopy={handleCopyPopup}>
             <div id="copiedElement">

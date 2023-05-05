@@ -21,6 +21,14 @@
       }
     }
   }
+
+  &--floating {
+    animation: floating 1000ms infinite linear;
+
+    &:hover {
+      color: green;
+    }
+  }
 }
 
 .copied-popup {
@@ -38,5 +46,19 @@
     height: 30px;
     font-size: 1.2rem;
     color: lightseagreen;
+  }
+}
+
+@keyframes floating {
+  0% {
+    transform: translateY(4px);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+
+  100% {
+    transform: translateY(4px);
   }
 }

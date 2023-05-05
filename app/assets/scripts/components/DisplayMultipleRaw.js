@@ -105,7 +105,7 @@ function DisplayMultipleRaw({ bits, entropy }) {
         </>
       ) : displayAccept ? (
         <>
-          <AcceptKeyPair compressedPubKey={compressedPubKey} privKeyBuf={privKeyBuf} uint8arraytools={uint8arraytools} handleAccept={handleAccept} navigate={navigate} />
+          <AcceptKeyPair uncompressedBufferPub={uncompressedBufferPub} privKeyBuf={privKeyBuf} uint8arraytools={uint8arraytools} handleAccept={handleAccept} navigate={navigate} />
         </>
       ) : (
         <>

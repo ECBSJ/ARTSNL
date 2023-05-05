@@ -1,44 +1,55 @@
 import React, { useEffect } from "react"
-import { MdCopyAll } from "react-icons/md"
+import { MdCopyAll, MdKeyboardDoubleArrowUp } from "react-icons/md"
 import { IconContext } from "react-icons"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 
-function ModalDropDown({ static_address }) {
-  function handleCopyPopup_3() {
-    document.querySelector(".icon-copy-3").classList.toggle("icon")
-    document.querySelector(".icon-copy-3").classList.toggle("icon-copy--active")
+function ModalDropDown({ setIsModalDropDownOpen, isModalDropDownOpen, modalDropDownRef, emoji, title, subtitle, subtitle_2, hasData, data, showFullData, ending_content, ending_content_2 }) {
+  function handleCopyPopup_modal() {
+    document.querySelector(".icon-copy-modal").classList.toggle("icon")
+    document.querySelector(".icon-copy-modal").classList.toggle("icon-copy--active")
 
     setTimeout(() => {
-      document.querySelector(".icon-copy-3").classList.toggle("icon")
-      document.querySelector(".icon-copy-3").classList.toggle("icon-copy--active")
+      document.querySelector(".icon-copy-modal").classList.toggle("icon")
+      document.querySelector(".icon-copy-modal").classList.toggle("icon-copy--active")
     }, 1000)
   }
 
   return (
     <>
-      <div className="modal modal__drop-down">
-        <div style={{ fontSize: "3rem" }}>💯</div>
+      <div ref={modalDropDownRef} className="modal__cover"></div>
+
+      <div className="modal__drop-down">
+        <div style={{ fontSize: "3rem" }}>{emoji}</div>
         <br />
-        Congratulations!
-        <br />
-        <br />
-        You just created your
-        <br />
-        own BTC address.
+        {title}
         <br />
         <br />
-        <div id="Tooltip" data-tooltip-content={static_address}>
-          <IconContext.Provider value={{ size: "1.3rem" }}>
-            <CopyToClipboard text={static_address} onCopy={() => handleCopyPopup_3()}>
-              <MdCopyAll className="icon icon-copy icon-copy-3" />
-            </CopyToClipboard>
-          </IconContext.Provider>
-          {"{ " + static_address.slice(0, 7) + "..." + static_address.slice(-7) + " }"}
-        </div>
+        {subtitle}
         <br />
-        Click on "To Wallet Home"
+        {subtitle_2}
         <br />
-        below to proceed.
+        {hasData ? (
+          <>
+            <br />
+            <div>
+              <IconContext.Provider value={{ size: "1.3rem" }}>
+                <CopyToClipboard text={data} onCopy={() => handleCopyPopup_modal()}>
+                  <MdCopyAll className="icon icon-copy icon-copy-modal" />
+                </CopyToClipboard>
+              </IconContext.Provider>
+              {showFullData ? data : "{ " + data.slice(0, 7) + "..." + data.slice(-7) + " }"}
+            </div>
+          </>
+        ) : (
+          ""
+        )}
+        <br />
+        {ending_content}
+        <br />
+        {ending_content_2}
+        <br />
+        <br />
+        <MdKeyboardDoubleArrowUp onClick={() => setIsModalDropDownOpen(!isModalDropDownOpen)} className="icon icon--floating" />
       </div>
     </>
   )
