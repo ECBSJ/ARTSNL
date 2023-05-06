@@ -3,7 +3,7 @@ import { MdCopyAll, MdKeyboardDoubleArrowUp } from "react-icons/md"
 import { IconContext } from "react-icons"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 
-function ModalDropDown({ setIsModalDropDownOpen, isModalDropDownOpen, modalDropDownRef, emoji, title, subtitle, subtitle_2, hasData, data, showFullData, ending_content, ending_content_2 }) {
+function ModalDropDown({ setIsModalDropDownOpen, isModalDropDownOpen, emoji, title, subtitle, subtitle_2, hasData, data, showFullData, ending_content, ending_content_2 }) {
   function handleCopyPopup_modal() {
     document.querySelector(".icon-copy-modal").classList.toggle("icon")
     document.querySelector(".icon-copy-modal").classList.toggle("icon-copy--active")
@@ -16,8 +16,6 @@ function ModalDropDown({ setIsModalDropDownOpen, isModalDropDownOpen, modalDropD
 
   return (
     <>
-      <div ref={modalDropDownRef} className="modal__cover"></div>
-
       <div className="modal__drop-down">
         <div style={{ fontSize: "3rem" }}>{emoji}</div>
         <br />

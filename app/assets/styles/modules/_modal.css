@@ -6,7 +6,24 @@
     height: 100%;
     border-radius: 30px;
     background-color: rgba(65, 65, 65, 0.507);
-    animation: cover-slide-up 500ms;
+
+    &-enter {
+      transform: translateY(700px);
+    }
+
+    &-enter-active {
+      transform: translateY(0);
+      transition: transform 400ms;
+    }
+
+    &-exit {
+      transform: translateY(0);
+    }
+
+    &-exit-active {
+      transform: translateY(700px);
+      transition: transform 400ms;
+    }
   }
 
   &__drop-down {
@@ -23,7 +40,24 @@
     background-color: whitesmoke;
     text-align: center;
     color: black;
-    animation: drop-down 500ms cubic-bezier(1, 0, 1, 0);
+
+    &-enter {
+      transform: translateY(-480px);
+    }
+
+    &-enter-active {
+      transform: translateY(0);
+      transition: transform 600ms cubic-bezier(1, 0, 1, 0);
+    }
+
+    &-exit {
+      transform: translateY(0);
+    }
+
+    &-exit-active {
+      transform: translateY(-480px);
+      transition: transform 600ms cubic-bezier(1, 0, 1, 0);
+    }
   }
 }
 

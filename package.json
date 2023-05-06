@@ -47,6 +47,7 @@
     "react-icons": "^4.8.0",
     "react-router-dom": "^6.8.1",
     "react-tooltip": "^5.11.1",
+    "react-transition-group": "^4.4.5",
     "stream-browserify": "^3.0.0",
     "tiny-secp256k1": "^2.2.1",
     "uint8array-tools": "0.0.7",

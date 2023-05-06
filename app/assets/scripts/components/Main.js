@@ -16,6 +16,7 @@ import { SiBitcoin, SiEthereum } from "react-icons/si"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import { Tooltip } from "react-tooltip"
 import ModalDropDown from "./ModalDropDown"
+import { CSSTransition } from "react-transition-group"
 
 // import * as dotenv from "dotenv"
 // dotenv.config()
@@ -338,7 +339,13 @@ function Main() {
             <MdNavigateNext className="icon" />
           </div>
 
-          {/* {isModalDropDownOpen ? <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} modalDropDownRef={modalDropDownRef} emoji={"💯"} title={"Congratulations!"} subtitle={"You just created your"} subtitle_2={"own BTC address"} hasData={true} data={static_address} showFullData={false} ending_content={"Click on 'To Wallet Home'"} ending_content_2={"below to proceed."} /> : ""}
+          {/* <CSSTransition in={isModalDropDownOpen} timeout={400} classNames="modal__cover" unmountOnExit>
+            <div ref={modalDropDownRef} className="modal__cover"></div>
+          </CSSTransition>
+
+          <CSSTransition in={isModalDropDownOpen} timeout={600} classNames="modal__drop-down" unmountOnExit>
+            <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"💯"} title={"Congratulations!"} subtitle={"You just created your"} subtitle_2={"own BTC address"} hasData={true} data={static_address} showFullData={false} ending_content={"Click on 'To Wallet Home'"} ending_content_2={"below to proceed."} />
+          </CSSTransition>
 
           <IconContext.Provider value={{ size: "1.5rem" }}>
             <div className="interface__block">
