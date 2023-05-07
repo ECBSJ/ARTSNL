@@ -48,8 +48,6 @@ function Main() {
   // let prepareETHpubAdd = Buffer.from(removed_0x, "hex")
   // let ETHpubAdd = prepareETHpubAdd.slice(-20)
   // let finalETHpubAdd = "0x" + uint8arraytools.toHex(ETHpubAdd)
-  // console.log(finalETHpubAdd)
-  // console.log(ethers.isAddress(finalETHpubAdd))
 
   // PUBLIC KEY POINT ON CURVE
   // let xCoordinate = result.slice(1, 33)
@@ -106,201 +104,127 @@ function Main() {
   //   }, 1000)
   // }
 
-  // function handleCopyPopup_3() {
-  //   document.querySelector(".icon-copy-3").classList.toggle("icon")
-  //   document.querySelector(".icon-copy-3").classList.toggle("icon-copy--active")
-
-  //   setTimeout(() => {
-  //     document.querySelector(".icon-copy-3").classList.toggle("icon")
-  //     document.querySelector(".icon-copy-3").classList.toggle("icon-copy--active")
-  //   }, 1000)
-  // }
-
   // let static_privKey = "5e6cca2c25d67950acee3324d41ebef7d886b6762eaadb92210a3604a6188110"
   // let static_pubKey = "0465034a033e228fc298f4be365cdc4555b9ef4a7a53ae9f72a88383a4712095c2cad1d12366842198e6fd4a884bd5f899c3c41f0c105aed2e470b7d0993aa2a27"
   // let static_hash160 = "c47bef1873ec058afeccf205d36e16ba6d336bf0"
   // let static_checksum = "fef7d72e"
   // let static_address = "1JuuugYPD2DjVj99pN5vKkQbbWhVng7nwX"
 
-  // const [showHash160, setShowHash160] = useState(false)
-  // const [versionPrefix, setVersionPrefix] = useState("")
-  // const [hash160, setHash160] = useState("")
-  // const [showChecksum, setShowChecksum] = useState(false)
-  // const [isChecksumPending, setIsChecksumPending] = useState(false)
-  // const [checksum, setChecksum] = useState("")
-  // const [isBase58EncodePending, setIsBase58EncodePending] = useState(false)
+  // let static_eth_privKey = "3fdde77e8b442bc89dc890adf8fd72b4314e99ea7a205b9dd302114c9aefc493"
+  // let static_eth_pubKey = "0488a0dfca9af0d817962b25d1aa92d64e1645c94d452f6e75f61adc3f78d61b623637901afdf2efcb0bbf5badd82c2e559f22fe2f824438515614137443cb62ea"
+  // let static_eth_keccak = "53d393a6cfa8d868fd33bafc9189561aed3229361a1aca088323a3ab0750c5d6"
+  // let static_eth_add = "0x9189561aed3229361a1aca088323a3ab0750c5d6"
+
+  // const [showKeccak, setShowKeccak] = useState(false)
+  // const [inputtedKeccak256, setInputtedKeccak256] = useState("")
+
   // const [showAddress, setShowAddress] = useState(false)
+  // const [isAddressPending, setIsAddressPending] = useState(false)
+
   // const [isModalDropDownOpen, setIsModalDropDownOpen] = useState(false)
   // const modalDropDownRef = useRef()
 
-  // async function handleHash160() {
+  // async function handleKeccak() {
   //   document.querySelector("#setLoading").classList.add("text--loading")
-  //   document.querySelector("#hash160").innerText = "Applying SHA256..."
-  //   document.querySelector("#hash160").classList.remove("button-orange")
-  //   document.querySelector("#hash160").classList.add("orange-capsule")
-  //   document.querySelector("#hash160").classList.add("orange-capsule--visible")
-  //   document.querySelector("#hash160").classList.add("orange-capsule__progress-1")
+  //   document.querySelector("#keccak256").innerText = "Preparing message schedule..."
+  //   document.querySelector("#keccak256").classList.remove("button-blue")
+  //   document.querySelector("#keccak256").classList.add("blue-capsule")
+  //   document.querySelector("#keccak256").classList.add("blue-capsule--visible")
+  //   document.querySelector("#keccak256").classList.add("blue-capsule__progress-1")
 
   //   setTimeout(() => {
-  //     document.querySelector("#hash160").classList.remove("orange-capsule__progress-1")
+  //     document.querySelector("#keccak256").classList.remove("blue-capsule__progress-1")
 
-  //     document.querySelector("#hash160").innerText = "Applying RIPEMD160..."
-  //     document.querySelector("#hash160").classList.add("orange-capsule__progress-2")
+  //     document.querySelector("#keccak256").innerText = "Applying keccak256..."
+  //     document.querySelector("#keccak256").classList.add("blue-capsule__progress-2")
   //   }, 1000)
 
   //   setTimeout(() => {
-  //     document.querySelector("#hash160").classList.remove("orange-capsule__progress-2")
+  //     document.querySelector("#keccak256").classList.remove("blue-capsule__progress-2")
 
-  //     document.querySelector("#hash160").innerText = "Formatting hash result..."
-  //     document.querySelector("#hash160").classList.add("orange-capsule__progress-3")
+  //     document.querySelector("#keccak256").innerText = "Formatting hash result..."
+  //     document.querySelector("#keccak256").classList.add("blue-capsule__progress-3")
   //   }, 2000)
 
   //   setTimeout(() => {
-  //     document.querySelector("#hash160").classList.remove("orange-capsule__progress-3")
+  //     document.querySelector("#keccak256").classList.remove("blue-capsule__progress-3")
 
-  //     document.querySelector("#hash160").innerText = "Completed HASH160!"
-  //     document.querySelector("#hash160").classList.add("orange-capsule__progress-4")
-  //     document.querySelector("#hash160").disabled = true
+  //     document.querySelector("#keccak256").innerText = "Completed keccak256!"
+  //     document.querySelector("#keccak256").classList.add("blue-capsule__progress-4")
+  //     document.querySelector("#keccak256").disabled = true
   //     document.querySelectorAll(".appear-grab").forEach(el => {
   //       el.classList.toggle("interface__block-cell--appear")
   //     })
-  //     setShowHash160(true)
+  //     setShowKeccak(true)
   //   }, 3000)
 
   //   setTimeout(() => {
-  //     document.querySelector("#hash160").classList.remove("orange-capsule__progress-4")
-  //     document.querySelector("#hash160").classList.add("orange-capsule__progress-done")
+  //     document.querySelector("#keccak256").classList.remove("blue-capsule__progress-4")
+  //     document.querySelector("#keccak256").classList.add("blue-capsule__progress-done")
   //     document.querySelectorAll(".appear-grab").forEach(el => {
   //       el.classList.toggle("interface__block-cell--appear")
   //     })
   //   }, 4000)
   // }
 
-  // async function handleSha256Twice() {
-  //   if (versionPrefix && hash160) {
-  //     document.querySelector("#checksum-display").classList.remove("interface__block-cell--space-between")
-  //     document.querySelector("#checksum-display").classList.remove("interface__block-cell--column-gap")
-  //     setIsChecksumPending(true)
+  // async function handleSlice() {
+  //   if (inputtedKeccak256) {
+  //     document.querySelector("#address-display").classList.remove("interface__block-cell--space-between")
+  //     document.querySelector("#address-display").classList.remove("interface__block-cell--column-gap")
+  //     setIsAddressPending(true)
 
-  //     document.querySelector(".sha256twice").innerText = "Preparing message block & schedule..."
-  //     document.querySelector(".sha256twice").classList.remove("button-orange")
-  //     document.querySelector(".sha256twice").classList.add("orange-capsule")
-  //     document.querySelector(".sha256twice").classList.add("orange-capsule--visible")
-  //     document.querySelector(".sha256twice").classList.add("orange-capsule__progress-1")
+  //     document.querySelector(".slice").innerText = "Preparing keccak256 result buffer..."
+  //     document.querySelector(".slice").classList.remove("button-blue")
+  //     document.querySelector(".slice").classList.add("blue-capsule")
+  //     document.querySelector(".slice").classList.add("blue-capsule--visible")
+  //     document.querySelector(".slice").classList.add("blue-capsule__progress-1")
 
   //     setTimeout(() => {
-  //       document.querySelector(".sha256twice").classList.remove("orange-capsule__progress-1")
+  //       document.querySelector(".slice").classList.remove("blue-capsule__progress-1")
 
-  //       document.querySelector(".sha256twice").innerText = "Applying 1st SHA256..."
-  //       document.querySelector(".sha256twice").classList.add("orange-capsule__progress-2")
+  //       document.querySelector(".slice").innerText = "Isolating last 20 bytes..."
+  //       document.querySelector(".slice").classList.add("blue-capsule__progress-2")
   //     }, 1000)
 
   //     setTimeout(() => {
-  //       document.querySelector(".sha256twice").classList.remove("orange-capsule__progress-2")
+  //       document.querySelector(".slice").classList.remove("blue-capsule__progress-2")
 
-  //       document.querySelector(".sha256twice").innerText = "Applying 2nd SHA256..."
-  //       document.querySelector(".sha256twice").classList.add("orange-capsule__progress-3")
+  //       document.querySelector(".slice").innerText = "Slicing off last 20 bytes..."
+  //       document.querySelector(".slice").classList.add("blue-capsule__progress-3")
   //     }, 2000)
 
   //     setTimeout(() => {
-  //       document.querySelector(".sha256twice").classList.remove("orange-capsule__progress-3")
+  //       document.querySelector(".slice").classList.remove("blue-capsule__progress-3")
 
-  //       document.querySelector(".sha256twice").innerText = "Completed SHA256 x2!"
-  //       document.querySelector(".sha256twice").classList.add("orange-capsule__progress-4")
-  //       document.querySelector(".sha256twice").disabled = true
-  //       setIsChecksumPending(false)
-  //       setShowChecksum(true)
-  //       document.querySelectorAll(".appear-grab-2").forEach(el => {
-  //         el.classList.toggle("interface__block-cell--appear")
-  //       })
-  //     }, 3000)
-
-  //     setTimeout(() => {
-  //       document.querySelector(".sha256twice").classList.remove("orange-capsule__progress-4")
-  //       document.querySelector(".sha256twice").classList.add("orange-capsule__progress-done")
-  //       document.querySelectorAll(".appear-grab-2").forEach(el => {
-  //         el.classList.toggle("interface__block-cell--appear")
-  //       })
-  //     }, 4000)
-  //   } else {
-  //     null
-  //   }
-  // }
-
-  // async function handleBase58Encode() {
-  //   if (checksum) {
-  //     document.querySelector("#base58encode-display").classList.remove("interface__block-cell--space-between")
-  //     document.querySelector("#base58encode-display").classList.remove("interface__block-cell--column-gap")
-  //     setIsBase58EncodePending(true)
-
-  //     document.querySelector(".base58encode").innerText = "Concatenating values..."
-  //     document.querySelector(".base58encode").classList.remove("button-orange")
-  //     document.querySelector(".base58encode").classList.add("orange-capsule")
-  //     document.querySelector(".base58encode").classList.add("orange-capsule--visible")
-  //     document.querySelector(".base58encode").classList.add("orange-capsule__progress-1")
-
-  //     setTimeout(() => {
-  //       document.querySelector(".base58encode").classList.remove("orange-capsule__progress-1")
-
-  //       document.querySelector(".base58encode").innerText = "Converting ByteArray..."
-  //       document.querySelector(".base58encode").classList.add("orange-capsule__progress-2")
-  //     }, 1000)
-
-  //     setTimeout(() => {
-  //       document.querySelector(".base58encode").classList.remove("orange-capsule__progress-2")
-
-  //       document.querySelector(".base58encode").innerText = "Converting to Integer..."
-  //       document.querySelector(".base58encode").classList.add("orange-capsule__progress-3")
-  //     }, 2000)
-
-  //     setTimeout(() => {
-  //       document.querySelector(".base58encode").classList.remove("orange-capsule__progress-3")
-
-  //       document.querySelector(".base58encode").innerText = "Completed Base58 encoding!"
-  //       document.querySelector(".base58encode").classList.add("orange-capsule__progress-4")
-  //       document.querySelector(".base58encode").disabled = true
-  //       setIsBase58EncodePending(false)
-  //       setIsModalDropDownOpen(true)
+  //       document.querySelector(".slice").innerText = "ETH Address Generated!"
+  //       document.querySelector(".slice").classList.add("blue-capsule__progress-4")
+  //       document.querySelector(".slice").disabled = true
+  //       setIsAddressPending(false)
   //       setShowAddress(true)
-  //       document.querySelector("#base58encode-display").classList.toggle("interface__block-cell--appear")
+  //       document.querySelectorAll(".appear-grab-2").forEach(el => {
+  //         el.classList.toggle("interface__block-cell--appear")
+  //       })
   //     }, 3000)
 
   //     setTimeout(() => {
-  //       document.querySelector(".base58encode").classList.remove("orange-capsule__progress-4")
-  //       document.querySelector(".base58encode").classList.add("orange-capsule__progress-done")
-  //       document.querySelector("#base58encode-display").classList.toggle("interface__block-cell--appear")
+  //       setIsModalDropDownOpen(true)
+  //       document.querySelector(".slice").classList.remove("blue-capsule__progress-4")
+  //       document.querySelector(".slice").classList.add("blue-capsule__progress-done")
+  //       document.querySelectorAll(".appear-grab-2").forEach(el => {
+  //         el.classList.toggle("interface__block-cell--appear")
+  //       })
   //     }, 4000)
   //   } else {
   //     null
   //   }
   // }
 
-  // function handleVersionInput(inputtedValue) {
+  // function handleKeccakInput(inputtedValue) {
   //   if (!inputtedValue.trim()) {
-  //     setVersionPrefix("")
+  //     setInputtedKeccak256("")
   //   } else {
-  //     if (inputtedValue == "00") {
-  //       setVersionPrefix(inputtedValue)
-  //     }
-  //   }
-  // }
-
-  // function handleHash160Input(inputtedValue) {
-  //   if (!inputtedValue.trim()) {
-  //     setHash160("")
-  //   } else {
-  //     if (inputtedValue == static_hash160) {
-  //       setHash160(inputtedValue)
-  //     }
-  //   }
-  // }
-
-  // function handleChecksumInput(inputtedValue) {
-  //   if (!inputtedValue.trim()) {
-  //     setChecksum("")
-  //   } else {
-  //     if (inputtedValue == static_checksum) {
-  //       setChecksum(inputtedValue)
+  //     if (inputtedValue == static_eth_keccak) {
+  //       setInputtedKeccak256(inputtedValue)
   //     }
   //   }
   // }
@@ -344,7 +268,7 @@ function Main() {
           </CSSTransition>
 
           <CSSTransition in={isModalDropDownOpen} timeout={600} classNames="modal__drop-down" unmountOnExit>
-            <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"💯"} title={"Congratulations!"} subtitle={"You just created your"} subtitle_2={"own BTC address"} hasData={true} data={static_address} showFullData={false} ending_content={"Click on 'To Wallet Home'"} ending_content_2={"below to proceed."} />
+            <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"💯"} title={"Congratulations!"} subtitle={"You just created your"} subtitle_2={"own ETH address."} hasData={true} data={static_eth_add} showFullData={false} ending_content={"Click on 'To Wallet Home'"} ending_content_2={"below to proceed."} />
           </CSSTransition>
 
           <IconContext.Provider value={{ size: "1.5rem" }}>
@@ -352,8 +276,8 @@ function Main() {
               <div className="interface__block-cell interface__block-cell--space-between">
                 <div className="title-font title-font--small">
                   <div className="title__subtitle">With your public key, derive your public address.</div>
-                  <div style={{ display: "inline-block" }} className="orange-font">
-                    📭BTC
+                  <div style={{ display: "inline-block" }} className="blue-font">
+                    📭ETH
                   </div>{" "}
                   Public Address
                 </div>
@@ -362,62 +286,60 @@ function Main() {
                 </IconContext.Provider>
               </div>
               <div className="interface__block-cell">
-                {showHash160 ? (
+                {showKeccak ? (
                   <>
-                    <CopyToClipboard text={static_hash160} onCopy={() => handleCopyPopup()}>
+                    <CopyToClipboard text={static_eth_keccak} onCopy={() => handleCopyPopup()}>
                       <MdCopyAll className="icon icon-copy" />
                     </CopyToClipboard>
-                    <div data-tooltip-id="static_hash160" data-tooltip-content={static_hash160}>
-                      {"{ " + static_hash160.slice(0, 9) + "..." + static_hash160.slice(-9) + " }"}
+                    <div data-tooltip-id="static_eth_keccak" data-tooltip-content={static_eth_keccak}>
+                      {"{ " + static_eth_keccak.slice(0, 9) + "..." + static_eth_keccak.slice(-9) + " }"}
                     </div>
-                    <Tooltip id="static_hash160" style={{ fontSize: "0.6rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" />
-                    <div className="interface__block-cell__annotation interface__block-cell__annotation--orange">HASH160 of Public Key:</div>
+                    <Tooltip id="static_eth_keccak" style={{ fontSize: "0.6rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" />
+                    <div className="interface__block-cell__annotation interface__block-cell__annotation--blue">KECCAK256 of Public Key:</div>
                   </>
                 ) : (
                   <>
-                    <div id="setLoading" data-text={"{" + static_pubKey.slice(0, 10) + "..." + static_pubKey.slice(-10) + "}"} data-tooltip-id="static_pubKey" data-tooltip-content={static_pubKey}>
-                      {"{" + static_pubKey.slice(0, 10) + "..." + static_pubKey.slice(-10) + "}"}
+                    <div id="setLoading" data-text={"{" + static_eth_pubKey.slice(0, 10) + "..." + static_eth_pubKey.slice(-10) + "}"} data-tooltip-id="static_pubKey" data-tooltip-content={static_eth_pubKey}>
+                      {"{" + static_eth_pubKey.slice(0, 10) + "..." + static_eth_pubKey.slice(-10) + "}"}
                     </div>
                     <Tooltip id="static_pubKey" style={{ fontSize: "0.6rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" />
-                    <div className="interface__block-cell__annotation interface__block-cell__annotation--orange">Uncompressed Public Key:</div>
+                    <div className="interface__block-cell__annotation interface__block-cell__annotation--blue">Uncompressed Public Key:</div>
                   </>
                 )}
               </div>
               <div className="interface__block-cell">
-                <button onClick={handleHash160} id="hash160" data-tooltip-id="hash160-button" data-tooltip-content={showHash160 ? "Input the HASH160 into the field below." : "Click to apply a hash160 on your public key."} className="button-orange button--smaller-font">
-                  SHA256 + RIPEMD160
+                <button onClick={handleKeccak} id="keccak256" data-tooltip-id="keccak-button" data-tooltip-content={showKeccak ? "Input the keccak256 result into the field below." : "Click to apply a keccak256 on your public key."} className="button-blue button--smaller-font">
+                  KECCAK256
                 </button>
-                <Tooltip id="hash160-button" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" />
+                <Tooltip id="keccak-button" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" />
               </div>
             </div>
             <div className="interface__block">
-              <div id="checksum-display" className="interface__block-cell interface__block-cell--space-between interface__block-cell--column-gap appear-grab">
-                {showHash160 ? (
+              <div id="address-display" className="interface__block-cell interface__block-cell--space-between interface__block-cell--column-gap appear-grab appear-grab-2">
+                {showKeccak ? (
                   <>
-                    {showChecksum ? (
+                    {showAddress ? (
                       <>
-                        <CopyToClipboard text={static_checksum} onCopy={() => handleCopyPopup_2()}>
+                        <CopyToClipboard text={static_eth_add} onCopy={() => handleCopyPopup_2()}>
                           <MdCopyAll className="icon icon-copy icon-copy-2" />
                         </CopyToClipboard>
 
-                        <div id="Tooltip" data-tooltip-content={static_checksum}>
-                          {"{ " + static_checksum + " }"}
+                        <div id="Tooltip" data-tooltip-content={static_eth_add}>
+                          {"{ " + static_eth_add.slice(0, 7) + "..." + static_eth_add.slice(-7) + " }"}
                         </div>
-                        <div className="interface__block-cell__annotation interface__block-cell__annotation--orange">Checksum:</div>
+                        <div className="interface__block-cell__annotation interface__block-cell__annotation--blue">Your ETH Address:</div>
                       </>
                     ) : (
                       <>
-                        {isChecksumPending ? (
+                        {isAddressPending ? (
                           <>
-                            <div id="setChecksumLoading" data-text={"hashing..."} className="text--loading">
-                              hashing...
+                            <div id="setAddressLoading" data-text={"slicing..."} className="text--loading">
+                              slicing...
                             </div>
                           </>
                         ) : (
                           <>
-                            <input onChange={e => handleVersionInput(e.target.value)} id="Tooltip" data-tooltip-content="Input the version prefix of < 00 >" className={"input--position-off " + (versionPrefix ? "input--focus-green" : "input--focus-red")} type="text" placeholder="version" />
-                            +
-                            <input onChange={e => handleHash160Input(e.target.value)} id="Tooltip" data-tooltip-content="Input the hash160" className={"input--position-off " + (hash160 ? "input--focus-green" : "input--focus-red")} type="text" placeholder="hash160" />
+                            <input onChange={e => handleKeccakInput(e.target.value)} id="Tooltip" data-tooltip-content="Input the keccak256" className={"input--position-off " + (inputtedKeccak256 ? "input--focus-green" : "input--focus-red")} type="text" placeholder="keccak256" />
                           </>
                         )}
                       </>
@@ -428,73 +350,26 @@ function Main() {
                 )}
               </div>
               <div className="interface__block-cell appear-grab">
-                {showHash160 ? (
+                {showKeccak ? (
                   <>
-                    <button onClick={handleSha256Twice} id="Tooltip" data-tooltip-content={showChecksum ? "Input the checksum into the corresponding field below." : "Apply SHA256 x2 to a concatenation of the version prefix & hash160 to generate a checksum."} className="button-orange button--smaller-font sha256twice">
-                      SHA256 x2
+                    <button onClick={handleSlice} id="Tooltip" data-tooltip-content={showAddress ? "Your ETH address has been generated." : "Slice off the last 20 bytes of the keccak256 result to derive your ETH address."} className="button-blue button--smaller-font slice">
+                      Slice
                     </button>
                   </>
                 ) : (
                   ""
                 )}
               </div>
-              <div id="base58encode-display" className="interface__block-cell interface__block-cell--space-between interface__block-cell--column-gap appear-grab-2">
-                {showChecksum ? (
-                  <>
-                    {showAddress ? (
-                      <>
-                        <CopyToClipboard text={static_address} onCopy={() => handleCopyPopup_3()}>
-                          <MdCopyAll className="icon icon-copy icon-copy-3" />
-                        </CopyToClipboard>
-
-                        <div id="Tooltip" data-tooltip-content={static_address}>
-                          {"{ " + static_address.slice(0, 7) + "..." + static_address.slice(-7) + " }"}
-                        </div>
-                        <div className="interface__block-cell__annotation interface__block-cell__annotation--orange">Your BTC Public Address:</div>
-                      </>
-                    ) : (
-                      <>
-                        {isBase58EncodePending ? (
-                          <>
-                            <div id="setBase58EncodeLoading" data-text={"encoding..."} className="text--loading">
-                              encoding...
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <input id="Tooltip" data-tooltip-content="Version prefix of < 00 >" className="input--position-off" type="text" placeholder="00" disabled={true} />
-                            +
-                            <input id="Tooltip" data-tooltip-content="HASH160" className="input--position-off" type="text" placeholder={static_hash160} disabled={true} />
-                            +
-                            <input onChange={e => handleChecksumInput(e.target.value)} id="Tooltip" data-tooltip-content="Input the checksum" className={"input--position-off " + (checksum ? "input--focus-green" : "input--focus-red")} type="text" placeholder="checksum" required />
-                          </>
-                        )}
-                      </>
-                    )}
-                  </>
-                ) : (
-                  ""
-                )}
-              </div>
+              <div className="interface__block-cell"></div>
             </div>
           </IconContext.Provider>
 
           <div className="interface__block">
-            <div className="interface__block-cell appear-grab-2">
-              {showChecksum ? (
-                <>
-                  <button onClick={handleBase58Encode} id="Tooltip" data-tooltip-content={"Base58 encode a concatenation of the version prefix, hash160, & checksum."} className="button-orange button--smaller-font base58encode">
-                    Base58 encode
-                  </button>
-                </>
-              ) : (
-                ""
-              )}
-            </div>
+            <div className="interface__block-cell"></div>
             <div className="interface__block-cell">
               {showAddress ? (
                 <>
-                  <button className="button-orange button--smaller-font button-orange--pulsing">To Wallet Home 🏠</button>
+                  <button className="button-blue button--smaller-font button-blue--pulsing">To Wallet Home 🏠</button>
                 </>
               ) : (
                 ""

@@ -19,7 +19,7 @@ function ModalDropDown({ setIsModalDropDownOpen, isModalDropDownOpen, emoji, tit
       <div className="modal__drop-down">
         <div style={{ fontSize: "3rem" }}>{emoji}</div>
         <br />
-        {title}
+        <div className="modal__drop-down--title">{title}</div>
         <br />
         <br />
         {subtitle}
@@ -32,7 +32,7 @@ function ModalDropDown({ setIsModalDropDownOpen, isModalDropDownOpen, emoji, tit
             <div>
               <IconContext.Provider value={{ size: "1.3rem" }}>
                 <CopyToClipboard text={data} onCopy={() => handleCopyPopup_modal()}>
-                  <MdCopyAll className="icon icon-copy icon-copy-modal" />
+                  <MdCopyAll style={{ transform: "translateY(5px)" }} className="icon icon-copy icon-copy-modal" />
                 </CopyToClipboard>
               </IconContext.Provider>
               {showFullData ? data : "{ " + data.slice(0, 7) + "..." + data.slice(-7) + " }"}

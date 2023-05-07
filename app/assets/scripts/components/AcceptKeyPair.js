@@ -1,10 +1,15 @@
-import React, { useState } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import { MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
 import { CopyToClipboard } from "react-copy-to-clipboard"
+import { CSSTransition } from "react-transition-group"
+import ModalDropDown from "./ModalDropDown"
 
 function AcceptKeyPair({ uncompressedBufferPub, privKeyBuf, uint8arraytools, handleAccept, navigate }) {
   const [buttonDisabled, setButtonDisabled] = useState(true)
+
+  const [isModalDropDownOpen, setIsModalDropDownOpen] = useState(false)
+  const modalDropDownRef = useRef()
 
   const keyPair = {
     privateKey_hex: uint8arraytools.toHex(privKeyBuf),
@@ -44,6 +49,7 @@ function AcceptKeyPair({ uncompressedBufferPub, privKeyBuf, uint8arraytools, han
 
     setTimeout(() => {
       handleAccept()
+      setIsModalDropDownOpen(!isModalDropDownOpen)
       document.querySelector(".capsule").innerText = "Key Pair Locked & Confirmed!"
 
       document.querySelector(".capsule").classList.remove("capsule__progress-3")
@@ -54,8 +60,32 @@ function AcceptKeyPair({ uncompressedBufferPub, privKeyBuf, uint8arraytools, han
     }, 3000)
   }
 
+  useEffect(() => {
+    let handler = e => {
+      if (isModalDropDownOpen) {
+        if (modalDropDownRef.current.contains(e.target)) {
+          setIsModalDropDownOpen(!isModalDropDownOpen)
+        }
+      }
+    }
+
+    document.addEventListener("mousedown", handler)
+
+    return () => {
+      document.removeEventListener("mousedown", handler)
+    }
+  })
+
   return (
     <>
+      <CSSTransition in={isModalDropDownOpen} timeout={400} classNames="modal__cover" unmountOnExit>
+        <div ref={modalDropDownRef} className="modal__cover"></div>
+      </CSSTransition>
+
+      <CSSTransition in={isModalDropDownOpen} timeout={600} classNames="modal__drop-down" unmountOnExit>
+        <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"🔐"} title={"Congratulations!"} subtitle={"You just created your own private and public key pair. Your private key is the secret key that allows you to spend your crypto (Don't share this with anyone!). Your public key allows you to derive public addresses. Save these in a safe place."} subtitle_2={""} hasData={false} data={""} showFullData={false} ending_content={"Click on 'Next: Address' below to proceed creating your public addresses."} ending_content_2={""} />
+      </CSSTransition>
+
       <div className="interface__block">
         <div className="interface__block-cell interface__block-cell--space-between">
           <div className="title-font title-font--large">

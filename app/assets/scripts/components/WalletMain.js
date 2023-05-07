@@ -49,7 +49,7 @@ function WalletMain() {
       ) : (
         <div>
           <div>Your Wallets.</div>
-          <div onClick={() => getBitcoinAddressData(appState.bitcoin.address)}>{appState.bitcoin.address}</div>
+          {/* <div onClick={() => getBitcoinAddressData(appState.bitcoin.address)}>{appState.bitcoin.address}</div> */}
         </div>
       )}
     </>

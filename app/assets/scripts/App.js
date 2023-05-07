@@ -25,6 +25,9 @@ function App() {
     bitcoin: {
       keyPair: null,
       address: null
+    },
+    ethereum: {
+      address: null
     }
   }
 
@@ -41,6 +44,9 @@ function App() {
         return
       case "setBitcoinAddress":
         draft.bitcoin.address = action.value
+        return
+      case "setEthereumAddress":
+        draft.ethereum.address = active.value
         return
     }
   }

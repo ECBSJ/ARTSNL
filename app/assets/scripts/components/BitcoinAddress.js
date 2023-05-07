@@ -228,12 +228,13 @@ function BitcoinAddress() {
         document.querySelector(".base58encode").classList.add("orange-capsule__progress-4")
         document.querySelector(".base58encode").disabled = true
         setIsBase58EncodePending(false)
-        setIsModalDropDownOpen(true)
         setShowAddress(true)
         document.querySelector("#base58encode-display").classList.toggle("interface__block-cell--appear")
       }, 3000)
 
       setTimeout(() => {
+        setIsModalDropDownOpen(true)
+
         document.querySelector(".base58encode").classList.remove("orange-capsule__progress-4")
         document.querySelector(".base58encode").classList.add("orange-capsule__progress-done")
         document.querySelector("#base58encode-display").classList.toggle("interface__block-cell--appear")
@@ -301,7 +302,7 @@ function BitcoinAddress() {
       </CSSTransition>
 
       <CSSTransition in={isModalDropDownOpen} timeout={600} classNames="modal__drop-down" unmountOnExit>
-        <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"💯"} title={"Congratulations!"} subtitle={"You just created your"} subtitle_2={"own BTC address"} hasData={true} data={static_address} showFullData={false} ending_content={"Click on 'To Wallet Home'"} ending_content_2={"below to proceed."} />
+        <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"💯"} title={"Congratulations!"} subtitle={"You just created your"} subtitle_2={"own BTC address."} hasData={true} data={static_address} showFullData={false} ending_content={"Click on 'To Wallet Home'"} ending_content_2={"below to proceed."} />
       </CSSTransition>
 
       <IconContext.Provider value={{ size: "1.5rem" }}>

@@ -29,6 +29,10 @@
         &--orange {
           color: rgb(194, 107, 0);
         }
+
+        &--blue {
+          color: rgb(82, 82, 255);
+        }
       }
 
       &--display-block {

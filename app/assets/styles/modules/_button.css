@@ -49,6 +49,10 @@ button {
     border: 1px solid blue;
     background-color: rgba(0, 0, 255, 0.493);
 
+    &--pulsing {
+      animation: blue-bg-pulse 2s linear infinite reverse;
+    }
+
     &:hover {
       background-color: blue;
     }
@@ -180,6 +184,63 @@ button {
   }
 }
 
+.blue-capsule {
+  font-size: 1rem;
+  border: 1px solid blue;
+
+  &__progress-1 {
+    display: none;
+    background-color: rgba(0, 0, 255, 0.26);
+
+    &:hover {
+      cursor: wait;
+    }
+  }
+
+  &__progress-2 {
+    display: none;
+    background-color: rgba(0, 0, 255, 0.438);
+
+    &:hover {
+      cursor: wait;
+    }
+  }
+
+  &__progress-3 {
+    display: none;
+    background-color: rgba(0, 0, 255, 0.678);
+    &:hover {
+      cursor: wait;
+    }
+  }
+
+  &__progress-4 {
+    display: none;
+    background-color: blue;
+    &:hover {
+      cursor: wait;
+    }
+  }
+
+  &__progress-done {
+    display: none;
+    background-color: none;
+    color: rgba(0, 0, 255, 0.753);
+    border-color: rgba(0, 0, 255, 0.26);
+    &:hover {
+      cursor: default;
+    }
+  }
+
+  &--visible {
+    display: block;
+  }
+
+  &:hover {
+    box-shadow: 0 0 10px 0px rgb(105, 105, 105);
+  }
+}
+
 .btc-logo {
   position: absolute;
   right: 13;
@@ -204,5 +265,19 @@ button {
 
   100% {
     background-color: orange;
+  }
+}
+
+@keyframes blue-bg-pulse {
+  0% {
+    background-color: blue;
+  }
+
+  50% {
+    background-color: rgba(0, 0, 255, 0.507);
+  }
+
+  100% {
+    background-color: blue;
   }
 }
