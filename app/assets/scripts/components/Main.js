@@ -28,6 +28,8 @@ function Main() {
   const Mainnet = bitcoin.networks.bitcoin
 
   // let privateKey = crypto.randomBytes(32)
+  // let keyPair = ECPair.fromPrivateKey(privateKey, { compressed: false })
+
   // let result = ecc.pointFromScalar(privateKey, false)
 
   // btc pubkey to address
@@ -110,10 +112,84 @@ function Main() {
   // let static_checksum = "fef7d72e"
   // let static_address = "1JuuugYPD2DjVj99pN5vKkQbbWhVng7nwX"
 
-  // let static_eth_privKey = "3fdde77e8b442bc89dc890adf8fd72b4314e99ea7a205b9dd302114c9aefc493"
-  // let static_eth_pubKey = "0488a0dfca9af0d817962b25d1aa92d64e1645c94d452f6e75f61adc3f78d61b623637901afdf2efcb0bbf5badd82c2e559f22fe2f824438515614137443cb62ea"
-  // let static_eth_keccak = "53d393a6cfa8d868fd33bafc9189561aed3229361a1aca088323a3ab0750c5d6"
-  // let static_eth_add = "0x9189561aed3229361a1aca088323a3ab0750c5d6"
+  let static_eth_privKey = "3fdde77e8b442bc89dc890adf8fd72b4314e99ea7a205b9dd302114c9aefc493"
+  let static_eth_pubKey = "0488a0dfca9af0d817962b25d1aa92d64e1645c94d452f6e75f61adc3f78d61b623637901afdf2efcb0bbf5badd82c2e559f22fe2f824438515614137443cb62ea"
+  let static_eth_keccak = "53d393a6cfa8d868fd33bafc9189561aed3229361a1aca088323a3ab0750c5d6"
+  let static_eth_add = "0x9189561aed3229361a1aca088323a3ab0750c5d6"
+
+  let keyPairObject = {
+    priv: static_eth_privKey,
+    pub: static_eth_pubKey,
+    add: static_eth_add
+  }
+  let stringed = JSON.stringify(keyPairObject)
+
+  async function handleStoredKeysBrowserStorage() {
+    let wallet = new ethers.Wallet(static_eth_privKey)
+    let encryptedJSON = null
+    let decryptedWallet = null
+    let secret = Date.now().toString()
+    localStorage.setItem("secret", secret)
+
+    await wallet
+      .encrypt(secret)
+      .then(res => {
+        encryptedJSON = res
+        setCookie("key", encryptedJSON, { "max-age": 36000 })
+      })
+      .catch(console.error)
+
+    if (encryptedJSON) {
+      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then(res => (decryptedWallet = res))
+    }
+
+    console.log(secret)
+    console.log(JSON.parse(encryptedJSON))
+  }
+
+  async function decryptStoredKeys() {
+    let secret = localStorage.getItem("secret")
+    let keyStore = getCookie("key")
+
+    if (typeof secret == "string" && typeof keyStore == "string") {
+      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then(res => console.log(res))
+    }
+  }
+
+  function setCookie(name, value, options = {}) {
+    options = {
+      path: "/",
+      // add other defaults here if necessary
+      ...options
+    }
+
+    if (options.expires instanceof Date) {
+      options.expires = options.expires.toUTCString()
+    }
+
+    let updatedCookie = encodeURIComponent(name) + "=" + encodeURIComponent(value)
+
+    for (let optionKey in options) {
+      updatedCookie += "; " + optionKey
+      let optionValue = options[optionKey]
+      if (optionValue !== true) {
+        updatedCookie += "=" + optionValue
+      }
+    }
+
+    document.cookie = updatedCookie
+  }
+
+  function getCookie(name) {
+    let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") + "=([^;]*)"))
+    return matches ? decodeURIComponent(matches[1]) : undefined
+  }
+
+  function deleteCookie(name) {
+    setCookie(name, "", {
+      "max-age": -1
+    })
+  }
 
   // const [showKeccak, setShowKeccak] = useState(false)
   // const [inputtedKeccak256, setInputtedKeccak256] = useState("")
