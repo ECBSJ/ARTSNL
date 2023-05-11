@@ -17,6 +17,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard"
 import { Tooltip } from "react-tooltip"
 import ModalDropDown from "./ModalDropDown"
 import { CSSTransition } from "react-transition-group"
+import * as bip38 from "bip38"
 
 // import * as dotenv from "dotenv"
 // dotenv.config()
@@ -120,7 +121,7 @@ function Main() {
   let keyPairObject = {
     priv: static_eth_privKey,
     pub: static_eth_pubKey,
-    add: static_eth_add
+    add: static_eth_add,
   }
   let stringed = JSON.stringify(keyPairObject)
 
@@ -133,14 +134,14 @@ function Main() {
 
     await wallet
       .encrypt(secret)
-      .then(res => {
+      .then((res) => {
         encryptedJSON = res
         setCookie("key", encryptedJSON, { "max-age": 36000 })
       })
       .catch(console.error)
 
     if (encryptedJSON) {
-      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then(res => (decryptedWallet = res))
+      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then((res) => (decryptedWallet = res))
     }
 
     console.log(secret)
@@ -152,7 +153,7 @@ function Main() {
     let keyStore = getCookie("key")
 
     if (typeof secret == "string" && typeof keyStore == "string") {
-      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then(res => console.log(res))
+      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then((res) => console.log(res))
     }
   }
 
@@ -160,7 +161,7 @@ function Main() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options
+      ...options,
     }
 
     if (options.expires instanceof Date) {
@@ -187,7 +188,7 @@ function Main() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1
+      "max-age": -1,
     })
   }
 
