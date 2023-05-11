@@ -28,6 +28,76 @@ function Main() {
   const ECPair = ECPairFactory(ecc)
   const Mainnet = bitcoin.networks.bitcoin
 
+  let static_eth_privKey = "3fdde77e8b442bc89dc890adf8fd72b4314e99ea7a205b9dd302114c9aefc493"
+  let static_eth_pubKey = "0488a0dfca9af0d817962b25d1aa92d64e1645c94d452f6e75f61adc3f78d61b623637901afdf2efcb0bbf5badd82c2e559f22fe2f824438515614137443cb62ea"
+  let static_eth_keccak = "53d393a6cfa8d868fd33bafc9189561aed3229361a1aca088323a3ab0750c5d6"
+  let static_eth_add = "0x9189561aed3229361a1aca088323a3ab0750c5d6"
+
+  let keyPairObject = {
+    priv: static_eth_privKey,
+    pub: static_eth_pubKey,
+    add: static_eth_add
+  }
+
+  let tobeEncrypted = JSON.stringify(keyPairObject)
+
+  // const tobeEncrypted = "some secret string"
+
+  let btc = true
+
+  async function handleCipher(tobeEncrypted) {
+    // instantiating constants
+    const secret = Date.now().toString()
+    const key = crypto.createHash("sha256").update(secret).digest("hex").slice(0, 32)
+    const iv = crypto.randomBytes(16).toString("hex").slice(0, 16)
+
+    // setting constants to localStorage
+    localStorage.setItem("key", key)
+    localStorage.setItem("iv", iv)
+    if (btc) {
+      localStorage.setItem("coin", "btc")
+    } else {
+      localStorage.setItem("coin", "eth")
+    }
+
+    // instantiating cipher object
+    const cipher = crypto.createCipheriv("aes-256-gcm", key, iv)
+    const encrypted = cipher.update(tobeEncrypted, "utf8", "hex") + cipher.final("hex")
+    const authTag = cipher.getAuthTag()
+
+    // setting authTag to localStorage
+    localStorage.setItem("authTag", authTag.toString("hex"))
+
+    // setting encrypted as cookie
+    setCookie("encryptedKeyPair", encrypted, { "max-age": 36000000 })
+  }
+
+  async function handleDecipher(key, iv, authTag, coin, encryptedKeyPair) {
+    const decipher = crypto.createDecipheriv("aes-256-gcm", key, iv)
+    decipher.setAuthTag(Buffer.from(authTag, "hex"))
+    const decrypted = decipher.update(encryptedKeyPair, "hex", "utf8") + decipher.final("utf8")
+    console.log(decrypted)
+    console.log(coin)
+  }
+
+  // useEffect(() => {
+  //   let checkLocalStorage = localStorage.getItem("key")
+
+  //   if (checkLocalStorage) {
+  //     // get localStorage constants
+  //     let key = localStorage.getItem("key")
+  //     let iv = localStorage.getItem("iv")
+  //     let authTag = localStorage.getItem("authTag")
+  //     let coin = localStorage.getItem("coin")
+
+  //     // get encrypted value from cookie
+  //     let encryptedKeyPair = getCookie("encryptedKeyPair")
+
+  //     // decipher function
+  //     handleDecipher(key, iv, authTag, coin, encryptedKeyPair)
+  //   }
+  // }, [])
+
   // let privateKey = crypto.randomBytes(32)
   // let keyPair = ECPair.fromPrivateKey(privateKey, { compressed: false })
 
@@ -113,18 +183,6 @@ function Main() {
   // let static_checksum = "fef7d72e"
   // let static_address = "1JuuugYPD2DjVj99pN5vKkQbbWhVng7nwX"
 
-  let static_eth_privKey = "3fdde77e8b442bc89dc890adf8fd72b4314e99ea7a205b9dd302114c9aefc493"
-  let static_eth_pubKey = "0488a0dfca9af0d817962b25d1aa92d64e1645c94d452f6e75f61adc3f78d61b623637901afdf2efcb0bbf5badd82c2e559f22fe2f824438515614137443cb62ea"
-  let static_eth_keccak = "53d393a6cfa8d868fd33bafc9189561aed3229361a1aca088323a3ab0750c5d6"
-  let static_eth_add = "0x9189561aed3229361a1aca088323a3ab0750c5d6"
-
-  let keyPairObject = {
-    priv: static_eth_privKey,
-    pub: static_eth_pubKey,
-    add: static_eth_add,
-  }
-  let stringed = JSON.stringify(keyPairObject)
-
   async function handleStoredKeysBrowserStorage() {
     let wallet = new ethers.Wallet(static_eth_privKey)
     let encryptedJSON = null
@@ -134,14 +192,14 @@ function Main() {
 
     await wallet
       .encrypt(secret)
-      .then((res) => {
+      .then(res => {
         encryptedJSON = res
         setCookie("key", encryptedJSON, { "max-age": 36000 })
       })
       .catch(console.error)
 
     if (encryptedJSON) {
-      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then((res) => (decryptedWallet = res))
+      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then(res => (decryptedWallet = res))
     }
 
     console.log(secret)
@@ -153,7 +211,7 @@ function Main() {
     let keyStore = getCookie("key")
 
     if (typeof secret == "string" && typeof keyStore == "string") {
-      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then((res) => console.log(res))
+      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then(res => console.log(res))
     }
   }
 
@@ -161,7 +219,7 @@ function Main() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options,
+      ...options
     }
 
     if (options.expires instanceof Date) {
@@ -188,7 +246,7 @@ function Main() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1,
+      "max-age": -1
     })
   }
 
