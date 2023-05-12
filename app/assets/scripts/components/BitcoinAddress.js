@@ -52,7 +52,7 @@ function BitcoinAddress() {
   // let address = base58.encode(combinedBuff)
 
   function handleNext() {
-    appDispatch({ type: "setBitcoinAddress", value: static_address })
+    appDispatch({ type: "setLocalStorage" })
     navigate("/WalletMain")
   }
 
@@ -196,6 +196,7 @@ function BitcoinAddress() {
       let combinedBuff = Buffer.concat(arr)
       let result = base58.encode(combinedBuff)
       setStaticAddress(result)
+      appDispatch({ type: "setBitcoinAddress", value: result })
 
       document.querySelector("#base58encode-display").classList.remove("interface__block-cell--space-between")
       document.querySelector("#base58encode-display").classList.remove("interface__block-cell--column-gap")

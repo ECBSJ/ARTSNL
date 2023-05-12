@@ -112,6 +112,7 @@ function EthereumAddress() {
       let ETHpubAdd = prepareETHpubAdd.slice(-20)
       let finalETHpubAdd = "0x" + uint8arraytools.toHex(ETHpubAdd)
       setStaticEthAdd(finalETHpubAdd)
+      appDispatch({ type: "setEthereumAddress", value: finalETHpubAdd })
 
       document.querySelector("#address-display").classList.remove("interface__block-cell--space-between")
       document.querySelector("#address-display").classList.remove("interface__block-cell--column-gap")
@@ -174,7 +175,7 @@ function EthereumAddress() {
   }
 
   function handleNext() {
-    appDispatch({ type: "setEthereumAddress", value: static_eth_add })
+    appDispatch({ type: "setLocalStorage" })
     navigate("/WalletMain")
   }
 
