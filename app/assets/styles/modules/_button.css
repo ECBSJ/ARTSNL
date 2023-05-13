@@ -25,6 +25,10 @@ button {
     border: 1px solid #b01af7;
     background-color: #b11af783;
 
+    &--pulsing {
+      animation: purple-bg-pulse 2s linear infinite reverse;
+    }
+
     &:hover {
       background-color: #b01af7;
     }
@@ -254,13 +258,27 @@ button {
 }
 
 /* ANIMATIONS */
+@keyframes purple-bg-pulse {
+  0% {
+    background-color: #b01af7;
+  }
+
+  50% {
+    background-color: #b11af750;
+  }
+
+  100% {
+    background-color: #b01af7;
+  }
+}
+
 @keyframes orange-bg-pulse {
   0% {
     background-color: orange;
   }
 
   50% {
-    background-color: rgba(255, 166, 0, 0.5);
+    background-color: rgba(255, 166, 0, 0.336);
   }
 
   100% {
@@ -274,7 +292,7 @@ button {
   }
 
   50% {
-    background-color: rgba(0, 0, 255, 0.507);
+    background-color: rgba(0, 0, 255, 0.363);
   }
 
   100% {

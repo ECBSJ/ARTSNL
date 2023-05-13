@@ -380,6 +380,20 @@ function Main() {
   //   }
   // })
 
+  const [randomBytes, setRandomBytes] = useState()
+  const [accepted, setAccepted] = useState(false)
+
+  function handleRandomBytes() {
+    let result = crypto.randomBytes(32)
+    setRandomBytes(uint8arraytools.toHex(result))
+  }
+
+  function handleAccept() {
+    document.getElementById("accept-button").classList.toggle("button-purple")
+    document.getElementById("accept-button").disabled = true
+    setAccepted(!accepted)
+  }
+
   return (
     <>
       {page == 2 ? (
@@ -398,125 +412,53 @@ function Main() {
             <MdNavigateNext className="icon" />
           </div>
 
-          {/* <CSSTransition in={isModalDropDownOpen} timeout={400} classNames="modal__cover" unmountOnExit>
-            <div ref={modalDropDownRef} className="modal__cover"></div>
-          </CSSTransition>
-
-          <CSSTransition in={isModalDropDownOpen} timeout={600} classNames="modal__drop-down" unmountOnExit>
-            <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"💯"} title={"Congratulations!"} subtitle={"You just created your"} subtitle_2={"own ETH address."} hasData={true} data={static_eth_add} showFullData={false} ending_content={"Click on 'To Wallet Home'"} ending_content_2={"below to proceed."} />
-          </CSSTransition>
-
-          <IconContext.Provider value={{ size: "1.5rem" }}>
-            <div className="interface__block">
-              <div className="interface__block-cell interface__block-cell--space-between">
-                <div className="title-font title-font--small">
-                  <div className="title__subtitle">With your public key, derive your public address.</div>
-                  <div style={{ display: "inline-block" }} className="blue-font">
-                    📭ETH
-                  </div>{" "}
-                  Public Address
-                </div>
-                <IconContext.Provider value={{ size: "3rem" }}>
-                  <MdMenu className="icon" />
-                </IconContext.Provider>
+          {/* <div className="interface__block">
+            <div className="interface__block-cell interface__block-cell--space-between">
+              <div className="title-font title-font--large">
+                <div className="title__subtitle">Create your private & public key pair.</div>
+                <div style={{ display: "inline-block" }} className="purple-font">
+                  🧙Key
+                </div>{" "}
+                Creation
               </div>
-              <div className="interface__block-cell">
-                {showKeccak ? (
-                  <>
-                    <CopyToClipboard text={static_eth_keccak} onCopy={() => handleCopyPopup()}>
-                      <MdCopyAll className="icon icon-copy" />
-                    </CopyToClipboard>
-                    <div data-tooltip-id="static_eth_keccak" data-tooltip-content={static_eth_keccak}>
-                      {"{ " + static_eth_keccak.slice(0, 9) + "..." + static_eth_keccak.slice(-9) + " }"}
-                    </div>
-                    <Tooltip id="static_eth_keccak" style={{ fontSize: "0.6rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" />
-                    <div className="interface__block-cell__annotation interface__block-cell__annotation--blue">KECCAK256 of Public Key:</div>
-                  </>
-                ) : (
-                  <>
-                    <div id="setLoading" data-text={"{" + static_eth_pubKey.slice(0, 10) + "..." + static_eth_pubKey.slice(-10) + "}"} data-tooltip-id="static_pubKey" data-tooltip-content={static_eth_pubKey}>
-                      {"{" + static_eth_pubKey.slice(0, 10) + "..." + static_eth_pubKey.slice(-10) + "}"}
-                    </div>
-                    <Tooltip id="static_pubKey" style={{ fontSize: "0.6rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" />
-                    <div className="interface__block-cell__annotation interface__block-cell__annotation--blue">Uncompressed Public Key:</div>
-                  </>
-                )}
-              </div>
-              <div className="interface__block-cell">
-                <button onClick={handleKeccak} id="keccak256" data-tooltip-id="keccak-button" data-tooltip-content={showKeccak ? "Input the keccak256 result into the field below." : "Click to apply a keccak256 on your public key."} className="button-blue button--smaller-font">
-                  KECCAK256
-                </button>
-                <Tooltip id="keccak-button" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" />
-              </div>
+              <MdMenu className="icon" />
             </div>
-            <div className="interface__block">
-              <div id="address-display" className="interface__block-cell interface__block-cell--space-between interface__block-cell--column-gap appear-grab appear-grab-2">
-                {showKeccak ? (
-                  <>
-                    {showAddress ? (
-                      <>
-                        <CopyToClipboard text={static_eth_add} onCopy={() => handleCopyPopup_2()}>
-                          <MdCopyAll className="icon icon-copy icon-copy-2" />
-                        </CopyToClipboard>
-
-                        <div id="Tooltip" data-tooltip-content={static_eth_add}>
-                          {"{ " + static_eth_add.slice(0, 7) + "..." + static_eth_add.slice(-7) + " }"}
-                        </div>
-                        <div className="interface__block-cell__annotation interface__block-cell__annotation--blue">Your ETH Address:</div>
-                      </>
-                    ) : (
-                      <>
-                        {isAddressPending ? (
-                          <>
-                            <div id="setAddressLoading" data-text={"slicing..."} className="text--loading">
-                              slicing...
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <input onChange={e => handleKeccakInput(e.target.value)} id="Tooltip" data-tooltip-content="Input the keccak256" className={"input--position-off " + (inputtedKeccak256 ? "input--focus-green" : "input--focus-red")} type="text" placeholder="keccak256" />
-                          </>
-                        )}
-                      </>
-                    )}
-                  </>
-                ) : (
-                  ""
-                )}
-              </div>
-              <div className="interface__block-cell appear-grab">
-                {showKeccak ? (
-                  <>
-                    <button onClick={handleSlice} id="Tooltip" data-tooltip-content={showAddress ? "Your ETH address has been generated." : "Slice off the last 20 bytes of the keccak256 result to derive your ETH address."} className="button-blue button--smaller-font slice">
-                      Slice
-                    </button>
-                  </>
-                ) : (
-                  ""
-                )}
-              </div>
-              <div className="interface__block-cell"></div>
-            </div>
-          </IconContext.Provider>
-
-          <div className="interface__block">
-            <div className="interface__block-cell"></div>
             <div className="interface__block-cell">
-              {showAddress ? (
-                <>
-                  <button className="button-blue button--smaller-font button-blue--pulsing">To Wallet Home 🏠</button>
-                </>
+              <div className="interface__block-cell__description-block">
+                <div className="interface__block-cell--thin">Step 1: Random 32 Bytes</div>
+                <div className="interface__block-cell--thick">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil nisi et hic impedit perspiciatis minima voluptas vel quam pariatur distinctio officia id, itaque ratione nemo eveniet recusandae a excepturi natus?</div>
+              </div>
+            </div>
+          </div>
+          <div className="interface__block">
+            <div className="interface__block-cell">
+              {accepted ? (
+                ""
+              ) : (
+                <button onClick={handleRandomBytes} className="button-purple">
+                  Generate Random
+                </button>
+              )}
+            </div>
+            <div className="interface__block-cell interface__block-cell--thick interface__block-cell--display-block interface__block-cell--thick--font-large input-white">{randomBytes}</div>
+          </div>
+          <div className="interface__block">
+            <div className="interface__block-cell">
+              {randomBytes ? (
+                <button id="accept-button" onClick={handleAccept} className="button-purple">
+                  Accept
+                </button>
               ) : (
                 ""
               )}
             </div>
+            <div className="interface__block-cell">{accepted ? <button className="button-purple button-purple--pulsing">Next: Private Key 🗝️</button> : ""}</div>
             <div className="interface__block-cell interface__block-cell__footer">
               <TbRefresh className="icon" />
               <div className="icon">ARTSNL</div>
               <MdLibraryBooks className="icon" />
             </div>
-          </div>
-          <Tooltip anchorSelect="#Tooltip" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" /> */}
+          </div> */}
         </>
       )}
     </>
