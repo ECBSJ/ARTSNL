@@ -1,7 +1,7 @@
 import "../styles/styles.css"
 
 // IMPORTING OF REACT PACKAGES
-import React from "react"
+import React, { Suspense } from "react"
 import ReactDOM from "react-dom/client"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import StateContext from "./StateContext"
@@ -14,9 +14,11 @@ import * as crypto from "crypto"
 
 // IMPORTING OF COMPONENTS
 import Main from "./components/Main"
-import CreateKeys from "./components/CreateKeys"
-import AddressSelection from "./components/AddressSelection"
-import WalletMain from "./components/WalletMain"
+import LazyLoadFallback from "./components/LazyLoadFallback"
+const CreateKeys = React.lazy(() => import("./components/CreateKeys"))
+const AddressSelection = React.lazy(() => import("./components/AddressSelection"))
+const WalletMain = React.lazy(() => import("./components/WalletMain"))
+import Menu from "./components/Menu"
 
 function App() {
   // cookie setter/getter
@@ -131,13 +133,16 @@ function App() {
         <DispatchContext.Provider value={dispatch}>
           <IconContext.Provider value={{ size: "3rem" }}>
             <div className="container">
+              <Menu />
               <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Main />} />
-                  <Route path="/CreateKeys" element={<CreateKeys />} />
-                  <Route path="/AddressSelection" element={<AddressSelection />} />
-                  <Route path="/WalletMain" element={<WalletMain />} />
-                </Routes>
+                <Suspense fallback={<LazyLoadFallback />}>
+                  <Routes>
+                    <Route path="/" element={<Main />} />
+                    <Route path="/CreateKeys" element={<CreateKeys />} />
+                    <Route path="/AddressSelection" element={<AddressSelection />} />
+                    <Route path="/WalletMain" element={<WalletMain />} />
+                  </Routes>
+                </Suspense>
               </BrowserRouter>
             </div>
           </IconContext.Provider>

@@ -27,19 +27,78 @@ function Main() {
 
   const ECPair = ECPairFactory(ecc)
   const Mainnet = bitcoin.networks.bitcoin
+  let Testnet = bitcoin.networks.testnet
 
-  let static_eth_privKey = "3fdde77e8b442bc89dc890adf8fd72b4314e99ea7a205b9dd302114c9aefc493"
-  let static_eth_pubKey = "0488a0dfca9af0d817962b25d1aa92d64e1645c94d452f6e75f61adc3f78d61b623637901afdf2efcb0bbf5badd82c2e559f22fe2f824438515614137443cb62ea"
-  let static_eth_keccak = "53d393a6cfa8d868fd33bafc9189561aed3229361a1aca088323a3ab0750c5d6"
-  let static_eth_add = "0x9189561aed3229361a1aca088323a3ab0750c5d6"
+  const loaded_privKey = "5J459Af92Xgwdge6tEMK3RmPjRozXymf7omvhRab7MTqacZ7nW6"
+  const loaded_pubKey = "04CB579D6F36830DCE955963D727EAC70B1426F362E93AA16462D2EBE62C318CCBBF9540DB7972B9085D19E4A27BFDE8DD28B26CD63D2E5987F3F3F707E35BD53F"
+  const loaded_add = "1L2GGEoa4BYW8T7H1vbyPfZriEthDNXpW3"
 
-  let keyPairObject = {
-    priv: static_eth_privKey,
-    pub: static_eth_pubKey,
-    add: static_eth_add
-  }
+  const testnetPrivKey = "938zbGqYYvZvFaHNXMNDpQZ4hEQE89ugGEjrv9QCKWCL6H2c4ps"
+  const testnetAdd = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
 
-  let tobeEncrypted = JSON.stringify(keyPairObject)
+  const testnetPrivKey_2 = "93MPV1RsWMvfLCpGZcnPG1U8EA3QDqdNxkCVJwmeTGrjEHFZ5v6"
+  const testnetAdd_2 = "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w"
+
+  let testnetKeyPair = ECPair.fromWIF(testnetPrivKey, Testnet)
+  const p2pkhObject = bitcoin.payments.p2pkh({ pubkey: testnetKeyPair.publicKey, network: Testnet })
+
+  const validator = (pubkey, msghash, signature) => ECPair.fromPublicKey(pubkey).verify(msghash, signature)
+
+  const psbt = new bitcoin.Psbt({ network: Testnet })
+
+  psbt.addInput({
+    hash: "2cb6fa84428fc0ec7a9938888263d38262ab8eced7f32b086093fae1c44b066a",
+    index: 0,
+    nonWitnessUtxo: Buffer.from("0200000002b934e59a25ff84414975d05fc944a770ee17542326eb708851b7cb87d0c24cc5000000008a47304402202c0b9314b95df5ad4a4e87c8c856a1cad0e8969792c105301b8ba6e7f885de7302205aab52e8258d16630a3346874aae063212b68d0ee263fb52593a24d3ebf26b7e014104a5631b324d8f870a2693236b4c89e42f2ed0cda08a0e6a07db95884d1e82e9bec0e44c0885e281ab8dfb58f53215e70d7f33ee4359ac0f9c421c2f07544ae177ffffffff507d63594f9749a26bfeb583bf36f4188006757eb006d21dc2e61e3846a79186000000008b4830450221009384c907b787322bff92172554782440bb3f564616a6486850a4db40fbab97f002204e7d4ee290225551f95b90a32b2e6256db003bb72a7b329204109cd08d17d78c014104a5631b324d8f870a2693236b4c89e42f2ed0cda08a0e6a07db95884d1e82e9bec0e44c0885e281ab8dfb58f53215e70d7f33ee4359ac0f9c421c2f07544ae177ffffffff01bc2e0000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388ac00000000", "hex")
+  })
+
+  // psbt.addInput({
+  //   hash: "8691a746381ee6c21dd206b07e75068018f436bf83b5fe6ba249974f59637d50",
+  //   index: 0,
+  //   nonWitnessUtxo: Buffer.from("020000000001019462cf8959a06d5b65215a648ad8ccb17814efa08f70f7b2c8ee376415176e5a000000001716001497cccf62d2ed3dded4a86d6cce118bd08c571cbdfeffffff023c1b0000000000001976a914b58515a69527c806fd404d3d4aa490d56692310b88aceb32f901000000001976a914c80c4fdbc8d70bac6a20a7af273d137132f3c89788ac0247304402205085f90c858ea1eb81938371b0b6659a191f2c0c1816b6f48b64ff96fa404ffc02205321c63d54db7c3fb68667c1c95009f0522aa3a2b8c2a191a30419eca06aa9f30121025404399c93d61fa75f76c49377bd7eea76efe4a73021a4e04fd237b4913c2e5e7f212500", "hex")
+  // })
+
+  psbt.addOutput({
+    address: "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w",
+    value: 11564
+  })
+
+  psbt.signInput(0, testnetKeyPair)
+  // psbt.signInput(1, testnetKeyPair)
+  psbt.validateSignaturesOfInput(0, validator)
+  // psbt.validateSignaturesOfInput(1, validator)
+  psbt.finalizeAllInputs()
+
+  const transactionHEX = psbt.extractTransaction().toHex()
+
+  // Main - Select UTXOs to use (carousel selection)
+  // Main - Show selected UTXOs
+  // Main - Prompt user to start ScriptSig formation for each input
+  // Overlay - ScriptSig formation for each input (an overlay to appear)
+  // Main - After ScriptSig completion, determine if user will send all out (if not a return output is needed)
+  // Input receiving address
+  // Determine if return address output needed
+  // Deconstruct receiving address
+  // Extract hash160
+  // Form ScriptPubKey for output
+  // Overlay - First output formation
+  // Overlay - locktime option
+  // Main - Summary and review of completed fields
+  // Main - Display of Transaction hex
+  // Main - Broadcast
+
+  // let static_eth_privKey = "3fdde77e8b442bc89dc890adf8fd72b4314e99ea7a205b9dd302114c9aefc493"
+  // let static_eth_pubKey = "0488a0dfca9af0d817962b25d1aa92d64e1645c94d452f6e75f61adc3f78d61b623637901afdf2efcb0bbf5badd82c2e559f22fe2f824438515614137443cb62ea"
+  // let static_eth_keccak = "53d393a6cfa8d868fd33bafc9189561aed3229361a1aca088323a3ab0750c5d6"
+  // let static_eth_add = "0x9189561aed3229361a1aca088323a3ab0750c5d6"
+
+  // let keyPairObject = {
+  //   priv: static_eth_privKey,
+  //   pub: static_eth_pubKey,
+  //   add: static_eth_add
+  // }
+
+  // let tobeEncrypted = JSON.stringify(keyPairObject)
 
   // const tobeEncrypted = "some secret string"
 
@@ -97,9 +156,6 @@ function Main() {
   //     handleDecipher(key, iv, authTag, coin, encryptedKeyPair)
   //   }
   // }, [])
-
-  // let privateKey = crypto.randomBytes(32)
-  // let keyPair = ECPair.fromPrivateKey(privateKey, { compressed: false })
 
   // let result = ecc.pointFromScalar(privateKey, false)
 
