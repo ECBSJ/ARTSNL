@@ -9,6 +9,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    &--no-opacity {
+      background-color: black;
+    }
   }
 
   &__label {
@@ -18,6 +22,15 @@
     font-size: 1.2rem;
     display: flex;
     align-items: center;
+    position: relative;
+
+    &__sub-label {
+      position: absolute;
+      width: 250px;
+      font-size: 0.7rem;
+      color: gray;
+      transform: translateY(32px) translateX(49px);
+    }
   }
 
   &__dashboard {
@@ -76,14 +89,15 @@
 
     &-row--thick {
       flex: 2;
+      display: block;
       width: 100%;
       margin: 3px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      padding: 20px;
       background-color: black;
       border-radius: 15px;
       border: 1px solid white;
+      overflow: auto;
+      overflow-wrap: break-word;
     }
   }
 }
