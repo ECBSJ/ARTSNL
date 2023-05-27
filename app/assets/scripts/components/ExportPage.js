@@ -32,9 +32,13 @@ function ExportPage({ isExportOpen, setIsExportOpen }) {
         </div>
         <div className="menu__dashboard">
           <div className="menu__dashboard-row--thick">
-            <div>Private Key: "5e6cca2c25d67950acee3324d41ebef7d886b6762eaadb92210a3604a6188110"</div>
+            <div>
+              Private Key &#40;hex&#41;: <div className="code-font gray-font">5e6cca2c25d67950acee3324d41ebef7d886b6762eaadb92210a3604a6188110</div>
+            </div>
             <br />
-            <div>Public Key: "0465034a033e228fc298f4be365cdc4555b9ef4a7a53ae9f72a88383a4712095c2cad1d12366842198e6fd4a884bd5f899c3c41f0c105aed2e470b7d0993aa2a27"</div>
+            <div>
+              Public Key &#40;uncompressed&#41;: <div className="code-font gray-font">0465034a033e228fc298f4be365cdc4555b9ef4a7a53ae9f72a88383a4712095c2cad1d12366842198e6fd4a884bd5f899c3c41f0c105aed2e470b7d0993aa2a27</div>
+            </div>
             <br />
           </div>
           <div className="menu__dashboard-row">

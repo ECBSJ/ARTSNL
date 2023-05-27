@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { MdClose } from "react-icons/md"
 import ExportPage from "./ExportPage"
 import ImportPage from "./ImportPage"
+import { CSSTransition } from "react-transition-group"
 
 function Menu() {
   const [modeBoolean, setModeBoolean] = useState(true)
@@ -22,7 +23,7 @@ function Menu() {
         <div className="menu__dashboard">
           <div className="menu__dashboard-row">
             <div className="menu__dashboard-row-box">ABOUT</div>
-            <div id="lightDarkMode" onClick={toggleLightDarkMode} className="menu__dashboard-row-box vision-mode__cover menu__dashboard-row-box--dark">
+            <div id="lightDarkMode" onClick={toggleLightDarkMode} data-label="MODE" className="menu__dashboard-row-box vision-mode__cover menu__dashboard-row-box--dark">
               {modeBoolean ? "DARK" : "LIGHT"}
             </div>
           </div>
@@ -41,8 +42,13 @@ function Menu() {
         </div>
       </div>
 
-      {isExportOpen ? <ExportPage isExportOpen={isExportOpen} setIsExportOpen={setIsExportOpen} /> : ""}
-      {isImportOpen ? <ImportPage isImportOpen={isImportOpen} setIsImportOpen={setIsImportOpen} /> : ""}
+      <CSSTransition in={isExportOpen} timeout={1000} classNames="menu__cover" unmountOnExit>
+        <ExportPage isExportOpen={isExportOpen} setIsExportOpen={setIsExportOpen} />
+      </CSSTransition>
+
+      <CSSTransition in={isImportOpen} timeout={1000} classNames="menu__cover" unmountOnExit>
+        <ImportPage isImportOpen={isImportOpen} setIsImportOpen={setIsImportOpen} />
+      </CSSTransition>
     </>
   )
 }

@@ -41,6 +41,14 @@
   color: blue;
 }
 
+.gray-font {
+  color: gray;
+}
+
+.code-font {
+  font-family: monospace;
+}
+
 .text--loading {
   color: white;
   position: relative;
