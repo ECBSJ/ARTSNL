@@ -11,6 +11,7 @@ import { IconContext } from "react-icons"
 import "react-tooltip/dist/react-tooltip.css"
 import * as uint8arraytools from "uint8array-tools"
 import * as crypto from "crypto"
+import { CSSTransition } from "react-transition-group"
 
 // IMPORTING OF COMPONENTS
 import Main from "./components/Main"
@@ -69,11 +70,15 @@ function App() {
     },
     ethereum: {
       address: null
-    }
+    },
+    isMenuOpen: false
   }
 
   function ourReducer(draft, action) {
     switch (action.type) {
+      case "toggleMenu":
+        draft.isMenuOpen = !draft.isMenuOpen
+        return
       case "setBufferPrivKey":
         draft.keys.bufferPrivKey = action.value
         return
@@ -133,7 +138,9 @@ function App() {
         <DispatchContext.Provider value={dispatch}>
           <IconContext.Provider value={{ size: "3rem" }}>
             <div className="container">
-              <Menu />
+              <CSSTransition in={state.isMenuOpen} timeout={1000} classNames="menu__cover" unmountOnExit>
+                <Menu />
+              </CSSTransition>
               <BrowserRouter>
                 <Suspense fallback={<LazyLoadFallback />}>
                   <Routes>

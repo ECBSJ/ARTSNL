@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import { MdClose } from "react-icons/md"
 import ExportPage from "./ExportPage"
 import ImportPage from "./ImportPage"
 import { CSSTransition } from "react-transition-group"
+import DispatchContext from "../DispatchContext"
 
 function Menu() {
+  const appDispatch = useContext(DispatchContext)
+
   const [modeBoolean, setModeBoolean] = useState(true)
   const [isExportOpen, setIsExportOpen] = useState(false)
   const [isImportOpen, setIsImportOpen] = useState(false)
@@ -18,7 +21,7 @@ function Menu() {
   return (
     <>
       <div className="menu__cover">
-        <MdClose className="icon icon__menu-close" />
+        <MdClose onClick={() => appDispatch({ type: "toggleMenu" })} className="icon icon__menu-close" />
         <div className="menu__label">ARTSNL MENU</div>
         <div className="menu__dashboard">
           <div className="menu__dashboard-row">
@@ -37,7 +40,9 @@ function Menu() {
             <div onClick={() => setIsImportOpen(!isImportOpen)} className="menu__dashboard-row-box">
               IMPORT
             </div>
-            <div className="menu__dashboard-row-box">SOURCE</div>
+            <a className="menu__dashboard-row-box" href="https://github.com/ECBSJ/artisanal" target="_blank">
+              SOURCE
+            </a>
           </div>
         </div>
       </div>

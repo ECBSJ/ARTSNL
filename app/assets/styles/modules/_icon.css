@@ -12,6 +12,14 @@
     transform: scale(0.85);
   }
 
+  &--position-absolute {
+    position: absolute;
+  }
+
+  &--higher-z-index {
+    z-index: 300;
+  }
+
   &-copy {
     &--active {
       color: lightseagreen;

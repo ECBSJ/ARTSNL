@@ -38,7 +38,7 @@ function CreateEntropyPage({ entropy, setEntropy, setOnCreateEntropyPage, setOnD
             </div>{" "}
             Creation
           </div>
-          <MdMenu className="icon" />
+          <MdMenu onClick={() => appDispatch({ type: "toggleMenu" })} className="icon" />
         </div>
         <div className="interface__block-cell">
           <div className="interface__block-cell__description-block">

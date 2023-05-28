@@ -49,6 +49,11 @@
   font-family: monospace;
 }
 
+a {
+  text-decoration: none;
+  color: white;
+}
+
 .text--loading {
   color: white;
   position: relative;

@@ -1,0 +1,9 @@
+.qr-code {
+  &__video-reader {
+    position: absolute;
+    top: 204px;
+    z-index: 1000;
+    width: 300px;
+    height: 300px;
+  }
+}
