@@ -29,28 +29,24 @@ function Main() {
   const Mainnet = bitcoin.networks.bitcoin
   let Testnet = bitcoin.networks.testnet
 
-  const loaded_privKey = "5J459Af92Xgwdge6tEMK3RmPjRozXymf7omvhRab7MTqacZ7nW6"
-  const loaded_pubKey = "04CB579D6F36830DCE955963D727EAC70B1426F362E93AA16462D2EBE62C318CCBBF9540DB7972B9085D19E4A27BFDE8DD28B26CD63D2E5987F3F3F707E35BD53F"
-  const loaded_add = "1L2GGEoa4BYW8T7H1vbyPfZriEthDNXpW3"
-
   const testnetPrivKey = "938zbGqYYvZvFaHNXMNDpQZ4hEQE89ugGEjrv9QCKWCL6H2c4ps"
   const testnetAdd = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
 
   const testnetPrivKey_2 = "93MPV1RsWMvfLCpGZcnPG1U8EA3QDqdNxkCVJwmeTGrjEHFZ5v6"
   const testnetAdd_2 = "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w"
 
-  let testnetKeyPair = ECPair.fromWIF(testnetPrivKey, Testnet)
-  const p2pkhObject = bitcoin.payments.p2pkh({ pubkey: testnetKeyPair.publicKey, network: Testnet })
+  // let testnetKeyPair = ECPair.fromWIF(testnetPrivKey, Testnet)
+  // const p2pkhObject = bitcoin.payments.p2pkh({ pubkey: testnetKeyPair.publicKey, network: Testnet })
 
-  const validator = (pubkey, msghash, signature) => ECPair.fromPublicKey(pubkey).verify(msghash, signature)
+  // const validator = (pubkey, msghash, signature) => ECPair.fromPublicKey(pubkey).verify(msghash, signature)
 
-  const psbt = new bitcoin.Psbt({ network: Testnet })
+  // const psbt = new bitcoin.Psbt({ network: Testnet })
 
-  psbt.addInput({
-    hash: "2cb6fa84428fc0ec7a9938888263d38262ab8eced7f32b086093fae1c44b066a",
-    index: 0,
-    nonWitnessUtxo: Buffer.from("0200000002b934e59a25ff84414975d05fc944a770ee17542326eb708851b7cb87d0c24cc5000000008a47304402202c0b9314b95df5ad4a4e87c8c856a1cad0e8969792c105301b8ba6e7f885de7302205aab52e8258d16630a3346874aae063212b68d0ee263fb52593a24d3ebf26b7e014104a5631b324d8f870a2693236b4c89e42f2ed0cda08a0e6a07db95884d1e82e9bec0e44c0885e281ab8dfb58f53215e70d7f33ee4359ac0f9c421c2f07544ae177ffffffff507d63594f9749a26bfeb583bf36f4188006757eb006d21dc2e61e3846a79186000000008b4830450221009384c907b787322bff92172554782440bb3f564616a6486850a4db40fbab97f002204e7d4ee290225551f95b90a32b2e6256db003bb72a7b329204109cd08d17d78c014104a5631b324d8f870a2693236b4c89e42f2ed0cda08a0e6a07db95884d1e82e9bec0e44c0885e281ab8dfb58f53215e70d7f33ee4359ac0f9c421c2f07544ae177ffffffff01bc2e0000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388ac00000000", "hex")
-  })
+  // psbt.addInput({
+  //   hash: "2cb6fa84428fc0ec7a9938888263d38262ab8eced7f32b086093fae1c44b066a",
+  //   index: 0,
+  //   nonWitnessUtxo: Buffer.from("0200000002b934e59a25ff84414975d05fc944a770ee17542326eb708851b7cb87d0c24cc5000000008a47304402202c0b9314b95df5ad4a4e87c8c856a1cad0e8969792c105301b8ba6e7f885de7302205aab52e8258d16630a3346874aae063212b68d0ee263fb52593a24d3ebf26b7e014104a5631b324d8f870a2693236b4c89e42f2ed0cda08a0e6a07db95884d1e82e9bec0e44c0885e281ab8dfb58f53215e70d7f33ee4359ac0f9c421c2f07544ae177ffffffff507d63594f9749a26bfeb583bf36f4188006757eb006d21dc2e61e3846a79186000000008b4830450221009384c907b787322bff92172554782440bb3f564616a6486850a4db40fbab97f002204e7d4ee290225551f95b90a32b2e6256db003bb72a7b329204109cd08d17d78c014104a5631b324d8f870a2693236b4c89e42f2ed0cda08a0e6a07db95884d1e82e9bec0e44c0885e281ab8dfb58f53215e70d7f33ee4359ac0f9c421c2f07544ae177ffffffff01bc2e0000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388ac00000000", "hex")
+  // })
 
   // psbt.addInput({
   //   hash: "8691a746381ee6c21dd206b07e75068018f436bf83b5fe6ba249974f59637d50",
@@ -58,18 +54,18 @@ function Main() {
   //   nonWitnessUtxo: Buffer.from("020000000001019462cf8959a06d5b65215a648ad8ccb17814efa08f70f7b2c8ee376415176e5a000000001716001497cccf62d2ed3dded4a86d6cce118bd08c571cbdfeffffff023c1b0000000000001976a914b58515a69527c806fd404d3d4aa490d56692310b88aceb32f901000000001976a914c80c4fdbc8d70bac6a20a7af273d137132f3c89788ac0247304402205085f90c858ea1eb81938371b0b6659a191f2c0c1816b6f48b64ff96fa404ffc02205321c63d54db7c3fb68667c1c95009f0522aa3a2b8c2a191a30419eca06aa9f30121025404399c93d61fa75f76c49377bd7eea76efe4a73021a4e04fd237b4913c2e5e7f212500", "hex")
   // })
 
-  psbt.addOutput({
-    address: "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w",
-    value: 11564
-  })
+  // psbt.addOutput({
+  //   address: "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w",
+  //   value: 11564
+  // })
 
-  psbt.signInput(0, testnetKeyPair)
+  // psbt.signInput(0, testnetKeyPair)
   // psbt.signInput(1, testnetKeyPair)
-  psbt.validateSignaturesOfInput(0, validator)
+  // psbt.validateSignaturesOfInput(0, validator)
   // psbt.validateSignaturesOfInput(1, validator)
-  psbt.finalizeAllInputs()
+  // psbt.finalizeAllInputs()
 
-  const transactionHEX = psbt.extractTransaction().toHex()
+  // const transactionHEX = psbt.extractTransaction().toHex()
 
   // Main - Select UTXOs to use (carousel selection)
   // Main - Show selected UTXOs
@@ -157,11 +153,12 @@ function Main() {
   //   }
   // }, [])
 
+  // let privateKey = crypto.randomBytes(32)
   // let result = ecc.pointFromScalar(privateKey, false)
 
   // btc pubkey to address
   // let riped = bitcoin.crypto.hash160(result)
-  // let prefix = Buffer.from("00", "hex")
+  // let prefix = Buffer.from("6F", "hex")
   // let prefix_riped = [prefix, riped]
   // let combined_prefix_riped = Buffer.concat(prefix_riped)
   // let checksum = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped)).slice(0, 4)
@@ -463,12 +460,17 @@ function Main() {
         </>
       ) : (
         <>
-          <div style={{ fontSize: "3rem" }}>ARTSNL</div>
+          {/* <div style={{ fontSize: "3rem" }}>ARTSNL</div>
           <div onClick={() => setPage(2)}>
             <MdNavigateNext className="icon" />
+          </div> */}
+
+          <div className="wallet-main__overlay">
+            <div className="wallet-main__asset-display"></div>
+            <div className="wallet-main__asset-display"></div>
           </div>
 
-          {/* <div className="interface__block">
+          <div className="interface__block">
             <div className="interface__block-cell interface__block-cell--space-between">
               <div className="title-font title-font--large">
                 <div className="title__subtitle">Create your private & public key pair.</div>
@@ -479,42 +481,23 @@ function Main() {
               </div>
               <MdMenu className="icon" />
             </div>
-            <div className="interface__block-cell">
-              <div className="interface__block-cell__description-block">
-                <div className="interface__block-cell--thin">Step 1: Random 32 Bytes</div>
-                <div className="interface__block-cell--thick">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil nisi et hic impedit perspiciatis minima voluptas vel quam pariatur distinctio officia id, itaque ratione nemo eveniet recusandae a excepturi natus?</div>
-              </div>
-            </div>
+            <div className="interface__block-cell"></div>
+            <div className="interface__block-cell"></div>
           </div>
           <div className="interface__block">
-            <div className="interface__block-cell">
-              {accepted ? (
-                ""
-              ) : (
-                <button onClick={handleRandomBytes} className="button-purple">
-                  Generate Random
-                </button>
-              )}
-            </div>
-            <div className="interface__block-cell interface__block-cell--thick interface__block-cell--display-block interface__block-cell--thick--font-large input-white">{randomBytes}</div>
+            <div className="interface__block-cell"></div>
+            <div className="interface__block-cell"></div>
+            <div className="interface__block-cell"></div>
           </div>
           <div className="interface__block">
-            <div className="interface__block-cell">
-              {randomBytes ? (
-                <button id="accept-button" onClick={handleAccept} className="button-purple">
-                  Accept
-                </button>
-              ) : (
-                ""
-              )}
-            </div>
-            <div className="interface__block-cell">{accepted ? <button className="button-purple button-purple--pulsing">Next: Private Key 🗝️</button> : ""}</div>
+            <div className="interface__block-cell"></div>
+            <div className="interface__block-cell"></div>
             <div className="interface__block-cell interface__block-cell__footer">
               <TbRefresh className="icon" />
               <div className="icon">ARTSNL</div>
               <MdLibraryBooks className="icon" />
             </div>
-          </div> */}
+          </div>
         </>
       )}
     </>

@@ -66,7 +66,8 @@ function App() {
     },
     bitcoin: {
       keyPair: null,
-      address: null
+      address: null,
+      testnetAddress: null
     },
     ethereum: {
       address: null
@@ -90,6 +91,9 @@ function App() {
         return
       case "setBitcoinAddress":
         draft.bitcoin.address = action.value
+        return
+      case "setTestnetAddress":
+        draft.bitcoin.testnetAddress = action.value
         return
       case "setEthereumAddress":
         draft.ethereum.address = action.value

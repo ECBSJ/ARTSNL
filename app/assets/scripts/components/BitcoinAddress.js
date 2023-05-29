@@ -42,16 +42,21 @@ function BitcoinAddress() {
   const [isModalDropDownOpen, setIsModalDropDownOpen] = useState(false)
   const modalDropDownRef = useRef()
 
-  // let riped = bitcoin.crypto.hash160(appState.keys.bufferPubKey)
-  // let prefix = Buffer.from("00", "hex")
-  // let prefix_riped = [prefix, riped]
-  // let combined_prefix_riped = Buffer.concat(prefix_riped)
-  // let checksum = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped)).slice(0, 4)
-  // let arr = [prefix, riped, checksum]
-  // let combinedBuff = Buffer.concat(arr)
-  // let address = base58.encode(combinedBuff)
+  function handleGenerateTestnetAddress() {
+    let riped = bitcoin.crypto.hash160(appState.keys.bufferPubKey)
+    let prefix = Buffer.from("6F", "hex")
+    let prefix_riped = [prefix, riped]
+    let combined_prefix_riped = Buffer.concat(prefix_riped)
+    let checksum = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped)).slice(0, 4)
+    let arr = [prefix, riped, checksum]
+    let combinedBuff = Buffer.concat(arr)
+    let address = base58.encode(combinedBuff)
 
-  function handleNext() {
+    return address
+  }
+
+  async function handleNext() {
+    await handleGenerateTestnetAddress().then(res => appDispatch({ type: "setTestnetAddress", value: res }))
     appDispatch({ type: "setLocalStorage" })
     navigate("/WalletMain")
   }
