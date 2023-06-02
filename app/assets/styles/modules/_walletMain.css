@@ -61,3 +61,44 @@
     }
   }
 }
+
+.snapshot {
+  &__overlay {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__function-wrapper {
+    width: 100%;
+    margin-bottom: 5px;
+    height: auto;
+  }
+
+  &__function-titlebar {
+    border: 1px solid purple;
+    border-radius: 15px;
+    cursor: pointer;
+    font-family: $title;
+    font-size: 2rem;
+    padding: 8px;
+  }
+
+  &__function-content {
+    &--display {
+      height: 333px;
+      max-height: 999px;
+      overflow: hidden;
+      transition: all 300ms cubic-bezier(1, 0, 1, 0);
+    }
+
+    &--hide {
+      height: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 300ms cubic-bezier(1, 0, 1, 0);
+    }
+  }
+}

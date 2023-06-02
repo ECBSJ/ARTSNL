@@ -5,6 +5,7 @@ import ECPairFactory from "ecpair"
 import * as ecc from "tiny-secp256k1"
 import * as bitcoin from "../../../../bitcoinjs-lib"
 import { ethers } from "ethers"
+import { Tooltip } from "react-tooltip"
 
 import { IconContext } from "react-icons"
 import { FaBitcoin, FaEthereum } from "react-icons/fa"
@@ -13,7 +14,7 @@ import { MdNavigateNext, MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/m
 import { TbRefresh } from "react-icons/tb"
 
 // IMPORT REACT COMPONENTS
-import AddressDetailsPage from "./AddressDetailsPage"
+import WalletMain_AssetDisplay from "./WalletMain_AssetDisplay"
 
 function WalletMain() {
   const appState = useContext(StateContext)
@@ -21,16 +22,10 @@ function WalletMain() {
 
   const ECPair = ECPairFactory(ecc)
   const Mainnet = bitcoin.networks.bitcoin
-  let mempoolProvider = mempoolJS({
-    hostname: "mempool.space",
-    network: "testnet",
-  })
 
   let recentBlock = appState.bitcoin.activeProvider?.bitcoin.blocks.getBlocksTipHeight()
-  console.log(recentBlock)
 
-  let infuraProvider = new ethers.InfuraProvider(5, "19e6398ef2ee4861bfa95987d08fbc50")
-  appState.ethereum.activeProvider?.getBlockNumber().then(console.log).catch(console.log)
+  // appState.ethereum.activeProvider?.getBlockNumber().then(console.log).catch(console.log)
 
   const [bitcoinAddressData, setBitcoinAddressData] = useState({})
   const [isAddressDetailsPageOpen, setIsAddressDetailsPageOpen] = useState(false)
@@ -39,9 +34,9 @@ function WalletMain() {
     setIsAddressDetailsPageOpen(true)
 
     const {
-      bitcoin: { addresses },
+      bitcoin: { addresses }
     } = await mempoolJS({
-      hostname: "mempool.space",
+      hostname: "mempool.space"
     })
 
     const addressResult = await addresses.getAddress({ address })
@@ -52,47 +47,32 @@ function WalletMain() {
     }
   }
 
-  const static_privKey = "3fdde77e8b442bc89dc890adf8fd72b4314e99ea7a205b9dd302114c9aefc493"
-  const static_publicKey = "0488a0dfca9af0d817962b25d1aa92d64e1645c94d452f6e75f61adc3f78d61b623637901afdf2efcb0bbf5badd82c2e559f22fe2f824438515614137443cb62ea"
-  const static_btc_address = "19G4UV3YDkTYj4G3XSYeUkzp4Ew6voQFiR"
-  const static_btc_testnet_address = "mon1mY8X2mtoWAjfF1X2JgD8vEXotDVsiY"
-  const static_eth_address = "0x9189561aed3229361a1aca088323a3ab0750c5d6"
-
-  console.log("isTestnet: " + appState.isTestnet)
+  const [openFunctionView, setOpenFunctionView] = useState(0)
 
   return (
     <>
       <div className="wallet-main__overlay">
-        <IconContext.Provider value={{ size: "300px" }}>
-          <div className="wallet-main__asset-display wallet-main__asset-display--bitcoin">
-            {static_btc_address ? (
-              <div className="wallet-main__asset-display--label">
-                <div style={{ fontSize: ".4em" }}>{appState.isTestnet ? static_btc_testnet_address : static_btc_address}</div>
-                <div>{appState.isTestnet ? "tBTC" : "BTC"}</div>
-                <div style={{ fontSize: ".6em" }}>{appState.isTestnet ? "testnet" : "mainnet"}</div>
-              </div>
-            ) : (
-              <div className="wallet-main__asset-display--label">
-                <div>Create a BTC wallet.</div>
-              </div>
-            )}
-            <FaBitcoin className="wallet-main__asset-display--bitcoin-logo" />
+        {/* <WalletMain_AssetDisplay /> */}
+        <div className="snapshot__overlay">
+          <div className="snapshot__function-wrapper">
+            <div onClick={() => setOpenFunctionView(0)} className="snapshot__function-titlebar">
+              SNAPSHOT
+            </div>
+            <div className={openFunctionView == 0 ? "snapshot__function-content--display" : "snapshot__function-content--hide"}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident, ex doloremque magni reiciendis eius aut recusandae ipsam vitae vero obcaecati, totam possimus similique temporibus deserunt distinctio tenetur nihil veritatis neque!</div>
           </div>
-          <div className="wallet-main__asset-display wallet-main__asset-display--ethereum">
-            {static_eth_address ? (
-              <div className="wallet-main__asset-display--label">
-                <div style={{ fontSize: ".4em" }}>{static_eth_address}</div>
-                <div>{appState.isTestnet ? "gETH" : "ETH"}</div>
-                <div style={{ fontSize: ".6em" }}>{appState.isTestnet ? "goerli" : "mainnet"}</div>
-              </div>
-            ) : (
-              <div className="wallet-main__asset-display--label">
-                <div>Create an ETH wallet.</div>
-              </div>
-            )}
-            <FaEthereum className="wallet-main__asset-display--ethereum-logo" />
+          <div className="snapshot__function-wrapper">
+            <div onClick={() => setOpenFunctionView(1)} className="snapshot__function-titlebar">
+              RECEIVE
+            </div>
+            <div className={openFunctionView == 1 ? "snapshot__function-content--display" : "snapshot__function-content--hide"}>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Id quidem commodi error libero voluptatem impedit at, facilis sequi praesentium maiores labore velit! Porro dolore corrupti exercitationem blanditiis! Neque, odio laudantium.</div>
           </div>
-        </IconContext.Provider>
+          <div className="snapshot__function-wrapper">
+            <div onClick={() => setOpenFunctionView(2)} className="snapshot__function-titlebar">
+              SEND
+            </div>
+            <div className={openFunctionView == 2 ? "snapshot__function-content--display" : "snapshot__function-content--hide"}>Lorem, ipsum dolor sit amet consectetur adipisicing elit. In enim aliquid cupiditate magni a magnam, esse vitae soluta! Qui vero aspernatur eaque earum unde id odit dolorum quasi molestias beatae!</div>
+          </div>
+        </div>
       </div>
 
       <div className="interface__block">
@@ -119,12 +99,13 @@ function WalletMain() {
         <div className="interface__block-cell"></div>
         <div className="interface__block-cell interface__block-cell__footer">
           <TbRefresh className="icon" />
-          {appState.isTestnet ? <BsHddNetwork onClick={() => appDispatch({ type: "toggleNetwork" })} className="icon" /> : <BsHddNetworkFill onClick={() => appDispatch({ type: "toggleNetwork" })} className="icon" />}
+          {appState.isTestnet ? <BsHddNetwork id="Tooltip" data-tooltip-content={"Switch to mainnet"} onClick={() => appDispatch({ type: "toggleNetwork" })} className="icon" /> : <BsHddNetworkFill id="Tooltip" data-tooltip-content={"Switch to testnet"} onClick={() => appDispatch({ type: "toggleNetwork" })} className="icon" />}
           <div className="icon">ARTSNL</div>
-          <BsReception4 className="icon" />
+          <BsReception4 id="Tooltip" data-tooltip-content={"Network Status: Connected"} className="icon" />
           <MdLibraryBooks className="icon" />
         </div>
       </div>
+      <Tooltip anchorSelect="#Tooltip" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" />
     </>
   )
 }
