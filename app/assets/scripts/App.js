@@ -1,7 +1,7 @@
 import "../styles/styles.css"
 
 // IMPORTING OF REACT PACKAGES
-import React, { Suspense } from "react"
+import React, { Suspense, useEffect } from "react"
 import ReactDOM from "react-dom/client"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import StateContext from "./StateContext"
@@ -12,6 +12,7 @@ import "react-tooltip/dist/react-tooltip.css"
 import * as uint8arraytools from "uint8array-tools"
 import * as crypto from "crypto"
 import { CSSTransition } from "react-transition-group"
+import { ethers } from "ethers"
 
 // IMPORTING OF COMPONENTS
 import Main from "./components/Main"
@@ -27,7 +28,7 @@ function App() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options
+      ...options,
     }
 
     if (options.expires instanceof Date) {
@@ -54,25 +55,32 @@ function App() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1
+      "max-age": -1,
     })
   }
 
   // immerReducer config
   const initialState = {
+    isTestnet: false,
     keys: {
       bufferPrivKey: null,
-      bufferPubKey: null
+      bufferPubKey: null,
     },
     bitcoin: {
+      mainnetProvider: null,
+      testnetProvider: null,
+      activeProvider: null,
       keyPair: null,
       address: null,
-      testnetAddress: null
+      testnetAddress: null,
     },
     ethereum: {
-      address: null
+      mainnetProvider: null,
+      testnetProvider: null,
+      activeProvider: null,
+      address: null,
     },
-    isMenuOpen: false
+    isMenuOpen: false,
   }
 
   function ourReducer(draft, action) {
@@ -101,7 +109,7 @@ function App() {
       case "setLocalStorage":
         let keyPairObject = {
           priv: uint8arraytools.toHex(draft.keys.bufferPrivKey),
-          pub: uint8arraytools.toHex(draft.keys.bufferPubKey)
+          pub: uint8arraytools.toHex(draft.keys.bufferPubKey),
         }
 
         let tobeEncrypted = JSON.stringify(keyPairObject)
@@ -131,10 +139,50 @@ function App() {
         // setting encrypted as cookie
         setCookie("encryptedKeyPair", encrypted, { "max-age": 3600000000000 })
         return
+      case "setBitcoinProviders":
+        let mempoolProvider = mempoolJS({
+          hostname: "mempool.space",
+        })
+
+        let mempoolTestnetProvider = mempoolJS({
+          hostname: "mempool.space",
+          network: "testnet",
+        })
+
+        draft.bitcoin.mainnetProvider = mempoolProvider
+        draft.bitcoin.testnetProvider = mempoolTestnetProvider
+        return
+      case "setEthereumProviders":
+        let infuraProvider = new ethers.InfuraProvider(1, "19e6398ef2ee4861bfa95987d08fbc50")
+        let infuraTestnetProvider = new ethers.InfuraProvider(5, "19e6398ef2ee4861bfa95987d08fbc50")
+
+        draft.ethereum.mainnetProvider = infuraProvider
+        draft.ethereum.testnetProvider = infuraTestnetProvider
+        return
+      case "toggleNetwork":
+        draft.isTestnet = !draft.isTestnet
+        return
+      case "setActiveProvider":
+        if (draft.isTestnet == false) {
+          draft.bitcoin.activeProvider = draft.bitcoin.mainnetProvider
+          draft.ethereum.activeProvider = draft.ethereum.mainnetProvider
+        } else {
+          draft.bitcoin.activeProvider = draft.bitcoin.testnetProvider
+          draft.ethereum.activeProvider = draft.ethereum.testnetProvider
+        }
     }
   }
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState)
+
+  useEffect(() => {
+    dispatch({ type: "setBitcoinProviders" })
+    dispatch({ type: "setEthereumProviders" })
+  }, [])
+
+  useEffect(() => {
+    dispatch({ type: "setActiveProvider" })
+  }, [state.isTestnet])
 
   return (
     <>
