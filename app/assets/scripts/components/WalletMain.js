@@ -55,22 +55,47 @@ function WalletMain() {
         {/* <WalletMain_AssetDisplay /> */}
         <div className="snapshot__overlay">
           <div className="snapshot__function-wrapper">
-            <div onClick={() => setOpenFunctionView(0)} className="snapshot__function-titlebar">
+            <div onClick={() => setOpenFunctionView(0)} className={"snapshot__function-titlebar snapshot__function-titlebar--orange " + (openFunctionView == 0 ? "snapshot__function-titlebar--orange--active" : "")}>
               SNAPSHOT
             </div>
-            <div className={openFunctionView == 0 ? "snapshot__function-content--display" : "snapshot__function-content--hide"}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident, ex doloremque magni reiciendis eius aut recusandae ipsam vitae vero obcaecati, totam possimus similique temporibus deserunt distinctio tenetur nihil veritatis neque!</div>
+            <div className={"snapshot__function-content " + (openFunctionView == 0 ? "snapshot__function-content--display" : "snapshot__function-content--hide")}>
+              <div className="snapshot__function-content__row">
+                <div style={{ fontSize: ".8rem", color: "gray" }}>Transactions</div>
+                <div>null</div>
+              </div>
+              <div className="snapshot__function-content__row">
+                <div style={{ fontSize: ".8rem", color: "gray" }}># of UTXO</div>
+                <div>null</div>
+              </div>
+              <div className="snapshot__function-content__row">
+                <div style={{ fontSize: ".8rem", color: "gray" }}>Historical rcvd</div>
+                <div>null</div>
+              </div>
+              <div className="snapshot__function-content__row">
+                <div style={{ fontSize: ".8rem", color: "gray" }}>Historical sent</div>
+                <div>null</div>
+              </div>
+              <div className="snapshot__function-content__row">
+                <div style={{ fontSize: ".8rem", color: "gray" }}>Tx in mempool</div>
+                <div>null</div>
+              </div>
+              <div className="snapshot__function-content__row">
+                <div style={{ fontSize: ".8rem", color: "gray" }}>Last tx</div>
+                <div>null</div>
+              </div>
+            </div>
           </div>
           <div className="snapshot__function-wrapper">
-            <div onClick={() => setOpenFunctionView(1)} className="snapshot__function-titlebar">
+            <div onClick={() => setOpenFunctionView(1)} className={"snapshot__function-titlebar snapshot__function-titlebar--orange " + (openFunctionView == 1 ? "snapshot__function-titlebar--orange--active" : "")}>
               RECEIVE
             </div>
-            <div className={openFunctionView == 1 ? "snapshot__function-content--display" : "snapshot__function-content--hide"}>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Id quidem commodi error libero voluptatem impedit at, facilis sequi praesentium maiores labore velit! Porro dolore corrupti exercitationem blanditiis! Neque, odio laudantium.</div>
+            <div className={"snapshot__function-content " + (openFunctionView == 1 ? "snapshot__function-content--display" : "snapshot__function-content--hide")}>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Id quidem commodi error libero voluptatem impedit at, facilis sequi praesentium maiores labore velit! Porro dolore corrupti exercitationem blanditiis! Neque, odio laudantium.</div>
           </div>
           <div className="snapshot__function-wrapper">
-            <div onClick={() => setOpenFunctionView(2)} className="snapshot__function-titlebar">
+            <div onClick={() => setOpenFunctionView(2)} className={"snapshot__function-titlebar snapshot__function-titlebar--orange " + (openFunctionView == 2 ? "snapshot__function-titlebar--orange--active" : "")}>
               SEND
             </div>
-            <div className={openFunctionView == 2 ? "snapshot__function-content--display" : "snapshot__function-content--hide"}>Lorem, ipsum dolor sit amet consectetur adipisicing elit. In enim aliquid cupiditate magni a magnam, esse vitae soluta! Qui vero aspernatur eaque earum unde id odit dolorum quasi molestias beatae!</div>
+            <div className={"snapshot__function-content " + (openFunctionView == 2 ? "snapshot__function-content--display" : "snapshot__function-content--hide")}>Lorem, ipsum dolor sit amet consectetur adipisicing elit. In enim aliquid cupiditate magni a magnam, esse vitae soluta! Qui vero aspernatur eaque earum unde id odit dolorum quasi molestias beatae!</div>
           </div>
         </div>
       </div>
