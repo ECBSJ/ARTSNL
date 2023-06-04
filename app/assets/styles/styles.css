@@ -14,6 +14,8 @@
 @import "modules/_qrCode.css";
 @import "modules/_walletMain.css";
 
+@import "modules/_standards.css";
+
 /* z-index values */
 /* 
 .qr-code__video-reader: 1000
