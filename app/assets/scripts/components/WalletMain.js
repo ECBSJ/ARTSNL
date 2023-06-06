@@ -11,13 +11,14 @@ import { CopyToClipboard } from "react-copy-to-clipboard"
 import { IconContext } from "react-icons"
 import { FaBitcoin, FaEthereum } from "react-icons/fa"
 import { BsHddNetworkFill, BsHddNetwork, BsReception1, BsReception4 } from "react-icons/bs"
-import { MdNavigateNext, MdMenu, MdLibraryBooks, MdCopyAll, MdOutlineArrowCircleRight } from "react-icons/md"
+import { MdArrowBack, MdNavigateNext, MdMenu, MdLibraryBooks, MdCopyAll, MdOutlineArrowCircleRight } from "react-icons/md"
 import { TbRefresh, TbWalletOff } from "react-icons/tb"
 import { CSSTransition } from "react-transition-group"
 
 // IMPORT REACT COMPONENTS
 import WalletMain_AssetDisplay from "./WalletMain_AssetDisplay"
 import Snapshot__Bitcoin from "./Snapshot__Bitcoin"
+import Snapshot__Ethereum from "./Snapshot__Ethereum"
 
 function WalletMain() {
   const appState = useContext(StateContext)
@@ -76,20 +77,65 @@ function WalletMain() {
           <WalletMain_AssetDisplay isAssetDisplayOpen={isAssetDisplayOpen} setIsAssetDisplayOpen={setIsAssetDisplayOpen} isBitcoinWalletOpen={isBitcoinWalletOpen} setIsBitcoinWalletOpen={setIsBitcoinWalletOpen} isEthereumWalletOpen={isEthereumWalletOpen} setIsEthereumWalletOpen={setIsEthereumWalletOpen} />
         </CSSTransition>
 
-        <CSSTransition in={isBitcoinWalletOpen} timeout={400} classNames="snapshot__overlay" unmountOnExit>
+        <CSSTransition in={isBitcoinWalletOpen} timeout={300} classNames="snapshot__overlay" unmountOnExit>
           <Snapshot__Bitcoin isAssetDisplayOpen={isAssetDisplayOpen} setIsAssetDisplayOpen={setIsAssetDisplayOpen} isBitcoinWalletOpen={isBitcoinWalletOpen} setIsBitcoinWalletOpen={setIsBitcoinWalletOpen} />
+        </CSSTransition>
+
+        <CSSTransition in={isEthereumWalletOpen} timeout={300} classNames="snapshot__overlay" unmountOnExit>
+          <Snapshot__Ethereum isAssetDisplayOpen={isAssetDisplayOpen} setIsAssetDisplayOpen={setIsAssetDisplayOpen} isEthereumWalletOpen={isEthereumWalletOpen} setIsEthereumWalletOpen={setIsEthereumWalletOpen} />
         </CSSTransition>
       </div>
 
       <div className="interface__block">
         <div className="interface__block-cell interface__block-cell--space-between">
-          <div className="title-font title-font--large">
-            <div className="title__subtitle">Your crypto journey starts here.</div>
-            <div style={{ display: "inline-block" }} className="purple-font">
-              🏠Your
-            </div>{" "}
-            Wallets
-          </div>
+          {isEthereumWalletOpen ? (
+            <>
+              <div className="title-font title-font--medium display-flex">
+                <div className="title__subtitle">Your Ethereum journey starts here.</div>
+                <MdArrowBack
+                  onClick={() => {
+                    setIsEthereumWalletOpen(!isEthereumWalletOpen)
+                    setIsAssetDisplayOpen(!isAssetDisplayOpen)
+                  }}
+                  className="icon"
+                />
+                Your{" "}
+                <div style={{ display: "inline-block" }} className="blue-font">
+                  ETH
+                </div>{" "}
+                Wallet
+              </div>
+            </>
+          ) : isBitcoinWalletOpen ? (
+            <>
+              <div className="title-font title-font--medium display-flex">
+                <div className="title__subtitle">Your Bitcoin journey starts here.</div>
+                <MdArrowBack
+                  onClick={() => {
+                    setIsBitcoinWalletOpen(!isBitcoinWalletOpen)
+                    setIsAssetDisplayOpen(!isAssetDisplayOpen)
+                  }}
+                  className="icon"
+                />
+                Your{" "}
+                <div style={{ display: "inline-block" }} className="orange-font">
+                  BTC
+                </div>{" "}
+                Wallet
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="title-font title-font--large">
+                <div className="title__subtitle">Your crypto journey starts here.</div>
+                <div style={{ display: "inline-block" }} className="purple-font">
+                  🏠Your
+                </div>{" "}
+                Wallets
+              </div>
+            </>
+          )}
+
           <MdMenu onClick={() => appDispatch({ type: "toggleMenu" })} className="icon" />
         </div>
         <div className="interface__block-cell"></div>

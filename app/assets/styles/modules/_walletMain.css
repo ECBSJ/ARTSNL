@@ -90,24 +90,20 @@
 
     &-enter {
       transform: translateX(-400px);
-      opacity: 0;
     }
 
     &-enter-active {
       transform: translateX(0);
-      opacity: 1;
-      transition: transform 400ms ease-in-out;
+      transition: transform 300ms ease-in-out;
     }
 
     &-exit {
       transform: translateX(0);
-      opacity: 1;
     }
 
     &-exit-active {
       transform: translateX(-400px);
-      opacity: 0;
-      transition: transform 400ms ease-in-out;
+      transition: transform 300ms ease-in-out;
     }
   }
 
@@ -138,6 +134,21 @@
       &--active {
         color: white;
         background-color: rgba(255, 166, 0, 0.589);
+      }
+    }
+
+    &--blue {
+      border-color: blue;
+      background-color: transparent;
+      transition: all 200ms ease-in-out;
+
+      &:hover {
+        background-color: rgba(0, 0, 255, 0.504);
+      }
+
+      &--active {
+        color: white;
+        background-color: rgba(0, 0, 255, 0.504);
       }
     }
   }
