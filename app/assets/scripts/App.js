@@ -28,7 +28,7 @@ function App() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options,
+      ...options
     }
 
     if (options.expires instanceof Date) {
@@ -55,7 +55,7 @@ function App() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1,
+      "max-age": -1
     })
   }
 
@@ -64,23 +64,23 @@ function App() {
     isTestnet: false,
     keys: {
       bufferPrivKey: null,
-      bufferPubKey: null,
+      bufferPubKey: null
     },
     bitcoin: {
       mainnetProvider: null,
       testnetProvider: null,
       activeProvider: null,
       keyPair: null,
-      address: null,
-      testnetAddress: null,
+      address: "19G4UV3YDkTYj4G3XSYeUkzp4Ew6voQFiR",
+      testnetAddress: "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
     },
     ethereum: {
       mainnetProvider: null,
       testnetProvider: null,
       activeProvider: null,
-      address: null,
+      address: null
     },
-    isMenuOpen: false,
+    isMenuOpen: false
   }
 
   function ourReducer(draft, action) {
@@ -109,7 +109,7 @@ function App() {
       case "setLocalStorage":
         let keyPairObject = {
           priv: uint8arraytools.toHex(draft.keys.bufferPrivKey),
-          pub: uint8arraytools.toHex(draft.keys.bufferPubKey),
+          pub: uint8arraytools.toHex(draft.keys.bufferPubKey)
         }
 
         let tobeEncrypted = JSON.stringify(keyPairObject)
@@ -141,12 +141,12 @@ function App() {
         return
       case "setBitcoinProviders":
         let mempoolProvider = mempoolJS({
-          hostname: "mempool.space",
+          hostname: "mempool.space"
         })
 
         let mempoolTestnetProvider = mempoolJS({
           hostname: "mempool.space",
-          network: "testnet",
+          network: "testnet"
         })
 
         draft.bitcoin.mainnetProvider = mempoolProvider
@@ -170,6 +170,7 @@ function App() {
           draft.bitcoin.activeProvider = draft.bitcoin.testnetProvider
           draft.ethereum.activeProvider = draft.ethereum.testnetProvider
         }
+        return
     }
   }
 

@@ -27,36 +27,16 @@ function WalletMain() {
   const ECPair = ECPairFactory(ecc)
   const Mainnet = bitcoin.networks.bitcoin
 
-  let recentBlock = appState.bitcoin.activeProvider?.bitcoin.blocks.getBlocksTipHeight()
+  const address = "19G4UV3YDkTYj4G3XSYeUkzp4Ew6voQFiR"
+
+  // let recentBlock = appState.bitcoin.activeProvider?.bitcoin.blocks.getBlocksTipHeight()
 
   // appState.ethereum.activeProvider?.getBlockNumber().then(console.log).catch(console.log)
-
-  const [bitcoinAddressData, setBitcoinAddressData] = useState({})
-  const [isAddressDetailsPageOpen, setIsAddressDetailsPageOpen] = useState(false)
-
-  async function getBitcoinAddressData(address) {
-    setIsAddressDetailsPageOpen(true)
-
-    const {
-      bitcoin: { addresses },
-    } = await mempoolJS({
-      hostname: "mempool.space",
-    })
-
-    const addressResult = await addresses.getAddress({ address })
-
-    if (addressResult) {
-      setBitcoinAddressData({ ...addressResult })
-      console.log(addressResult)
-    }
-  }
 
   const [openFunctionView, setOpenFunctionView] = useState(0)
   const [isAssetDisplayOpen, setIsAssetDisplayOpen] = useState(true)
   const [isBitcoinWalletOpen, setIsBitcoinWalletOpen] = useState(false)
   const [isEthereumWalletOpen, setIsEthereumWalletOpen] = useState(false)
-
-  const static_btc_address = "19G4UV3YDkTYj4G3XSYeUkzp4Ew6voQFiR"
 
   function handleCopyPopup() {
     document.querySelector(".icon-copy").classList.toggle("icon")

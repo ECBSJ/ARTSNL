@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
+import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 import QRCode from "react-qr-code"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import { MdCopyAll, MdOutlineArrowCircleRight } from "react-icons/md"
 import { TbWalletOff } from "react-icons/tb"
+import LazyLoadFallback from "./LazyLoadFallback"
 
 function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoinWalletOpen, setIsBitcoinWalletOpen }) {
+  const appState = useContext(StateContext)
+  const appDispatch = useContext(DispatchContext)
+
   const [openFunctionView, setOpenFunctionView] = useState(0)
 
   const static_btc_address = "19G4UV3YDkTYj4G3XSYeUkzp4Ew6voQFiR"
@@ -20,6 +26,28 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
   }
 
   let hasFunds = false
+  const [addressData_Object, setAddressData_Object] = useState(null)
+
+  async function getBitcoinAddressData() {
+    let address
+
+    if (appState.isTestnet == true) {
+      address = appState.bitcoin.testnetAddress
+    } else {
+      address = appState.bitcoin.address
+    }
+
+    let result = await appState.bitcoin.activeProvider?.bitcoin.addresses.getAddress({ address })
+
+    if (result) {
+      console.log(result.chain_stats)
+      setAddressData_Object(result.chain_stats)
+    }
+  }
+
+  useEffect(() => {
+    getBitcoinAddressData()
+  }, [])
 
   return (
     <>
@@ -28,32 +56,36 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
           <div onClick={() => setOpenFunctionView(0)} className={"snapshot__function-titlebar snapshot__function-titlebar--orange " + (openFunctionView == 0 ? "snapshot__function-titlebar--orange--active" : "")}>
             SNAPSHOT
           </div>
-          <div className={"snapshot__function-content " + (openFunctionView == 0 ? "snapshot__function-content--display" : "snapshot__function-content--hide")}>
-            <div className="snapshot__function-content__row">
-              <div style={{ fontSize: ".8rem", color: "gray" }}>Transactions</div>
-              <div>null</div>
+          {addressData_Object == null ? (
+            <LazyLoadFallback />
+          ) : (
+            <div className={"snapshot__function-content " + (openFunctionView == 0 ? "snapshot__function-content--display" : "snapshot__function-content--hide")}>
+              <div className="snapshot__function-content__row">
+                <div style={{ fontSize: ".8rem", color: "gray" }}>Transactions</div>
+                <div>null</div>
+              </div>
+              <div className="snapshot__function-content__row">
+                <div style={{ fontSize: ".8rem", color: "gray" }}># of UTXO</div>
+                <div>null</div>
+              </div>
+              <div className="snapshot__function-content__row">
+                <div style={{ fontSize: ".8rem", color: "gray" }}>Historical rcvd</div>
+                <div>null</div>
+              </div>
+              <div className="snapshot__function-content__row">
+                <div style={{ fontSize: ".8rem", color: "gray" }}>Historical sent</div>
+                <div>null</div>
+              </div>
+              <div className="snapshot__function-content__row">
+                <div style={{ fontSize: ".8rem", color: "gray" }}>Tx in mempool</div>
+                <div>null</div>
+              </div>
+              <div className="snapshot__function-content__row">
+                <div style={{ fontSize: ".8rem", color: "gray" }}>Last tx</div>
+                <div>null</div>
+              </div>
             </div>
-            <div className="snapshot__function-content__row">
-              <div style={{ fontSize: ".8rem", color: "gray" }}># of UTXO</div>
-              <div>null</div>
-            </div>
-            <div className="snapshot__function-content__row">
-              <div style={{ fontSize: ".8rem", color: "gray" }}>Historical rcvd</div>
-              <div>null</div>
-            </div>
-            <div className="snapshot__function-content__row">
-              <div style={{ fontSize: ".8rem", color: "gray" }}>Historical sent</div>
-              <div>null</div>
-            </div>
-            <div className="snapshot__function-content__row">
-              <div style={{ fontSize: ".8rem", color: "gray" }}>Tx in mempool</div>
-              <div>null</div>
-            </div>
-            <div className="snapshot__function-content__row">
-              <div style={{ fontSize: ".8rem", color: "gray" }}>Last tx</div>
-              <div>null</div>
-            </div>
-          </div>
+          )}
         </div>
         <div className="snapshot__function-wrapper">
           <div onClick={() => setOpenFunctionView(1)} className={"snapshot__function-titlebar snapshot__function-titlebar--orange " + (openFunctionView == 1 ? "snapshot__function-titlebar--orange--active" : "")}>

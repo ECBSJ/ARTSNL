@@ -30,28 +30,28 @@ function Snapshot__Ethereum({ isAssetDisplayOpen, setIsAssetDisplayOpen, isEther
           </div>
           <div className={"snapshot__function-content " + (openFunctionView == 0 ? "snapshot__function-content--display" : "snapshot__function-content--hide")}>
             <div className="snapshot__function-content__row">
-              <div style={{ fontSize: ".8rem", color: "gray" }}>Transactions</div>
+              <div style={{ fontSize: ".8rem", color: "gray" }}>Balance</div>
               <div>null</div>
             </div>
             <div className="snapshot__function-content__row">
-              <div style={{ fontSize: ".8rem", color: "gray" }}># of UTXO</div>
+              <div style={{ fontSize: ".8rem", color: "gray" }}># TXs sent</div>
               <div>null</div>
             </div>
             <div className="snapshot__function-content__row">
-              <div style={{ fontSize: ".8rem", color: "gray" }}>Historical rcvd</div>
-              <div>null</div>
+              <div style={{ fontSize: ".8rem", color: "gray" }}></div>
+              <div></div>
             </div>
             <div className="snapshot__function-content__row">
-              <div style={{ fontSize: ".8rem", color: "gray" }}>Historical sent</div>
-              <div>null</div>
+              <div style={{ fontSize: ".8rem", color: "gray" }}></div>
+              <div></div>
             </div>
             <div className="snapshot__function-content__row">
-              <div style={{ fontSize: ".8rem", color: "gray" }}>Tx in mempool</div>
-              <div>null</div>
+              <div style={{ fontSize: ".8rem", color: "gray" }}></div>
+              <div></div>
             </div>
             <div className="snapshot__function-content__row">
-              <div style={{ fontSize: ".8rem", color: "gray" }}>Last tx</div>
-              <div>null</div>
+              <div style={{ fontSize: ".8rem", color: "gray" }}></div>
+              <div></div>
             </div>
           </div>
         </div>
