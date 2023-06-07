@@ -20,6 +20,15 @@
     z-index: 300;
   }
 
+  &--error {
+    color: red;
+
+    &:hover {
+      color: red;
+      cursor: auto;
+    }
+  }
+
   &-copy {
     &--active {
       color: lightseagreen;

@@ -5,6 +5,7 @@ import QRCode from "react-qr-code"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import { MdCopyAll, MdOutlineArrowCircleRight } from "react-icons/md"
 import { TbWalletOff } from "react-icons/tb"
+import { VscBracketError } from "react-icons/vsc"
 import LazyLoadFallback from "./LazyLoadFallback"
 
 function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoinWalletOpen, setIsBitcoinWalletOpen }) {
@@ -26,16 +27,27 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
   }
 
   let hasFunds = false
+
+  const [hasErrors, setHasErrors] = useState(false)
   const [isFetching, setIsFetching] = useState(false)
   const [addressData_Object, setAddressData_Object] = useState({
     funded_txo_count: null,
     funded_txo_sum: null,
     spent_txo_count: null,
     spent_txo_sum: null,
-    tx_count: null,
+    tx_count: null
+  })
+
+  const [addressDataMempool_Object, setAddressDataMempool_Object] = useState({
+    funded_txo_count: null,
+    funded_txo_sum: null,
+    spent_txo_count: null,
+    spent_txo_sum: null,
+    tx_count: null
   })
 
   async function getBitcoinAddressData() {
+    setHasErrors(false)
     setIsFetching(true)
 
     let address
@@ -46,14 +58,27 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
       address = appState.bitcoin.address
     }
 
-    let result = await appState.bitcoin.activeProvider?.bitcoin.addresses.getAddress({ address })
+    try {
+      let result = await appState.bitcoin.activeProvider?.bitcoin.addresses.getAddress({ address })
 
-    if (result) {
-      console.log(result.chain_stats)
-      setAddressData_Object((addressData_Object) => ({
-        ...result.chain_stats,
-      }))
+      if (result) {
+        console.log(result)
+        setAddressData_Object(addressData_Object => ({
+          ...result.chain_stats
+        }))
+        setAddressDataMempool_Object(addressDataMempool_Object => ({
+          ...result.mempool_stats
+        }))
+        setIsFetching(false)
+      } else {
+        console.error("Bitcoin address data failed to fetch from API. Reason unknown. Please try again.")
+        setIsFetching(false)
+        setHasErrors(true)
+      }
+    } catch (error) {
+      console.error(error)
       setIsFetching(false)
+      setHasErrors(true)
     }
   }
 
@@ -71,6 +96,14 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
           <div className={"snapshot__function-content " + (openFunctionView == 0 ? "snapshot__function-content--display" : "snapshot__function-content--hide")}>
             {isFetching ? (
               <LazyLoadFallback />
+            ) : hasErrors ? (
+              <>
+                <VscBracketError className="icon icon--error" />
+                <div style={{ width: "80%", fontSize: ".56rem", color: "gray", textAlign: "justify", paddingTop: "10px" }}>
+                  <p>&#x2022;Unable to retrieve bitcoin address data from API.</p>
+                  <p>&#x2022;Please check your internet connection and then click on the bottom left refresh icon.</p>
+                </div>
+              </>
             ) : (
               <>
                 <div className="snapshot__function-content__row">
@@ -95,10 +128,10 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
                 </div>
                 <div className="snapshot__function-content__row">
                   <div style={{ fontSize: ".8rem", color: "gray" }}>Tx in mempool</div>
-                  <div>null</div>
+                  <div>{addressDataMempool_Object.tx_count}</div>
                 </div>
                 <div className="snapshot__function-content__row">
-                  <div style={{ fontSize: ".8rem", color: "gray" }}>Last tx</div>
+                  <div style={{ fontSize: ".8rem", color: "gray" }}>Last confirmed tx</div>
                   <div>null</div>
                 </div>
               </>

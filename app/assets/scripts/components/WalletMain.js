@@ -130,7 +130,7 @@ function WalletMain() {
         <div className="interface__block-cell"></div>
         <div className="interface__block-cell"></div>
         <div className="interface__block-cell interface__block-cell__footer">
-          <TbRefresh className="icon" />
+          <TbRefresh id="Tooltip" data-tooltip-content={"Refresh"} className="icon" />
           {appState.isTestnet ? <BsHddNetwork id="Tooltip" data-tooltip-content={"Switch to mainnet"} onClick={() => appDispatch({ type: "toggleNetwork" })} className="icon" /> : <BsHddNetworkFill id="Tooltip" data-tooltip-content={"Switch to testnet"} onClick={() => appDispatch({ type: "toggleNetwork" })} className="icon" />}
           <div className="icon">ARTSNL</div>
           <BsReception4 id="Tooltip" data-tooltip-content={"Network Status: Connected"} className="icon" />
