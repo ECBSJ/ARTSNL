@@ -210,12 +210,15 @@ function Main() {
   //   }
 
   //   setSomeObject((someObject) => ({
-  //     ...someObject,
   //     ...newObject,
   //   }))
 
   //   console.log(someObject)
   // }
+
+  // useEffect(() => {
+  //   handleObjectUpdate()
+  // }, [])
 
   // function handleCopyPopup() {
   //   document.querySelector(".icon-copy").classList.toggle("icon")
@@ -252,14 +255,14 @@ function Main() {
 
     await wallet
       .encrypt(secret)
-      .then(res => {
+      .then((res) => {
         encryptedJSON = res
         setCookie("key", encryptedJSON, { "max-age": 36000 })
       })
       .catch(console.error)
 
     if (encryptedJSON) {
-      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then(res => (decryptedWallet = res))
+      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then((res) => (decryptedWallet = res))
     }
 
     console.log(secret)
@@ -271,7 +274,7 @@ function Main() {
     let keyStore = getCookie("key")
 
     if (typeof secret == "string" && typeof keyStore == "string") {
-      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then(res => console.log(res))
+      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then((res) => console.log(res))
     }
   }
 
@@ -279,7 +282,7 @@ function Main() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options
+      ...options,
     }
 
     if (options.expires instanceof Date) {
@@ -306,7 +309,7 @@ function Main() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1
+      "max-age": -1,
     })
   }
 
