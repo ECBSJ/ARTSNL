@@ -30,12 +30,13 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
 
   const [hasErrors, setHasErrors] = useState(false)
   const [isFetching, setIsFetching] = useState(false)
+
   const [addressData_Object, setAddressData_Object] = useState({
     funded_txo_count: null,
     funded_txo_sum: null,
     spent_txo_count: null,
     spent_txo_sum: null,
-    tx_count: null
+    tx_count: null,
   })
 
   const [addressDataMempool_Object, setAddressDataMempool_Object] = useState({
@@ -43,7 +44,7 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
     funded_txo_sum: null,
     spent_txo_count: null,
     spent_txo_sum: null,
-    tx_count: null
+    tx_count: null,
   })
 
   async function getBitcoinAddressData() {
@@ -63,11 +64,11 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
 
       if (result) {
         console.log(result)
-        setAddressData_Object(addressData_Object => ({
-          ...result.chain_stats
+        setAddressData_Object((addressData_Object) => ({
+          ...result.chain_stats,
         }))
-        setAddressDataMempool_Object(addressDataMempool_Object => ({
-          ...result.mempool_stats
+        setAddressDataMempool_Object((addressDataMempool_Object) => ({
+          ...result.mempool_stats,
         }))
         setIsFetching(false)
       } else {
@@ -82,8 +83,49 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
     }
   }
 
+  const [txsDataHasErrors, setTxsDataHasErrors] = useState(false)
+  const [isFetchingTxsData, setIsFetchingTxsData] = useState(false)
+  const [txsData_Array, setTxsData_Array] = useState([])
+  const [lastConfirmedTxDate, setLastConfirmedTxDate] = useState()
+
+  async function getBitcoinAddressTxsData() {
+    setIsFetchingTxsData(true)
+    setTxsDataHasErrors(false)
+
+    let address
+
+    if (appState.isTestnet == true) {
+      address = appState.bitcoin.testnetAddress
+    } else {
+      address = appState.bitcoin.address
+    }
+
+    try {
+      let result = await appState.bitcoin.activeProvider?.bitcoin.addresses.getAddressTxsChain({ address })
+
+      if (result) {
+        console.log(result)
+        setTxsData_Array(result)
+
+        let lastDate = new Date(result[0].status.block_time * 1000).toLocaleDateString()
+        setLastConfirmedTxDate(lastDate)
+
+        setIsFetchingTxsData(false)
+      } else {
+        console.error("Bitcoin address tx history failed to fetch from API. Reason unknown. Please try again.")
+        setIsFetchingTxsData(false)
+        setTxsDataHasErrors(true)
+      }
+    } catch (error) {
+      console.error(error)
+      setIsFetchingTxsData(false)
+      setTxsDataHasErrors(true)
+    }
+  }
+
   useEffect(() => {
     getBitcoinAddressData()
+    getBitcoinAddressTxsData()
   }, [])
 
   return (
@@ -132,7 +174,7 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
                 </div>
                 <div className="snapshot__function-content__row">
                   <div style={{ fontSize: ".8rem", color: "gray" }}>Last confirmed tx</div>
-                  <div>null</div>
+                  <div>{txsDataHasErrors ? <div style={{ color: "red" }}>error</div> : <div>{lastConfirmedTxDate}</div>}</div>
                 </div>
               </>
             )}
