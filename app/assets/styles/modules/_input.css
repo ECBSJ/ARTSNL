@@ -18,7 +18,7 @@ input {
   }
 }
 
-span {
+.input-placeholder {
   position: absolute;
   top: 25px;
   left: 22px;

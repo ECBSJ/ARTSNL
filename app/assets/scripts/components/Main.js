@@ -255,14 +255,14 @@ function Main() {
 
     await wallet
       .encrypt(secret)
-      .then((res) => {
+      .then(res => {
         encryptedJSON = res
         setCookie("key", encryptedJSON, { "max-age": 36000 })
       })
       .catch(console.error)
 
     if (encryptedJSON) {
-      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then((res) => (decryptedWallet = res))
+      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then(res => (decryptedWallet = res))
     }
 
     console.log(secret)
@@ -274,7 +274,7 @@ function Main() {
     let keyStore = getCookie("key")
 
     if (typeof secret == "string" && typeof keyStore == "string") {
-      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then((res) => console.log(res))
+      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then(res => console.log(res))
     }
   }
 
@@ -282,7 +282,7 @@ function Main() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options,
+      ...options
     }
 
     if (options.expires instanceof Date) {
@@ -309,7 +309,7 @@ function Main() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1,
+      "max-age": -1
     })
   }
 
@@ -464,12 +464,12 @@ function Main() {
         </>
       ) : (
         <>
-          {/* <div style={{ fontSize: "3rem" }}>ARTSNL</div>
+          <div style={{ fontSize: "3rem" }}>ARTSNL</div>
           <div onClick={() => setPage(2)}>
             <MdNavigateNext className="icon" />
-          </div> */}
+          </div>
 
-          <div className="wallet-main__overlay">
+          {/* <div className="wallet-main__overlay">
             <IconContext.Provider value={{ size: "300px" }}>
               <div className="wallet-main__asset-display wallet-main__asset-display--bitcoin">
                 {static_btc_address ? (
@@ -531,7 +531,7 @@ function Main() {
               <BsReception4 className="icon" />
               <MdLibraryBooks className="icon" />
             </div>
-          </div>
+          </div> */}
         </>
       )}
     </>

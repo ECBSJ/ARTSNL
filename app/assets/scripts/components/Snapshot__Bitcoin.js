@@ -36,7 +36,7 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
     funded_txo_sum: null,
     spent_txo_count: null,
     spent_txo_sum: null,
-    tx_count: null,
+    tx_count: null
   })
 
   const [addressDataMempool_Object, setAddressDataMempool_Object] = useState({
@@ -44,7 +44,7 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
     funded_txo_sum: null,
     spent_txo_count: null,
     spent_txo_sum: null,
-    tx_count: null,
+    tx_count: null
   })
 
   async function getBitcoinAddressData() {
@@ -64,11 +64,11 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
 
       if (result) {
         console.log(result)
-        setAddressData_Object((addressData_Object) => ({
-          ...result.chain_stats,
+        setAddressData_Object(addressData_Object => ({
+          ...result.chain_stats
         }))
-        setAddressDataMempool_Object((addressDataMempool_Object) => ({
-          ...result.mempool_stats,
+        setAddressDataMempool_Object(addressDataMempool_Object => ({
+          ...result.mempool_stats
         }))
         setIsFetching(false)
       } else {
@@ -86,7 +86,7 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
   const [txsDataHasErrors, setTxsDataHasErrors] = useState(false)
   const [isFetchingTxsData, setIsFetchingTxsData] = useState(false)
   const [txsData_Array, setTxsData_Array] = useState([])
-  const [lastConfirmedTxDate, setLastConfirmedTxDate] = useState()
+  const [lastConfirmedTxDate, setLastConfirmedTxDate] = useState("n/a")
 
   async function getBitcoinAddressTxsData() {
     setIsFetchingTxsData(true)
@@ -107,8 +107,10 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
         console.log(result)
         setTxsData_Array(result)
 
-        let lastDate = new Date(result[0].status.block_time * 1000).toLocaleDateString()
-        setLastConfirmedTxDate(lastDate)
+        if (!result.length == 0) {
+          let lastDate = new Date(result[0].status.block_time * 1000).toLocaleDateString()
+          setLastConfirmedTxDate(lastDate)
+        }
 
         setIsFetchingTxsData(false)
       } else {
@@ -194,7 +196,7 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
               <CopyToClipboard text={static_btc_address} onCopy={() => handleCopyPopup()}>
                 <MdCopyAll style={{ width: "20px", height: "20px" }} className="icon icon-copy" />
               </CopyToClipboard>
-              {static_btc_address}
+              {appState.isTestnet ? appState.bitcoin.testnetAddress : appState.bitcoin.address}
             </div>
             <div style={{ fontSize: ".5rem", color: "red", width: "80%", textAlign: "justify" }}>This BTC address is a P2PKH address. Always confirm the receiving address before broadcasting transaction. Sending BTC to the wrong address will result in loss of funds.</div>
           </div>

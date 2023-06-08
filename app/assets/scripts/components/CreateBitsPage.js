@@ -73,7 +73,7 @@ function CreateBitsPage({ bits, setBits, setOnCreateBitsPage, setOnDisplayMultip
       <div className="interface__block">
         <div className="interface__block-cell">
           <input className="input-purple" onChange={e => validateBits(e.target.value)} type="text" required />
-          <span>Input 256 bits</span>
+          <span className="input-placeholder">Input 256 bits</span>
           <div className="input-validation">bit count: {bits.length}</div>
           {hasErrors ? <div className="input-validation input-validation--error">{errorMessage}</div> : ""}
         </div>

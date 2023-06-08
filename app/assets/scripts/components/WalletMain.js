@@ -107,7 +107,9 @@ function WalletMain() {
           ) : (
             <>
               <div className="title-font title-font--large">
-                <div className="title__subtitle">Your crypto journey starts here.</div>
+                <div className="title__subtitle">
+                  Your <span style={{ color: "white" }}>crypto</span> journey starts here.
+                </div>
                 <div style={{ display: "inline-block" }} className="purple-font">
                   🏠Your
                 </div>{" "}
