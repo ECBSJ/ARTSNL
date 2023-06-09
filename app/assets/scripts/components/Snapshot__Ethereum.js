@@ -4,7 +4,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard"
 import { MdCopyAll, MdOutlineArrowCircleRight } from "react-icons/md"
 import { TbWalletOff } from "react-icons/tb"
 
-function Snapshot__Ethereum({ isAssetDisplayOpen, setIsAssetDisplayOpen, isEthereumWalletOpen, setIsEthereumWalletOpen }) {
+function Snapshot__Ethereum({ hasErrors_Eth, setHasErrors_Eth, isFetching_Eth, setIsFetching_Eth, ethAddressBalance, setEthAddressBalance, ethAddressTxCount, setEthAddressTxCount, getEthereumAddressData }) {
   const [openFunctionView, setOpenFunctionView] = useState(0)
 
   let static_eth_address = "0x9189561aed3229361a1aca088323a3ab0750c5d6"
@@ -20,6 +20,10 @@ function Snapshot__Ethereum({ isAssetDisplayOpen, setIsAssetDisplayOpen, isEther
   }
 
   let hasFunds = false
+
+  useEffect(() => {
+    getEthereumAddressData()
+  }, [])
 
   return (
     <>

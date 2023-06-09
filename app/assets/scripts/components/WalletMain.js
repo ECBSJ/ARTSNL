@@ -25,7 +25,6 @@ function WalletMain() {
   const appDispatch = useContext(DispatchContext)
 
   // let recentBlock = appState.bitcoin.activeProvider?.bitcoin.blocks.getBlocksTipHeight()
-
   // appState.ethereum.activeProvider?.getBlockNumber().then(console.log).catch(console.log)
 
   const [isAssetDisplayOpen, setIsAssetDisplayOpen] = useState(true)
@@ -51,7 +50,7 @@ function WalletMain() {
     funded_txo_sum: null,
     spent_txo_count: null,
     spent_txo_sum: null,
-    tx_count: null,
+    tx_count: null
   })
 
   const [addressDataMempool_Object, setAddressDataMempool_Object] = useState({
@@ -59,7 +58,7 @@ function WalletMain() {
     funded_txo_sum: null,
     spent_txo_count: null,
     spent_txo_sum: null,
-    tx_count: null,
+    tx_count: null
   })
 
   async function getBitcoinAddressData() {
@@ -79,11 +78,11 @@ function WalletMain() {
 
       if (result) {
         console.log(result)
-        setAddressData_Object((addressData_Object) => ({
-          ...result.chain_stats,
+        setAddressData_Object(addressData_Object => ({
+          ...result.chain_stats
         }))
-        setAddressDataMempool_Object((addressDataMempool_Object) => ({
-          ...result.mempool_stats,
+        setAddressDataMempool_Object(addressDataMempool_Object => ({
+          ...result.mempool_stats
         }))
         setIsFetching(false)
       } else {
@@ -142,6 +141,39 @@ function WalletMain() {
     }
   }
 
+  // Snapshot_Ethereum component props
+  const [hasErrors_Eth, setHasErrors_Eth] = useState(false)
+  const [isFetching_Eth, setIsFetching_Eth] = useState(false)
+
+  const [ethAddressBalance, setEthAddressBalance] = useState()
+  const [ethAddressTxCount, setEthAddressTxCount] = useState()
+
+  async function getEthereumAddressData() {
+    setHasErrors_Eth(false)
+    setIsFetching_Eth(true)
+
+    try {
+      let balanceResult = await appState.ethereum.activeProvider?.getBalance(appState.ethereum.address)
+      let txCountResult = await appState.ethereum.activeProvider?.getTransactionCount(appState.ethereum.address)
+
+      if (balanceResult && txCountResult) {
+        console.log(txCountResult)
+        console.log("Balance (wei) of " + appState.ethereum.address + ": " + balanceResult)
+        setEthAddressBalance(balanceResult)
+        setEthAddressTxCount(txCountResult)
+        setIsFetching(false)
+      } else {
+        console.error("Ethereum address data failed to fetch from API. Reason unknown. Please try again.")
+        setIsFetching(false)
+        setHasErrors(true)
+      }
+    } catch (error) {
+      console.error(error)
+      setIsFetching(false)
+      setHasErrors(true)
+    }
+  }
+
   async function handleRefresh() {
     if (isAssetDisplayOpen) {
       null
@@ -169,7 +201,7 @@ function WalletMain() {
         </CSSTransition>
 
         <CSSTransition in={isEthereumWalletOpen} timeout={300} classNames="snapshot__overlay" unmountOnExit>
-          <Snapshot__Ethereum isAssetDisplayOpen={isAssetDisplayOpen} setIsAssetDisplayOpen={setIsAssetDisplayOpen} isEthereumWalletOpen={isEthereumWalletOpen} setIsEthereumWalletOpen={setIsEthereumWalletOpen} />
+          <Snapshot__Ethereum hasErrors_Eth={hasErrors_Eth} setHasErrors_Eth={setHasErrors_Eth} isFetching_Eth={isFetching_Eth} setIsFetching_Eth={setIsFetching_Eth} ethAddressBalance={ethAddressBalance} setEthAddressBalance={setEthAddressBalance} ethAddressTxCount={ethAddressTxCount} setEthAddressTxCount={setEthAddressTxCount} getEthereumAddressData={getEthereumAddressData} />
         </CSSTransition>
       </div>
 
@@ -178,7 +210,9 @@ function WalletMain() {
           {isEthereumWalletOpen ? (
             <>
               <div className="title-font title-font--medium display-flex">
-                <div className="title__subtitle">Your Ethereum journey starts here.</div>
+                <div className="title__subtitle">
+                  Your <span style={{ color: "lightBlue" }}>{appState.isTestnet ? "Ethereum Goerli" : "Ethereum"}</span> journey starts here.
+                </div>
                 <MdArrowBack
                   onClick={() => {
                     setIsEthereumWalletOpen(!isEthereumWalletOpen)
@@ -186,17 +220,15 @@ function WalletMain() {
                   }}
                   className="icon"
                 />
-                Your{" "}
-                <div style={{ display: "inline-block" }} className="blue-font">
-                  ETH
-                </div>{" "}
-                Wallet
+                Your <span style={{ display: "contents", color: "blue" }}>{appState.isTestnet ? "gETH" : "ETH"}</span> Wallet
               </div>
             </>
           ) : isBitcoinWalletOpen ? (
             <>
               <div className="title-font title-font--medium display-flex">
-                <div className="title__subtitle">Your Bitcoin journey starts here.</div>
+                <div className="title__subtitle">
+                  Your <span style={{ color: "orange" }}>{appState.isTestnet ? "Bitcoin Testnet" : "Bitcoin"}</span> journey starts here.
+                </div>
                 <MdArrowBack
                   onClick={() => {
                     setIsBitcoinWalletOpen(!isBitcoinWalletOpen)
@@ -204,11 +236,7 @@ function WalletMain() {
                   }}
                   className="icon"
                 />
-                Your{" "}
-                <div style={{ display: "inline-block" }} className="orange-font">
-                  BTC
-                </div>{" "}
-                Wallet
+                Your <div style={{ display: "contents", color: "orange" }}>{appState.isTestnet ? "tBTC" : "BTC"}</div> Wallet
               </div>
             </>
           ) : (

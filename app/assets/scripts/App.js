@@ -78,7 +78,7 @@ function App() {
       mainnetProvider: null,
       testnetProvider: null,
       activeProvider: null,
-      address: null
+      address: "0x32F249180D2d91A3a8EcAeBE9283Bde3C8903986"
     },
     isMenuOpen: false
   }
