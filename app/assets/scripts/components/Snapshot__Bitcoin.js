@@ -8,13 +8,11 @@ import { TbWalletOff } from "react-icons/tb"
 import { VscBracketError } from "react-icons/vsc"
 import LazyLoadFallback from "./LazyLoadFallback"
 
-function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoinWalletOpen, setIsBitcoinWalletOpen }) {
+function Snapshot__Bitcoin({ hasErrors, setHasErrors, isFetching, setIsFetching, addressData_Object, setAddressData_Object, addressDataMempool_Object, setAddressDataMempool_Object, getBitcoinAddressData, txsDataHasErrors, setTxsDataHasErrors, isFetchingTxsData, setIsFetchingTxsData, txsData_Array, setTxsData_Array, lastConfirmedTxDate, setLastConfirmedTxDate, getBitcoinAddressTxsData }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
   const [openFunctionView, setOpenFunctionView] = useState(0)
-
-  const static_btc_address = "19G4UV3YDkTYj4G3XSYeUkzp4Ew6voQFiR"
 
   function handleCopyPopup() {
     document.querySelector(".icon-copy").classList.toggle("icon")
@@ -24,105 +22,6 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
       document.querySelector(".icon-copy").classList.toggle("icon")
       document.querySelector(".icon-copy").classList.toggle("icon-copy--active")
     }, 1000)
-  }
-
-  let hasFunds = false
-
-  const [hasErrors, setHasErrors] = useState(false)
-  const [isFetching, setIsFetching] = useState(false)
-
-  const [addressData_Object, setAddressData_Object] = useState({
-    funded_txo_count: null,
-    funded_txo_sum: null,
-    spent_txo_count: null,
-    spent_txo_sum: null,
-    tx_count: null
-  })
-
-  const [addressDataMempool_Object, setAddressDataMempool_Object] = useState({
-    funded_txo_count: null,
-    funded_txo_sum: null,
-    spent_txo_count: null,
-    spent_txo_sum: null,
-    tx_count: null
-  })
-
-  async function getBitcoinAddressData() {
-    setHasErrors(false)
-    setIsFetching(true)
-
-    let address
-
-    if (appState.isTestnet == true) {
-      address = appState.bitcoin.testnetAddress
-    } else {
-      address = appState.bitcoin.address
-    }
-
-    try {
-      let result = await appState.bitcoin.activeProvider?.bitcoin.addresses.getAddress({ address })
-
-      if (result) {
-        console.log(result)
-        setAddressData_Object(addressData_Object => ({
-          ...result.chain_stats
-        }))
-        setAddressDataMempool_Object(addressDataMempool_Object => ({
-          ...result.mempool_stats
-        }))
-        setIsFetching(false)
-      } else {
-        console.error("Bitcoin address data failed to fetch from API. Reason unknown. Please try again.")
-        setIsFetching(false)
-        setHasErrors(true)
-      }
-    } catch (error) {
-      console.error(error)
-      setIsFetching(false)
-      setHasErrors(true)
-    }
-  }
-
-  const [txsDataHasErrors, setTxsDataHasErrors] = useState(false)
-  const [isFetchingTxsData, setIsFetchingTxsData] = useState(false)
-  const [txsData_Array, setTxsData_Array] = useState([])
-  const [lastConfirmedTxDate, setLastConfirmedTxDate] = useState("n/a")
-
-  async function getBitcoinAddressTxsData() {
-    setIsFetchingTxsData(true)
-    setTxsDataHasErrors(false)
-
-    let address
-
-    if (appState.isTestnet == true) {
-      address = appState.bitcoin.testnetAddress
-    } else {
-      address = appState.bitcoin.address
-    }
-
-    try {
-      let result = await appState.bitcoin.activeProvider?.bitcoin.addresses.getAddressTxsChain({ address })
-
-      if (result) {
-        console.log(result)
-        setTxsData_Array(result)
-
-        if (!result.length == 0) {
-          let lastDate = new Date(result[0].status.block_time * 1000).toLocaleDateString()
-          setLastConfirmedTxDate(lastDate)
-        }
-
-        setIsFetchingTxsData(false)
-      } else {
-        console.error("Bitcoin address tx history failed to fetch from API. Reason unknown. Please try again.")
-        setIsFetchingTxsData(false)
-        setTxsDataHasErrors(true)
-      }
-    } catch (error) {
-      console.error(error)
-      setIsFetchingTxsData(false)
-      setTxsDataHasErrors(true)
-    }
   }
 
   useEffect(() => {
@@ -190,10 +89,10 @@ function Snapshot__Bitcoin({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoi
             <div>Deposit BTC Here</div>
             <div style={{ fontSize: ".5rem", color: "gray", width: "80%", textAlign: "justify" }}>Fund your bitcoin wallet by depositing funds to the QR code below. Or copy & paste the address string shown below the QR code.</div>
             <div style={{ padding: "15px 0 15px 0" }}>
-              <QRCode bgColor="#FFA500" fgColor="#131a2a" style={{ height: "150px", width: "150px" }} value={static_btc_address} />
+              <QRCode bgColor="#FFA500" fgColor="#131a2a" style={{ height: "150px", width: "150px" }} value={appState.isTestnet ? appState.bitcoin.testnetAddress : appState.bitcoin.address} />
             </div>
             <div style={{ fontSize: ".6rem", paddingBottom: "3px" }} className="display-flex">
-              <CopyToClipboard text={static_btc_address} onCopy={() => handleCopyPopup()}>
+              <CopyToClipboard text={appState.isTestnet ? appState.bitcoin.testnetAddress : appState.bitcoin.address} onCopy={() => handleCopyPopup()}>
                 <MdCopyAll style={{ width: "20px", height: "20px" }} className="icon icon-copy" />
               </CopyToClipboard>
               {appState.isTestnet ? appState.bitcoin.testnetAddress : appState.bitcoin.address}

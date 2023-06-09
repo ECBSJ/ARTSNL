@@ -24,16 +24,10 @@ function WalletMain() {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
-  const ECPair = ECPairFactory(ecc)
-  const Mainnet = bitcoin.networks.bitcoin
-
-  const address = "19G4UV3YDkTYj4G3XSYeUkzp4Ew6voQFiR"
-
   // let recentBlock = appState.bitcoin.activeProvider?.bitcoin.blocks.getBlocksTipHeight()
 
   // appState.ethereum.activeProvider?.getBlockNumber().then(console.log).catch(console.log)
 
-  const [openFunctionView, setOpenFunctionView] = useState(0)
   const [isAssetDisplayOpen, setIsAssetDisplayOpen] = useState(true)
   const [isBitcoinWalletOpen, setIsBitcoinWalletOpen] = useState(false)
   const [isEthereumWalletOpen, setIsEthereumWalletOpen] = useState(false)
@@ -48,7 +42,120 @@ function WalletMain() {
     }, 1000)
   }
 
-  let hasFunds = false
+  // Snapshot_Bitcoin component props
+  const [hasErrors, setHasErrors] = useState(false)
+  const [isFetching, setIsFetching] = useState(false)
+
+  const [addressData_Object, setAddressData_Object] = useState({
+    funded_txo_count: null,
+    funded_txo_sum: null,
+    spent_txo_count: null,
+    spent_txo_sum: null,
+    tx_count: null,
+  })
+
+  const [addressDataMempool_Object, setAddressDataMempool_Object] = useState({
+    funded_txo_count: null,
+    funded_txo_sum: null,
+    spent_txo_count: null,
+    spent_txo_sum: null,
+    tx_count: null,
+  })
+
+  async function getBitcoinAddressData() {
+    setHasErrors(false)
+    setIsFetching(true)
+
+    let address
+
+    if (appState.isTestnet == true) {
+      address = appState.bitcoin.testnetAddress
+    } else {
+      address = appState.bitcoin.address
+    }
+
+    try {
+      let result = await appState.bitcoin.activeProvider?.bitcoin.addresses.getAddress({ address })
+
+      if (result) {
+        console.log(result)
+        setAddressData_Object((addressData_Object) => ({
+          ...result.chain_stats,
+        }))
+        setAddressDataMempool_Object((addressDataMempool_Object) => ({
+          ...result.mempool_stats,
+        }))
+        setIsFetching(false)
+      } else {
+        console.error("Bitcoin address data failed to fetch from API. Reason unknown. Please try again.")
+        setIsFetching(false)
+        setHasErrors(true)
+      }
+    } catch (error) {
+      console.error(error)
+      setIsFetching(false)
+      setHasErrors(true)
+    }
+  }
+
+  const [txsDataHasErrors, setTxsDataHasErrors] = useState(false)
+  const [isFetchingTxsData, setIsFetchingTxsData] = useState(false)
+  const [txsData_Array, setTxsData_Array] = useState([])
+  const [lastConfirmedTxDate, setLastConfirmedTxDate] = useState("n/a")
+
+  async function getBitcoinAddressTxsData() {
+    setIsFetchingTxsData(true)
+    setTxsDataHasErrors(false)
+
+    let address
+
+    if (appState.isTestnet == true) {
+      address = appState.bitcoin.testnetAddress
+    } else {
+      address = appState.bitcoin.address
+    }
+
+    try {
+      let result = await appState.bitcoin.activeProvider?.bitcoin.addresses.getAddressTxsChain({ address })
+
+      if (result) {
+        console.log(result)
+        setTxsData_Array(result)
+
+        if (!result.length == 0) {
+          let lastDate = new Date(result[0].status.block_time * 1000).toLocaleDateString()
+          setLastConfirmedTxDate(lastDate)
+        } else {
+          setLastConfirmedTxDate("n/a")
+        }
+
+        setIsFetchingTxsData(false)
+      } else {
+        console.error("Bitcoin address tx history failed to fetch from API. Reason unknown. Please try again.")
+        setIsFetchingTxsData(false)
+        setTxsDataHasErrors(true)
+      }
+    } catch (error) {
+      console.error(error)
+      setIsFetchingTxsData(false)
+      setTxsDataHasErrors(true)
+    }
+  }
+
+  async function handleRefresh() {
+    if (isAssetDisplayOpen) {
+      null
+    }
+
+    if (isBitcoinWalletOpen) {
+      getBitcoinAddressData()
+      getBitcoinAddressTxsData()
+    }
+
+    if (isEthereumWalletOpen) {
+      null
+    }
+  }
 
   return (
     <>
@@ -58,7 +165,7 @@ function WalletMain() {
         </CSSTransition>
 
         <CSSTransition in={isBitcoinWalletOpen} timeout={300} classNames="snapshot__overlay" unmountOnExit>
-          <Snapshot__Bitcoin isAssetDisplayOpen={isAssetDisplayOpen} setIsAssetDisplayOpen={setIsAssetDisplayOpen} isBitcoinWalletOpen={isBitcoinWalletOpen} setIsBitcoinWalletOpen={setIsBitcoinWalletOpen} />
+          <Snapshot__Bitcoin hasErrors={hasErrors} setHasErrors={setHasErrors} isFetching={isFetching} setIsFetching={setIsFetching} addressData_Object={addressData_Object} setAddressData_Object={setAddressData_Object} addressDataMempool_Object={addressDataMempool_Object} setAddressDataMempool_Object={setAddressDataMempool_Object} getBitcoinAddressData={getBitcoinAddressData} txsDataHasErrors={txsDataHasErrors} setTxsDataHasErrors={setTxsDataHasErrors} isFetchingTxsData={isFetchingTxsData} setIsFetchingTxsData={setIsFetchingTxsData} txsData_Array={txsData_Array} setTxsData_Array={setTxsData_Array} lastConfirmedTxDate={lastConfirmedTxDate} setLastConfirmedTxDate={setLastConfirmedTxDate} getBitcoinAddressTxsData={getBitcoinAddressTxsData} />
         </CSSTransition>
 
         <CSSTransition in={isEthereumWalletOpen} timeout={300} classNames="snapshot__overlay" unmountOnExit>
@@ -132,8 +239,8 @@ function WalletMain() {
         <div className="interface__block-cell"></div>
         <div className="interface__block-cell"></div>
         <div className="interface__block-cell interface__block-cell__footer">
-          <TbRefresh id="Tooltip" data-tooltip-content={"Refresh"} className="icon" />
-          {appState.isTestnet ? <BsHddNetwork id="Tooltip" data-tooltip-content={"Switch to mainnet"} onClick={() => appDispatch({ type: "toggleNetwork" })} className="icon" /> : <BsHddNetworkFill id="Tooltip" data-tooltip-content={"Switch to testnet"} onClick={() => appDispatch({ type: "toggleNetwork" })} className="icon" />}
+          <TbRefresh onClick={() => handleRefresh()} id="Tooltip" data-tooltip-content={"Refresh"} className="icon" />
+          {appState.isTestnet ? <BsHddNetwork id="Tooltip" data-tooltip-content={"Switch to mainnet"} onClick={() => appDispatch({ type: "toggleNetwork" })} className={"icon " + (isBitcoinWalletOpen || isEthereumWalletOpen ? "visibility-hidden" : "")} /> : <BsHddNetworkFill id="Tooltip" data-tooltip-content={"Switch to testnet"} onClick={() => appDispatch({ type: "toggleNetwork" })} className={"icon " + (isBitcoinWalletOpen || isEthereumWalletOpen ? "visibility-hidden" : "")} />}
           <div className="icon">ARTSNL</div>
           <BsReception4 id="Tooltip" data-tooltip-content={"Network Status: Connected"} className="icon" />
           <MdLibraryBooks className="icon" />
