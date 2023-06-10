@@ -161,16 +161,16 @@ function WalletMain() {
         console.log("Balance (wei) of " + appState.ethereum.address + ": " + balanceResult)
         setEthAddressBalance(balanceResult)
         setEthAddressTxCount(txCountResult)
-        setIsFetching(false)
+        setIsFetching_Eth(false)
       } else {
         console.error("Ethereum address data failed to fetch from API. Reason unknown. Please try again.")
-        setIsFetching(false)
-        setHasErrors(true)
+        setIsFetching_Eth(false)
+        setHasErrors_Eth(true)
       }
     } catch (error) {
       console.error(error)
-      setIsFetching(false)
-      setHasErrors(true)
+      setIsFetching_Eth(false)
+      setHasErrors_Eth(true)
     }
   }
 
@@ -185,7 +185,7 @@ function WalletMain() {
     }
 
     if (isEthereumWalletOpen) {
-      null
+      getEthereumAddressData()
     }
   }
 
@@ -270,7 +270,7 @@ function WalletMain() {
           <TbRefresh onClick={() => handleRefresh()} id="Tooltip" data-tooltip-content={"Refresh"} className="icon" />
           {appState.isTestnet ? <BsHddNetwork id="Tooltip" data-tooltip-content={"Switch to mainnet"} onClick={() => appDispatch({ type: "toggleNetwork" })} className={"icon " + (isBitcoinWalletOpen || isEthereumWalletOpen ? "visibility-hidden" : "")} /> : <BsHddNetworkFill id="Tooltip" data-tooltip-content={"Switch to testnet"} onClick={() => appDispatch({ type: "toggleNetwork" })} className={"icon " + (isBitcoinWalletOpen || isEthereumWalletOpen ? "visibility-hidden" : "")} />}
           <div className="icon">ARTSNL</div>
-          <BsReception4 id="Tooltip" data-tooltip-content={"Network Status: Connected"} className="icon" />
+          <BsReception4 id="Tooltip" data-tooltip-content={appState.bitcoin.activeProvider && appState.ethereum.activeProvider ? "Network Status: Connected" : "Network Status: Disconnected"} className="icon" />
           <MdLibraryBooks className="icon" />
         </div>
       </div>
