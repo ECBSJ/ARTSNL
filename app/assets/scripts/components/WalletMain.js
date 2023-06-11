@@ -14,6 +14,7 @@ import { BsHddNetworkFill, BsHddNetwork, BsReception1, BsReception4 } from "reac
 import { MdArrowBack, MdNavigateNext, MdMenu, MdLibraryBooks, MdCopyAll, MdOutlineArrowCircleRight } from "react-icons/md"
 import { TbRefresh, TbWalletOff } from "react-icons/tb"
 import { CSSTransition } from "react-transition-group"
+import * as uint8arraytools from "uint8array-tools"
 
 // IMPORT REACT COMPONENTS
 import WalletMain_AssetDisplay from "./WalletMain_AssetDisplay"

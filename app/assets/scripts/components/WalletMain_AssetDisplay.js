@@ -3,10 +3,13 @@ import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import { IconContext } from "react-icons"
 import { FaBitcoin, FaEthereum } from "react-icons/fa"
+import { useNavigate } from "react-router-dom"
 
 function WalletMain_AssetDisplay({ isAssetDisplayOpen, setIsAssetDisplayOpen, isBitcoinWalletOpen, setIsBitcoinWalletOpen, isEthereumWalletOpen, setIsEthereumWalletOpen }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
+
+  const navigate = useNavigate()
 
   return (
     <>
@@ -17,6 +20,8 @@ function WalletMain_AssetDisplay({ isAssetDisplayOpen, setIsAssetDisplayOpen, is
               if (appState.bitcoin.address) {
                 setIsAssetDisplayOpen(!isAssetDisplayOpen)
                 setIsBitcoinWalletOpen(!isBitcoinWalletOpen)
+              } else {
+                navigate("/BitcoinAddress")
               }
             }}
             className="wallet-main__asset-display wallet-main__asset-display--bitcoin"
@@ -40,7 +45,7 @@ function WalletMain_AssetDisplay({ isAssetDisplayOpen, setIsAssetDisplayOpen, is
                 setIsAssetDisplayOpen(!isAssetDisplayOpen)
                 setIsEthereumWalletOpen(!isEthereumWalletOpen)
               } else {
-                null
+                navigate("/EthereumAddress")
               }
             }}
             className="wallet-main__asset-display wallet-main__asset-display--ethereum"

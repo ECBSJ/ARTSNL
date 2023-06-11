@@ -86,7 +86,7 @@ function Snapshot__Bitcoin({ hasErrors, setHasErrors, isFetching, setIsFetching,
             RECEIVE
           </div>
           <div className={"snapshot__function-content " + (openFunctionView == 1 ? "snapshot__function-content--display" : "snapshot__function-content--hide")}>
-            <div>Deposit BTC Here</div>
+            <div>Deposit {appState.isTestnet ? "tBTC" : "BTC"} Here</div>
             <div style={{ fontSize: ".5rem", color: "gray", width: "80%", textAlign: "justify" }}>Fund your bitcoin wallet by depositing funds to the QR code below. Or copy & paste the address string shown below the QR code.</div>
             <div style={{ padding: "15px 0 15px 0" }}>
               <QRCode bgColor="#FFA500" fgColor="#131a2a" style={{ height: "150px", width: "150px" }} value={appState.isTestnet ? appState.bitcoin.testnetAddress : appState.bitcoin.address} />
@@ -119,7 +119,7 @@ function Snapshot__Bitcoin({ hasErrors, setHasErrors, isFetching, setIsFetching,
             ) : (
               <>
                 <div style={{ paddingBottom: "10px" }}>
-                  You do not have <br /> any BTC to send.
+                  You do not have <br /> any {appState.isTestnet ? "tBTC" : "BTC"} to send.
                 </div>
                 <TbWalletOff onClick={() => setOpenFunctionView(1)} style={{ width: "80px", height: "80px" }} className="icon" />
                 <div style={{ width: "80%", fontSize: ".56rem", color: "gray", textAlign: "justify", paddingTop: "10px" }}>

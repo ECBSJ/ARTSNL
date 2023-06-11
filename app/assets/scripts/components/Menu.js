@@ -3,9 +3,11 @@ import { MdClose } from "react-icons/md"
 import ExportPage from "./ExportPage"
 import ImportPage from "./ImportPage"
 import { CSSTransition } from "react-transition-group"
+import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 
 function Menu() {
+  const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
   const [modeBoolean, setModeBoolean] = useState(true)
@@ -32,7 +34,16 @@ function Menu() {
           </div>
           <div className="menu__dashboard-row">
             <div className="menu__dashboard-row-box">CURRENCY</div>
-            <div onClick={() => setIsExportOpen(!isExportOpen)} className="menu__dashboard-row-box">
+            <div
+              onClick={() => {
+                if (appState.keys.bufferPrivKey) {
+                  setIsExportOpen(!isExportOpen)
+                } else {
+                  null
+                }
+              }}
+              className="menu__dashboard-row-box"
+            >
               EXPORT
             </div>
           </div>

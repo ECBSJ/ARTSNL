@@ -59,7 +59,15 @@ function BitcoinAddress() {
 
   async function handleNext() {
     handleGenerateTestnetAddress()
-    appDispatch({ type: "setLocalStorage" })
+
+    // Need to update local storage key, "coin", with a value of "both"
+    let checkLocalStorage = localStorage.getItem("coin")
+    if (checkLocalStorage) {
+      localStorage.setItem("coin", "both")
+    } else {
+      appDispatch({ type: "setLocalStorage" })
+    }
+
     navigate("/WalletMain")
   }
 

@@ -4,14 +4,17 @@ import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import * as uint8arraytools from "uint8array-tools"
 import { CopyToClipboard } from "react-copy-to-clipboard"
+import { useNavigate } from "react-router-dom"
 
 function ExportPage({ isExportOpen, setIsExportOpen }) {
+  const navigate = useNavigate()
+
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
   let keyPairObject = {
-    priv: "5e6cca2c25d67950acee3324d41ebef7d886b6762eaadb92210a3604a6188110",
-    pub: "0465034a033e228fc298f4be365cdc4555b9ef4a7a53ae9f72a88383a4712095c2cad1d12366842198e6fd4a884bd5f899c3c41f0c105aed2e470b7d0993aa2a27"
+    priv: appState.keys.bufferPrivKey.toString("hex"),
+    pub: appState.keys.bufferPubKey.toString("hex")
   }
 
   function handleCopyEvent() {
@@ -33,11 +36,11 @@ function ExportPage({ isExportOpen, setIsExportOpen }) {
         <div className="menu__dashboard">
           <div className="menu__dashboard-row--thick">
             <div>
-              Private Key &#40;hex&#41;: <div className="code-font gray-font">5e6cca2c25d67950acee3324d41ebef7d886b6762eaadb92210a3604a6188110</div>
+              Private Key &#40;hex&#41;: <div className="code-font gray-font">{keyPairObject.priv}</div>
             </div>
             <br />
             <div>
-              Public Key &#40;uncompressed&#41;: <div className="code-font gray-font">0465034a033e228fc298f4be365cdc4555b9ef4a7a53ae9f72a88383a4712095c2cad1d12366842198e6fd4a884bd5f899c3c41f0c105aed2e470b7d0993aa2a27</div>
+              Public Key &#40;uncompressed&#41;: <div className="code-font gray-font">{keyPairObject.pub}</div>
             </div>
             <br />
           </div>
@@ -47,7 +50,17 @@ function ExportPage({ isExportOpen, setIsExportOpen }) {
                 COPY
               </div>
             </CopyToClipboard>
-            <div className="menu__dashboard-row-box">RESET</div>
+            <div
+              onClick={() => {
+                setIsExportOpen(!isExportOpen)
+                appDispatch({ type: "resetWallet" })
+                console.log("ARTSNL wallet has been reset.")
+                navigate("/")
+              }}
+              className="menu__dashboard-row-box"
+            >
+              RESET
+            </div>
           </div>
         </div>
       </div>
