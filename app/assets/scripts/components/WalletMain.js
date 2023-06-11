@@ -145,28 +145,32 @@ function WalletMain() {
   const [hasErrors_Eth, setHasErrors_Eth] = useState(false)
   const [isFetching_Eth, setIsFetching_Eth] = useState(false)
 
-  const [ethAddressBalance, setEthAddressBalance] = useState()
-  const [ethAddressTxCount, setEthAddressTxCount] = useState()
+  const [ethAddressBalance, setEthAddressBalance] = useState(null)
+  const [ethAddressTxCount, setEthAddressTxCount] = useState(null)
 
   async function getEthereumAddressData() {
     setHasErrors_Eth(false)
     setIsFetching_Eth(true)
 
-    try {
-      let balanceResult = await appState.ethereum.activeProvider?.getBalance(appState.ethereum.address)
-      let txCountResult = await appState.ethereum.activeProvider?.getTransactionCount(appState.ethereum.address)
+    let balanceResult = null
+    let txCountResult = null
 
-      if (balanceResult && txCountResult) {
-        console.log(txCountResult)
-        console.log("Balance (wei) of " + appState.ethereum.address + ": " + balanceResult)
-        setEthAddressBalance(balanceResult)
-        setEthAddressTxCount(txCountResult)
-        setIsFetching_Eth(false)
-      } else {
-        console.error("Ethereum address data failed to fetch from API. Reason unknown. Please try again.")
-        setIsFetching_Eth(false)
-        setHasErrors_Eth(true)
-      }
+    try {
+      balanceResult = await appState.ethereum.activeProvider?.getBalance(appState.ethereum.address)
+      txCountResult = await appState.ethereum.activeProvider?.getTransactionCount(appState.ethereum.address)
+      setEthAddressBalance(balanceResult)
+      setEthAddressTxCount(txCountResult)
+      setIsFetching_Eth(false)
+
+      // if (!balanceResult == null && !txCountResult == null) {
+      //   setEthAddressBalance(balanceResult)
+      //   setEthAddressTxCount(txCountResult)
+      //   setIsFetching_Eth(false)
+      // } else {
+      //   console.error("Ethereum address data failed to fetch from API. Reason unknown. Please try again.")
+      //   setIsFetching_Eth(false)
+      //   setHasErrors_Eth(true)
+      // }
     } catch (error) {
       console.error(error)
       setIsFetching_Eth(false)

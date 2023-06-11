@@ -43,6 +43,7 @@
         overflow-wrap: break-word;
         border-radius: 5px;
         position: relative;
+        background-color: #2d2d2d;
       }
 
       &__footer {

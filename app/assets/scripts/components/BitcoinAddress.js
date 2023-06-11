@@ -52,11 +52,13 @@ function BitcoinAddress() {
     let combinedBuff = Buffer.concat(arr)
     let address = base58.encode(combinedBuff)
 
-    return address
+    if (address) {
+      appDispatch({ type: "setTestnetAddress", value: address })
+    }
   }
 
   async function handleNext() {
-    await handleGenerateTestnetAddress().then(res => appDispatch({ type: "setTestnetAddress", value: res }))
+    handleGenerateTestnetAddress()
     appDispatch({ type: "setLocalStorage" })
     navigate("/WalletMain")
   }

@@ -6,6 +6,8 @@ import ReactDOM from "react-dom/client"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import StateContext from "./StateContext"
 import DispatchContext from "./DispatchContext"
+import * as bitcoin from "../../../bitcoinjs-lib"
+import * as base58 from "bs58"
 import { useImmerReducer } from "use-immer"
 import { IconContext } from "react-icons"
 import "react-tooltip/dist/react-tooltip.css"
@@ -61,6 +63,7 @@ function App() {
 
   // immerReducer config
   const initialState = {
+    hasBrowserStorage: false,
     isTestnet: false,
     keys: {
       bufferPrivKey: null,
@@ -71,20 +74,23 @@ function App() {
       testnetProvider: null,
       activeProvider: null,
       keyPair: null,
-      address: "19G4UV3YDkTYj4G3XSYeUkzp4Ew6voQFiR",
-      testnetAddress: "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
+      address: null,
+      testnetAddress: null
     },
     ethereum: {
       mainnetProvider: null,
       testnetProvider: null,
       activeProvider: null,
-      address: "0x32F249180D2d91A3a8EcAeBE9283Bde3C8903986"
+      address: null
     },
     isMenuOpen: false
   }
 
   function ourReducer(draft, action) {
     switch (action.type) {
+      case "setHasBrowserStorage":
+        draft.hasBrowserStorage = true
+        return
       case "toggleMenu":
         draft.isMenuOpen = !draft.isMenuOpen
         return
@@ -176,6 +182,74 @@ function App() {
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState)
 
+  async function handleDecipher(key, iv, authTag, coin, encryptedKeyPair) {
+    const decipher = crypto.createDecipheriv("aes-256-gcm", key, iv)
+    decipher.setAuthTag(Buffer.from(authTag, "hex"))
+    const decrypted = decipher.update(encryptedKeyPair, "hex", "utf8") + decipher.final("utf8")
+
+    let keyPairObject = JSON.parse(decrypted)
+    let bufferPubKey = null
+    if (keyPairObject) {
+      let bufferPrivKey = Buffer.from(keyPairObject.priv, "hex")
+      bufferPubKey = Buffer.from(keyPairObject.pub, "hex")
+      dispatch({ type: "setBufferPrivKey", value: bufferPrivKey })
+      dispatch({ type: "setBufferPubKey", value: bufferPubKey })
+    }
+
+    if (bufferPubKey) {
+      if (coin == "btc") {
+        let riped = bitcoin.crypto.hash160(bufferPubKey)
+        let prefix = Buffer.from("00", "hex")
+        let prefix_riped = [prefix, riped]
+        let combined_prefix_riped = Buffer.concat(prefix_riped)
+        let checksum = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped)).slice(0, 4)
+        let arr = [prefix, riped, checksum]
+        let combinedBuff = Buffer.concat(arr)
+        let mainnetAddress = base58.encode(combinedBuff)
+        dispatch({ type: "setBitcoinAddress", value: mainnetAddress })
+
+        let prefix_t = Buffer.from("6F", "hex")
+        let prefix_riped_t = [prefix_t, riped]
+        let combined_prefix_riped_t = Buffer.concat(prefix_riped_t)
+        let checksum_t = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped_t)).slice(0, 4)
+        let arr_t = [prefix_t, riped, checksum_t]
+        let combinedBuff_t = Buffer.concat(arr_t)
+        let testnetAddress = base58.encode(combinedBuff_t)
+        dispatch({ type: "setTestnetAddress", value: testnetAddress })
+      } else {
+        let prepareETHpubKey = bufferPubKey.slice(1, 65)
+        let keccakPubKey = ethers.keccak256(prepareETHpubKey)
+        let removed_0x = keccakPubKey.slice(2)
+        let prepareETHpubAdd = Buffer.from(removed_0x, "hex")
+        let ETHpubAdd = prepareETHpubAdd.slice(-20)
+        let finalETHpubAdd = "0x" + uint8arraytools.toHex(ETHpubAdd)
+        dispatch({ type: "setEthereumAddress", value: finalETHpubAdd })
+      }
+    }
+  }
+
+  useEffect(() => {
+    let checkLocalStorage = localStorage.getItem("key")
+
+    if (checkLocalStorage) {
+      console.log("useEffect detected browser storage. Running decipher function.")
+      dispatch({ type: "setHasBrowserStorage" })
+      // get localStorage constants
+      let key = localStorage.getItem("key")
+      let iv = localStorage.getItem("iv")
+      let authTag = localStorage.getItem("authTag")
+      let coin = localStorage.getItem("coin")
+
+      // get encrypted value from cookie
+      let encryptedKeyPair = getCookie("encryptedKeyPair")
+
+      // decipher function
+      handleDecipher(key, iv, authTag, coin, encryptedKeyPair)
+    } else {
+      console.log("useEffect detected no browser storage.")
+    }
+  }, [])
+
   useEffect(() => {
     dispatch({ type: "setBitcoinProviders" })
     dispatch({ type: "setEthereumProviders" })
@@ -197,7 +271,7 @@ function App() {
               <BrowserRouter>
                 <Suspense fallback={<LazyLoadFallback />}>
                   <Routes>
-                    <Route path="/" element={<Main />} />
+                    <Route path="/" element={state.hasBrowserStorage ? <WalletMain /> : <Main />} />
                     <Route path="/CreateKeys" element={<CreateKeys />} />
                     <Route path="/AddressSelection" element={<AddressSelection />} />
                     <Route path="/WalletMain" element={<WalletMain />} />

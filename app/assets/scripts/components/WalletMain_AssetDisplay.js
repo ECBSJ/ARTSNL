@@ -14,8 +14,10 @@ function WalletMain_AssetDisplay({ isAssetDisplayOpen, setIsAssetDisplayOpen, is
         <IconContext.Provider value={{ size: "300px" }}>
           <div
             onClick={() => {
-              setIsAssetDisplayOpen(!isAssetDisplayOpen)
-              setIsBitcoinWalletOpen(!isBitcoinWalletOpen)
+              if (appState.bitcoin.address) {
+                setIsAssetDisplayOpen(!isAssetDisplayOpen)
+                setIsBitcoinWalletOpen(!isBitcoinWalletOpen)
+              }
             }}
             className="wallet-main__asset-display wallet-main__asset-display--bitcoin"
           >
@@ -34,8 +36,12 @@ function WalletMain_AssetDisplay({ isAssetDisplayOpen, setIsAssetDisplayOpen, is
           </div>
           <div
             onClick={() => {
-              setIsAssetDisplayOpen(!isAssetDisplayOpen)
-              setIsEthereumWalletOpen(!isEthereumWalletOpen)
+              if (appState.ethereum.address) {
+                setIsAssetDisplayOpen(!isAssetDisplayOpen)
+                setIsEthereumWalletOpen(!isEthereumWalletOpen)
+              } else {
+                null
+              }
             }}
             className="wallet-main__asset-display wallet-main__asset-display--ethereum"
           >

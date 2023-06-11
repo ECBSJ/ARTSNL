@@ -51,11 +51,11 @@ function Snapshot__Ethereum({ hasErrors_Eth, setHasErrors_Eth, isFetching_Eth, s
               <>
                 <div className="snapshot__function-content__row">
                   <div style={{ fontSize: ".8rem", color: "gray" }}>Balance</div>
-                  <div>{ethAddressBalance ? ethers.formatEther(ethAddressBalance).slice(0, 7) : 0}</div>
+                  <div>{ethAddressBalance == "0n" || ethAddressBalance == null ? 0 : ethers.formatEther(ethAddressBalance).slice(0, 7)}</div>
                 </div>
                 <div className="snapshot__function-content__row">
                   <div style={{ fontSize: ".8rem", color: "gray" }}># TXs sent</div>
-                  <div>{ethAddressTxCount}</div>
+                  <div>{ethAddressTxCount == null ? 0 : ethAddressTxCount}</div>
                 </div>
                 <div className="snapshot__function-content__row">
                   <div style={{ fontSize: ".8rem", color: "gray" }}></div>
@@ -115,7 +115,7 @@ function Snapshot__Ethereum({ hasErrors_Eth, setHasErrors_Eth, isFetching_Eth, s
             ) : (
               <>
                 <div style={{ paddingBottom: "10px" }}>
-                  You do not have <br /> any ETH to send.
+                  You do not have <br /> any {appState.isTestnet ? "gETH" : "ETH"} to send.
                 </div>
                 <TbWalletOff onClick={() => setOpenFunctionView(1)} style={{ width: "80px", height: "80px" }} className="icon" />
                 <div style={{ width: "80%", fontSize: ".56rem", color: "gray", textAlign: "justify", paddingTop: "10px" }}>
