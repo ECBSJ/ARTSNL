@@ -15,6 +15,7 @@ import * as uint8arraytools from "uint8array-tools"
 import * as crypto from "crypto"
 import { CSSTransition } from "react-transition-group"
 import { ethers } from "ethers"
+import * as ecc from "tiny-secp256k1"
 
 // IMPORTING OF COMPONENTS
 import Main from "./components/Main"
@@ -130,7 +131,9 @@ function App() {
         // setting constants to localStorage
         localStorage.setItem("key", key)
         localStorage.setItem("iv", iv)
-        if (draft.bitcoin.address) {
+        if (draft.bitcoin.address && draft.ethereum.address) {
+          localStorage.setItem("coin", "both")
+        } else if (draft.bitcoin.address) {
           localStorage.setItem("coin", "btc")
         } else {
           localStorage.setItem("coin", "eth")
@@ -178,6 +181,17 @@ function App() {
           draft.bitcoin.activeProvider = draft.bitcoin.testnetProvider
           draft.ethereum.activeProvider = draft.ethereum.testnetProvider
         }
+        return
+      case "importExternalKey":
+        let inputtedPrivKey = action.value
+        let inputtedPubKey = ecc.pointFromScalar(inputtedPrivKey, false)
+        draft.keys.bufferPrivKey = inputtedPrivKey
+        draft.keys.bufferPubKey = inputtedPubKey
+
+        generateBitcoinAddress(inputtedPubKey)
+        generateBitcoinTestnetAddress(inputtedPubKey)
+        generateEthereumAddress(inputtedPubKey)
+
         return
       case "resetWallet":
         draft.hasBrowserStorage = false

@@ -1,8 +1,16 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import { MdArrowBack, MdQrCodeScanner } from "react-icons/md"
 import QRreaderPopup from "./QRreaderPopup"
+import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
+import { useNavigate } from "react-router-dom"
 
 function ImportPage({ isImportOpen, setIsImportOpen }) {
+  const navigate = useNavigate()
+
+  const appState = useContext(StateContext)
+  const appDispatch = useContext(DispatchContext)
+
   const [importKeyFormat, setImportKeyFormat] = useState(1)
 
   const [inputImportKey, setInputImportKey] = useState()
@@ -14,11 +22,41 @@ function ImportPage({ isImportOpen, setIsImportOpen }) {
     if (importKeyFormat == 3) {
       setImportKeyFormat(1)
     } else {
-      setImportKeyFormat(prev => prev + 1)
+      setImportKeyFormat((prev) => prev + 1)
     }
 
     document.getElementById("toggle-format").classList.toggle("menu__dashboard-row-box--dark")
     document.getElementById("toggle-format").classList.toggle("menu__dashboard-row-box--light")
+  }
+
+  function handleImport() {
+    if (importKeyFormat == 3) {
+      null
+    }
+
+    if (importKeyFormat == 2) {
+      null
+    }
+
+    if (importKeyFormat == 1) {
+      // Verify hex string is 32 bytes Buffer
+      let inputtedKey = Buffer.from(inputImportKey, "hex")
+      if (inputtedKey.byteLength == 32) {
+        // Import Key
+        appDispatch({ type: "resetWallet" })
+        // Call appDispatch to import key to generate keypair & addresses
+        appDispatch({ type: "importExternalKey", value: inputtedKey })
+        // Store in local browser storage
+        appDispatch({ type: "setLocalStorage" })
+        appDispatch({ type: "setHasBrowserStorage" })
+        console.log("ARTSNL wallet has been reset. Imported external private key successful.")
+        setIsImportOpen(!isImportOpen)
+        navigate("/")
+      } else {
+        // throw error
+        null
+      }
+    }
   }
 
   return (
@@ -50,13 +88,15 @@ function ImportPage({ isImportOpen, setIsImportOpen }) {
               </>
             ) : (
               <>
-                <input className="input--position-off code-font gray-font" value={scannedValue ? scannedValue : undefined} type="text" placeholder={importKeyFormat == 2 ? "WIF" : "HEX"} required />
+                <input onChange={(e) => setInputImportKey(e.target.value)} className="input--position-off code-font gray-font" value={scannedValue ? scannedValue : undefined} type="text" placeholder={importKeyFormat == 2 ? "WIF" : "HEX"} required />
                 <MdQrCodeScanner onClick={() => setOpenQRreader(!openQRreader)} className="icon icon--position-absolute" style={{ right: "10px" }} />
               </>
             )}
           </div>
           <div className="menu__dashboard-row">
-            <div className="menu__dashboard-row-box">IMPORT</div>
+            <div onClick={() => handleImport()} className="menu__dashboard-row-box">
+              IMPORT
+            </div>
           </div>
         </div>
       </div>
