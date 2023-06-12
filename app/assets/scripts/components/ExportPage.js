@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react"
+import React, { useEffect, useContext, useState } from "react"
 import { MdArrowBack } from "react-icons/md"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
@@ -12,10 +12,10 @@ function ExportPage({ isExportOpen, setIsExportOpen }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
-  let keyPairObject = {
-    priv: appState.keys.bufferPrivKey.toString("hex"),
-    pub: appState.keys.bufferPubKey.toString("hex")
-  }
+  const [keyPairObject, setKeyPairObject] = useState({
+    priv: "n/a",
+    pub: "n/a",
+  })
 
   function handleCopyEvent() {
     document.getElementById("copy-element").innerText = "COPIED!"
@@ -24,6 +24,19 @@ function ExportPage({ isExportOpen, setIsExportOpen }) {
       document.getElementById("copy-element").innerText = "COPY"
     }, 1500)
   }
+
+  useEffect(() => {
+    if (appState.keys.bufferPrivKey) {
+      let retrievedKeyPairObject = {
+        priv: appState.keys.bufferPrivKey.toString("hex"),
+        pub: appState.keys.bufferPubKey.toString("hex"),
+      }
+
+      setKeyPairObject((keyPairObject) => ({
+        ...retrievedKeyPairObject,
+      }))
+    }
+  }, [])
 
   return (
     <>
@@ -52,9 +65,9 @@ function ExportPage({ isExportOpen, setIsExportOpen }) {
             </CopyToClipboard>
             <div
               onClick={() => {
-                setIsExportOpen(!isExportOpen)
                 appDispatch({ type: "resetWallet" })
                 console.log("ARTSNL wallet has been reset.")
+                setIsExportOpen(!isExportOpen)
                 navigate("/")
               }}
               className="menu__dashboard-row-box"

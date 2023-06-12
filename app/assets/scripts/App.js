@@ -32,7 +32,7 @@ function App() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options
+      ...options,
     }
 
     if (options.expires instanceof Date) {
@@ -59,7 +59,7 @@ function App() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1
+      "max-age": -1,
     })
   }
 
@@ -69,7 +69,7 @@ function App() {
     isTestnet: false,
     keys: {
       bufferPrivKey: null,
-      bufferPubKey: null
+      bufferPubKey: null,
     },
     bitcoin: {
       mainnetProvider: null,
@@ -77,15 +77,15 @@ function App() {
       activeProvider: null,
       keyPair: null,
       address: null,
-      testnetAddress: null
+      testnetAddress: null,
     },
     ethereum: {
       mainnetProvider: null,
       testnetProvider: null,
       activeProvider: null,
-      address: null
+      address: null,
     },
-    isMenuOpen: false
+    isMenuOpen: false,
   }
 
   function ourReducer(draft, action) {
@@ -117,7 +117,7 @@ function App() {
       case "setLocalStorage":
         let keyPairObject = {
           priv: uint8arraytools.toHex(draft.keys.bufferPrivKey),
-          pub: uint8arraytools.toHex(draft.keys.bufferPubKey)
+          pub: uint8arraytools.toHex(draft.keys.bufferPubKey),
         }
 
         let tobeEncrypted = JSON.stringify(keyPairObject)
@@ -149,12 +149,12 @@ function App() {
         return
       case "setBitcoinProviders":
         let mempoolProvider = mempoolJS({
-          hostname: "mempool.space"
+          hostname: "mempool.space",
         })
 
         let mempoolTestnetProvider = mempoolJS({
           hostname: "mempool.space",
-          network: "testnet"
+          network: "testnet",
         })
 
         draft.bitcoin.mainnetProvider = mempoolProvider
@@ -297,10 +297,10 @@ function App() {
         <DispatchContext.Provider value={dispatch}>
           <IconContext.Provider value={{ size: "3rem" }}>
             <div className="container">
-              <CSSTransition in={state.isMenuOpen} timeout={1000} classNames="menu__cover" unmountOnExit>
-                <Menu />
-              </CSSTransition>
               <BrowserRouter>
+                <CSSTransition in={state.isMenuOpen} timeout={1000} classNames="menu__cover" unmountOnExit>
+                  <Menu />
+                </CSSTransition>
                 <Suspense fallback={<LazyLoadFallback />}>
                   <Routes>
                     <Route path="/" element={state.hasBrowserStorage ? <WalletMain /> : <Main />} />
