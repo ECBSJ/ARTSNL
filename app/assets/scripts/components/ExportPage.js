@@ -14,7 +14,7 @@ function ExportPage({ isExportOpen, setIsExportOpen }) {
 
   const [keyPairObject, setKeyPairObject] = useState({
     priv: "n/a",
-    pub: "n/a",
+    pub: "n/a"
   })
 
   function handleCopyEvent() {
@@ -29,11 +29,11 @@ function ExportPage({ isExportOpen, setIsExportOpen }) {
     if (appState.keys.bufferPrivKey) {
       let retrievedKeyPairObject = {
         priv: appState.keys.bufferPrivKey.toString("hex"),
-        pub: appState.keys.bufferPubKey.toString("hex"),
+        pub: appState.keys.bufferPubKey.toString("hex")
       }
 
-      setKeyPairObject((keyPairObject) => ({
-        ...retrievedKeyPairObject,
+      setKeyPairObject(keyPairObject => ({
+        ...retrievedKeyPairObject
       }))
     }
   }, [])
@@ -68,6 +68,7 @@ function ExportPage({ isExportOpen, setIsExportOpen }) {
                 appDispatch({ type: "resetWallet" })
                 console.log("ARTSNL wallet has been reset.")
                 setIsExportOpen(!isExportOpen)
+                appDispatch({ type: "toggleMenu" })
                 navigate("/")
               }}
               className="menu__dashboard-row-box"

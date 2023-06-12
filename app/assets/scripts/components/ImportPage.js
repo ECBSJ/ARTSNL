@@ -22,7 +22,7 @@ function ImportPage({ isImportOpen, setIsImportOpen }) {
     if (importKeyFormat == 3) {
       setImportKeyFormat(1)
     } else {
-      setImportKeyFormat((prev) => prev + 1)
+      setImportKeyFormat(prev => prev + 1)
     }
 
     document.getElementById("toggle-format").classList.toggle("menu__dashboard-row-box--dark")
@@ -51,6 +51,7 @@ function ImportPage({ isImportOpen, setIsImportOpen }) {
         appDispatch({ type: "setHasBrowserStorage" })
         console.log("ARTSNL wallet has been reset. Imported external private key successful.")
         setIsImportOpen(!isImportOpen)
+        appDispatch({ type: "toggleMenu" })
         navigate("/")
       } else {
         // throw error
@@ -88,7 +89,7 @@ function ImportPage({ isImportOpen, setIsImportOpen }) {
               </>
             ) : (
               <>
-                <input onChange={(e) => setInputImportKey(e.target.value)} className="input--position-off code-font gray-font" value={scannedValue ? scannedValue : undefined} type="text" placeholder={importKeyFormat == 2 ? "WIF" : "HEX"} required />
+                <input onChange={e => setInputImportKey(e.target.value)} className="input--position-off code-font gray-font" value={scannedValue ? scannedValue : undefined} type="text" placeholder={importKeyFormat == 2 ? "WIF" : "HEX"} required />
                 <MdQrCodeScanner onClick={() => setOpenQRreader(!openQRreader)} className="icon icon--position-absolute" style={{ right: "10px" }} />
               </>
             )}

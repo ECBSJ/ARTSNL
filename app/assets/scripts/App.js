@@ -33,7 +33,7 @@ function App() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options,
+      ...options
     }
 
     if (options.expires instanceof Date) {
@@ -60,8 +60,45 @@ function App() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1,
+      "max-age": -1
     })
+  }
+
+  function generateBitcoinAddress(bufferPubKey) {
+    let riped = bitcoin.crypto.hash160(bufferPubKey)
+    let prefix = Buffer.from("00", "hex")
+    let prefix_riped = [prefix, riped]
+    let combined_prefix_riped = Buffer.concat(prefix_riped)
+    let checksum = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped)).slice(0, 4)
+    let arr = [prefix, riped, checksum]
+    let combinedBuff = Buffer.concat(arr)
+    let mainnetAddress = base58.encode(combinedBuff)
+
+    dispatch({ type: "setBitcoinAddress", value: mainnetAddress })
+  }
+
+  function generateBitcoinTestnetAddress(bufferPubKey) {
+    let riped = bitcoin.crypto.hash160(bufferPubKey)
+    let prefix_t = Buffer.from("6F", "hex")
+    let prefix_riped_t = [prefix_t, riped]
+    let combined_prefix_riped_t = Buffer.concat(prefix_riped_t)
+    let checksum_t = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped_t)).slice(0, 4)
+    let arr_t = [prefix_t, riped, checksum_t]
+    let combinedBuff_t = Buffer.concat(arr_t)
+    let testnetAddress = base58.encode(combinedBuff_t)
+
+    dispatch({ type: "setTestnetAddress", value: testnetAddress })
+  }
+
+  function generateEthereumAddress(bufferPubKey) {
+    let prepareETHpubKey = bufferPubKey.slice(1, 65)
+    let keccakPubKey = ethers.keccak256(prepareETHpubKey)
+    let removed_0x = keccakPubKey.slice(2)
+    let prepareETHpubAdd = Buffer.from(removed_0x, "hex")
+    let ETHpubAdd = prepareETHpubAdd.slice(-20)
+    let finalETHpubAdd = "0x" + uint8arraytools.toHex(ETHpubAdd)
+
+    dispatch({ type: "setEthereumAddress", value: finalETHpubAdd })
   }
 
   // immerReducer config
@@ -70,7 +107,7 @@ function App() {
     isTestnet: false,
     keys: {
       bufferPrivKey: null,
-      bufferPubKey: null,
+      bufferPubKey: null
     },
     bitcoin: {
       mainnetProvider: null,
@@ -78,15 +115,15 @@ function App() {
       activeProvider: null,
       keyPair: null,
       address: null,
-      testnetAddress: null,
+      testnetAddress: null
     },
     ethereum: {
       mainnetProvider: null,
       testnetProvider: null,
       activeProvider: null,
-      address: null,
+      address: null
     },
-    isMenuOpen: false,
+    isMenuOpen: false
   }
 
   function ourReducer(draft, action) {
@@ -118,7 +155,7 @@ function App() {
       case "setLocalStorage":
         let keyPairObject = {
           priv: uint8arraytools.toHex(draft.keys.bufferPrivKey),
-          pub: uint8arraytools.toHex(draft.keys.bufferPubKey),
+          pub: uint8arraytools.toHex(draft.keys.bufferPubKey)
         }
 
         let tobeEncrypted = JSON.stringify(keyPairObject)
@@ -152,12 +189,12 @@ function App() {
         return
       case "setBitcoinProviders":
         let mempoolProvider = mempoolJS({
-          hostname: "mempool.space",
+          hostname: "mempool.space"
         })
 
         let mempoolTestnetProvider = mempoolJS({
           hostname: "mempool.space",
-          network: "testnet",
+          network: "testnet"
         })
 
         draft.bitcoin.mainnetProvider = mempoolProvider
@@ -188,9 +225,36 @@ function App() {
         draft.keys.bufferPrivKey = inputtedPrivKey
         draft.keys.bufferPubKey = inputtedPubKey
 
-        generateBitcoinAddress(inputtedPubKey)
-        generateBitcoinTestnetAddress(inputtedPubKey)
-        generateEthereumAddress(inputtedPubKey)
+        if (inputtedPubKey) {
+          // generate bitcoin addresses
+          let riped = bitcoin.crypto.hash160(inputtedPubKey)
+          let prefix = Buffer.from("00", "hex")
+          let prefix_riped = [prefix, riped]
+          let combined_prefix_riped = Buffer.concat(prefix_riped)
+          let checksum = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped)).slice(0, 4)
+          let arr = [prefix, riped, checksum]
+          let combinedBuff = Buffer.concat(arr)
+          let mainnetAddress = base58.encode(combinedBuff)
+          draft.bitcoin.address = mainnetAddress
+
+          let prefix_t = Buffer.from("6F", "hex")
+          let prefix_riped_t = [prefix_t, riped]
+          let combined_prefix_riped_t = Buffer.concat(prefix_riped_t)
+          let checksum_t = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped_t)).slice(0, 4)
+          let arr_t = [prefix_t, riped, checksum_t]
+          let combinedBuff_t = Buffer.concat(arr_t)
+          let testnetAddress = base58.encode(combinedBuff_t)
+          draft.bitcoin.testnetAddress = testnetAddress
+
+          // generate ethereum address
+          let prepareETHpubKey = inputtedPubKey.slice(1, 65)
+          let keccakPubKey = ethers.keccak256(prepareETHpubKey)
+          let removed_0x = keccakPubKey.slice(2)
+          let prepareETHpubAdd = Buffer.from(removed_0x, "hex")
+          let ETHpubAdd = prepareETHpubAdd.slice(-20)
+          let finalETHpubAdd = "0x" + uint8arraytools.toHex(ETHpubAdd)
+          draft.ethereum.address = finalETHpubAdd
+        }
 
         return
       case "resetWallet":
@@ -202,7 +266,6 @@ function App() {
         draft.bitcoin.address = null
         draft.bitcoin.testnetAddress = null
         draft.ethereum.address = null
-        draft.isMenuOpen = false
 
         localStorage.clear()
         deleteCookie("encryptedKeyPair")
@@ -211,40 +274,6 @@ function App() {
   }
 
   const [state, dispatch] = useImmerReducer(ourReducer, initialState)
-
-  function generateBitcoinAddress(bufferPubKey) {
-    let riped = bitcoin.crypto.hash160(bufferPubKey)
-    let prefix = Buffer.from("00", "hex")
-    let prefix_riped = [prefix, riped]
-    let combined_prefix_riped = Buffer.concat(prefix_riped)
-    let checksum = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped)).slice(0, 4)
-    let arr = [prefix, riped, checksum]
-    let combinedBuff = Buffer.concat(arr)
-    let mainnetAddress = base58.encode(combinedBuff)
-    dispatch({ type: "setBitcoinAddress", value: mainnetAddress })
-  }
-
-  function generateBitcoinTestnetAddress(bufferPubKey) {
-    let riped = bitcoin.crypto.hash160(bufferPubKey)
-    let prefix_t = Buffer.from("6F", "hex")
-    let prefix_riped_t = [prefix_t, riped]
-    let combined_prefix_riped_t = Buffer.concat(prefix_riped_t)
-    let checksum_t = bitcoin.crypto.sha256(bitcoin.crypto.sha256(combined_prefix_riped_t)).slice(0, 4)
-    let arr_t = [prefix_t, riped, checksum_t]
-    let combinedBuff_t = Buffer.concat(arr_t)
-    let testnetAddress = base58.encode(combinedBuff_t)
-    dispatch({ type: "setTestnetAddress", value: testnetAddress })
-  }
-
-  function generateEthereumAddress(bufferPubKey) {
-    let prepareETHpubKey = bufferPubKey.slice(1, 65)
-    let keccakPubKey = ethers.keccak256(prepareETHpubKey)
-    let removed_0x = keccakPubKey.slice(2)
-    let prepareETHpubAdd = Buffer.from(removed_0x, "hex")
-    let ETHpubAdd = prepareETHpubAdd.slice(-20)
-    let finalETHpubAdd = "0x" + uint8arraytools.toHex(ETHpubAdd)
-    dispatch({ type: "setEthereumAddress", value: finalETHpubAdd })
-  }
 
   async function handleDecipher(key, iv, authTag, coin, encryptedKeyPair) {
     const decipher = crypto.createDecipheriv("aes-256-gcm", key, iv)
