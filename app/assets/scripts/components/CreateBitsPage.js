@@ -1,8 +1,13 @@
 import React, { useEffect, useContext, useState } from "react"
 import { MdMenu, MdLibraryBooks } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
+import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 
 function CreateBitsPage({ bits, setBits, setOnCreateBitsPage, setOnDisplayMultipleRaw }) {
+  const appState = useContext(StateContext)
+  const appDispatch = useContext(DispatchContext)
+
   const [hasErrors, setHasErrors] = useState()
   const [errorMessage, setErrorMessage] = useState("")
 
@@ -61,7 +66,7 @@ function CreateBitsPage({ bits, setBits, setOnCreateBitsPage, setOnDisplayMultip
             </div>{" "}
             Creation
           </div>
-          <MdMenu className="icon" />
+          <MdMenu onClick={() => appDispatch({ type: "toggleMenu" })} className="icon" />
         </div>
         <div className="interface__block-cell">
           <div className="interface__block-cell__description-block">

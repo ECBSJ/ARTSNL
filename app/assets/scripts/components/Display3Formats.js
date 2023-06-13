@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import { MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
 import { CopyToClipboard } from "react-copy-to-clipboard"
+import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 
-function Display3Formats({ binary, decimal, hex, handlePublicKeyGen }) {
+function Display3Formats({ setBits, setEntropy, binary, decimal, hex, handlePublicKeyGen, setOnDisplayMultipleRaw }) {
+  const appState = useContext(StateContext)
+  const appDispatch = useContext(DispatchContext)
+
   const [active, setActive] = useState(2)
 
   function handleCopyPopup() {
@@ -29,7 +34,7 @@ function Display3Formats({ binary, decimal, hex, handlePublicKeyGen }) {
             </div>{" "}
             Creation
           </div>
-          <MdMenu className="icon" />
+          <MdMenu onClick={() => appDispatch({ type: "toggleMenu" })} className="icon" />
         </div>
         <div className="interface__block-cell">
           <div className="interface__block-cell__description-block">
@@ -70,7 +75,14 @@ function Display3Formats({ binary, decimal, hex, handlePublicKeyGen }) {
           </button>
         </div>
         <div className="interface__block-cell interface__block-cell__footer">
-          <TbRefresh className="icon" />
+          <TbRefresh
+            onClick={() => {
+              setBits("")
+              setEntropy("")
+              setOnDisplayMultipleRaw(false)
+            }}
+            className="icon"
+          />
           <div className="icon">ARTSNL</div>
           <MdLibraryBooks className="icon" />
         </div>

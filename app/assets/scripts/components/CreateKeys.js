@@ -38,7 +38,7 @@ function Bitcoin() {
         ""
       )}
 
-      {onDisplayMultipleRaw ? <DisplayMultipleRaw bits={bits} entropy={entropy} /> : ""}
+      {onDisplayMultipleRaw ? <DisplayMultipleRaw bits={bits} setBits={setBits} entropy={entropy} setEntropy={setEntropy} setOnDisplayMultipleRaw={setOnDisplayMultipleRaw} /> : ""}
     </>
   )
 }

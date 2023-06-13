@@ -227,7 +227,7 @@ function EthereumAddress() {
               Public Address
             </div>
             <IconContext.Provider value={{ size: "3rem" }}>
-              <MdMenu className="icon" />
+              <MdMenu onClick={() => appDispatch({ type: "toggleMenu" })} className="icon" />
             </IconContext.Provider>
           </div>
           <div className="interface__block-cell">

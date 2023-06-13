@@ -1,8 +1,13 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
+import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 import { MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
 
-function GeneratePubKey({ showCompressed, compressedPubKey, pubKeyX, pubKeyY, handleShowCompressedPubKey, handleDisplayAccept }) {
+function GeneratePubKey({ setBits, setEntropy, setOnDisplayMultipleRaw, setDisplayPubKey, showCompressed, compressedPubKey, pubKeyX, pubKeyY, handleShowCompressedPubKey, handleDisplayAccept }) {
+  const appState = useContext(StateContext)
+  const appDispatch = useContext(DispatchContext)
+
   const [completedSequentialProgress, setCompletedSequentialProgress] = useState(false)
 
   function handleSequentialProgress() {
@@ -27,7 +32,7 @@ function GeneratePubKey({ showCompressed, compressedPubKey, pubKeyX, pubKeyY, ha
             </div>{" "}
             Creation
           </div>
-          <MdMenu className="icon" />
+          <MdMenu onClick={() => appDispatch({ type: "toggleMenu" })} className="icon" />
         </div>
         <div className="interface__block-cell">
           <div className="interface__block-cell__description-block">
@@ -84,7 +89,15 @@ function GeneratePubKey({ showCompressed, compressedPubKey, pubKeyX, pubKeyY, ha
               <button className="capsule capsule__progress-4">Formatting x and y values...</button>
             </div>
             <div className="interface__block-cell interface__block-cell__footer">
-              <TbRefresh className="icon" />
+              <TbRefresh
+                onClick={() => {
+                  setDisplayPubKey(false)
+                  setOnDisplayMultipleRaw(false)
+                  setBits("")
+                  setEntropy("")
+                }}
+                className="icon"
+              />
               <div className="icon">ARTSNL</div>
               <MdLibraryBooks className="icon" />
             </div>

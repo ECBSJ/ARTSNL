@@ -1,11 +1,16 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef, useEffect, useContext } from "react"
 import { MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import { CSSTransition } from "react-transition-group"
 import ModalDropDown from "./ModalDropDown"
+import StateContext from "../StateContext"
+import DispatchContext from "../DispatchContext"
 
 function AcceptKeyPair({ uncompressedBufferPub, privKeyBuf, uint8arraytools, handleAccept, navigate }) {
+  const appState = useContext(StateContext)
+  const appDispatch = useContext(DispatchContext)
+
   const [buttonDisabled, setButtonDisabled] = useState(true)
 
   const [isModalDropDownOpen, setIsModalDropDownOpen] = useState(false)
@@ -95,7 +100,7 @@ function AcceptKeyPair({ uncompressedBufferPub, privKeyBuf, uint8arraytools, han
             </div>{" "}
             Creation
           </div>
-          <MdMenu className="icon" />
+          <MdMenu onClick={() => appDispatch({ type: "toggleMenu" })} className="icon" />
         </div>
         <div className="interface__block-cell">
           <div className="interface__block-cell__description-block">

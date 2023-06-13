@@ -28,8 +28,8 @@ function ExportPage({ isExportOpen, setIsExportOpen }) {
   useEffect(() => {
     if (appState.keys.bufferPrivKey) {
       let retrievedKeyPairObject = {
-        priv: appState.keys.bufferPrivKey.toString("hex"),
-        pub: appState.keys.bufferPubKey.toString("hex")
+        priv: uint8arraytools.toHex(appState.keys.bufferPrivKey),
+        pub: uint8arraytools.toHex(appState.keys.bufferPubKey)
       }
 
       setKeyPairObject(keyPairObject => ({

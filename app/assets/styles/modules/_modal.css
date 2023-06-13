@@ -33,8 +33,8 @@
     width: 100%;
     height: 57vh;
     border-radius: 30px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 26px;
+    padding-right: 26px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -42,7 +42,7 @@
     background-color: whitesmoke;
     text-align: center;
     color: black;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
 
     &-enter {
       transform: translateY(-480px);

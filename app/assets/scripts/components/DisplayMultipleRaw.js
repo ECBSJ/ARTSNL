@@ -9,7 +9,7 @@ import GeneratePubKey from "./GeneratePubKey"
 import Display3Formats from "./Display3Formats"
 import AcceptKeyPair from "./AcceptKeyPair"
 
-function DisplayMultipleRaw({ bits, entropy }) {
+function DisplayMultipleRaw({ bits, setBits, entropy, setEntropy, setOnDisplayMultipleRaw }) {
   const navigate = useNavigate()
   const appDispatch = useContext(DispatchContext)
 
@@ -101,7 +101,7 @@ function DisplayMultipleRaw({ bits, entropy }) {
     <>
       {displayPubKey ? (
         <>
-          <GeneratePubKey showCompressed={showCompressed} compressedPubKey={compressedPubKey} pubKeyX={pubKeyX} pubKeyY={pubKeyY} handleShowCompressedPubKey={handleShowCompressedPubKey} handleDisplayAccept={handleDisplayAccept} />
+          <GeneratePubKey setBits={setBits} setEntropy={setEntropy} setOnDisplayMultipleRaw={setOnDisplayMultipleRaw} setDisplayPubKey={setDisplayPubKey} showCompressed={showCompressed} compressedPubKey={compressedPubKey} pubKeyX={pubKeyX} pubKeyY={pubKeyY} handleShowCompressedPubKey={handleShowCompressedPubKey} handleDisplayAccept={handleDisplayAccept} />
         </>
       ) : displayAccept ? (
         <>
@@ -109,7 +109,7 @@ function DisplayMultipleRaw({ bits, entropy }) {
         </>
       ) : (
         <>
-          <Display3Formats binary={binary} decimal={decimal} hex={hex} handlePublicKeyGen={handlePublicKeyGen} />
+          <Display3Formats setBits={setBits} setEntropy={setEntropy} binary={binary} decimal={decimal} hex={hex} handlePublicKeyGen={handlePublicKeyGen} setOnDisplayMultipleRaw={setOnDisplayMultipleRaw} />
         </>
       )}
     </>
