@@ -13,7 +13,7 @@ import ModalDropDown from "./ModalDropDown"
 import * as uint8arraytools from "uint8array-tools"
 import { CSSTransition } from "react-transition-group"
 
-function BitcoinAddress() {
+function BitcoinAddress({ setPage }) {
   const navigate = useNavigate()
 
   const appState = useContext(StateContext)
@@ -477,7 +477,7 @@ function BitcoinAddress() {
           )}
         </div>
         <div className="interface__block-cell interface__block-cell__footer">
-          <TbRefresh className="icon" />
+          <TbRefresh onClick={() => setPage(0)} className="icon" />
           <div className="icon">ARTSNL</div>
           <MdLibraryBooks className="icon" />
         </div>

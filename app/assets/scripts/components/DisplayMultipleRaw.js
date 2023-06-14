@@ -105,7 +105,7 @@ function DisplayMultipleRaw({ bits, setBits, entropy, setEntropy, setOnDisplayMu
         </>
       ) : displayAccept ? (
         <>
-          <AcceptKeyPair uncompressedBufferPub={uncompressedBufferPub} privKeyBuf={privKeyBuf} uint8arraytools={uint8arraytools} handleAccept={handleAccept} navigate={navigate} />
+          <AcceptKeyPair setBits={setBits} setEntropy={setEntropy} setOnDisplayMultipleRaw={setOnDisplayMultipleRaw} uncompressedBufferPub={uncompressedBufferPub} privKeyBuf={privKeyBuf} uint8arraytools={uint8arraytools} handleAccept={handleAccept} navigate={navigate} />
         </>
       ) : (
         <>

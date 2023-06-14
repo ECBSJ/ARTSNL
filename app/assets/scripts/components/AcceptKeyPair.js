@@ -7,7 +7,7 @@ import ModalDropDown from "./ModalDropDown"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 
-function AcceptKeyPair({ uncompressedBufferPub, privKeyBuf, uint8arraytools, handleAccept, navigate }) {
+function AcceptKeyPair({ setBits, setEntropy, setOnDisplayMultipleRaw, uncompressedBufferPub, privKeyBuf, uint8arraytools, handleAccept, navigate }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
@@ -135,7 +135,16 @@ function AcceptKeyPair({ uncompressedBufferPub, privKeyBuf, uint8arraytools, han
           </button>
         </div>
         <div className="interface__block-cell interface__block-cell__footer">
-          <TbRefresh className="icon" />
+          <TbRefresh
+            onClick={() => {
+              setOnDisplayMultipleRaw(false)
+              setBits("")
+              setEntropy("")
+              appDispatch({ type: "setBufferPrivKey", value: null })
+              appDispatch({ type: "setBufferPubKey", value: null })
+            }}
+            className="icon"
+          />
           <div className="icon">ARTSNL</div>
           <MdLibraryBooks className="icon" />
         </div>

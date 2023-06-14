@@ -1,24 +1,29 @@
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import { MdLibraryBooks } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
 import { SiBitcoin, SiEthereum } from "react-icons/si"
+import DispatchContext from "../DispatchContext"
+import { useNavigate } from "react-router-dom"
 
 // IMPORT COMPONENTS
 import BitcoinAddress from "./BitcoinAddress"
 import EthereumAddress from "./EthereumAddress"
 
 function WalletSelection() {
+  const appDispatch = useContext(DispatchContext)
+  const navigate = useNavigate()
+
   const [page, setPage] = useState(0)
 
   return (
     <>
       {page == 1 ? (
         <>
-          <BitcoinAddress />
+          <BitcoinAddress setPage={setPage} />
         </>
       ) : page == 2 ? (
         <>
-          <EthereumAddress />
+          <EthereumAddress setPage={setPage} />
         </>
       ) : (
         <>
@@ -46,7 +51,14 @@ function WalletSelection() {
             <div className="interface__block-cell"></div>
             <div className="interface__block-cell"></div>
             <div className="interface__block-cell interface__block-cell__footer">
-              <TbRefresh className="icon" />
+              <TbRefresh
+                onClick={() => {
+                  appDispatch({ type: "setBufferPrivKey", value: null })
+                  appDispatch({ type: "setBufferPubKey", value: null })
+                  navigate("/CreateKeys")
+                }}
+                className="icon"
+              />
               <div className="icon">ARTSNL</div>
               <MdLibraryBooks className="icon" />
             </div>

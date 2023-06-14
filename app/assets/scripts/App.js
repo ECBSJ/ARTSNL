@@ -135,9 +135,11 @@ function App() {
         draft.isMenuOpen = !draft.isMenuOpen
         return
       case "setBufferPrivKey":
+        // type will always be set as Buffer
         draft.keys.bufferPrivKey = action.value
         return
       case "setBufferPubKey":
+        // if not via import nor browser storage, type will be uint8array instead of Buffer
         draft.keys.bufferPubKey = action.value
         return
       case "setKeyPair":

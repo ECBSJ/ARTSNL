@@ -12,7 +12,7 @@ import { Tooltip } from "react-tooltip"
 import ModalDropDown from "./ModalDropDown"
 import { CSSTransition } from "react-transition-group"
 
-function EthereumAddress() {
+function EthereumAddress({ setPage }) {
   const navigate = useNavigate()
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
@@ -323,7 +323,7 @@ function EthereumAddress() {
           )}
         </div>
         <div className="interface__block-cell interface__block-cell__footer">
-          <TbRefresh className="icon" />
+          <TbRefresh onClick={() => setPage(0)} className="icon" />
           <div className="icon">ARTSNL</div>
           <MdLibraryBooks className="icon" />
         </div>

@@ -60,7 +60,14 @@ function GeneratePubKey({ setBits, setEntropy, setOnDisplayMultipleRaw, setDispl
               </button>
             </div>
             <div className="interface__block-cell interface__block-cell__footer">
-              <TbRefresh className="icon" />
+              <TbRefresh
+                onClick={() => {
+                  setOnDisplayMultipleRaw(false)
+                  setBits("")
+                  setEntropy("")
+                }}
+                className="icon"
+              />
               <div className="icon">ARTSNL</div>
               <MdLibraryBooks className="icon" />
             </div>
@@ -91,7 +98,6 @@ function GeneratePubKey({ setBits, setEntropy, setOnDisplayMultipleRaw, setDispl
             <div className="interface__block-cell interface__block-cell__footer">
               <TbRefresh
                 onClick={() => {
-                  setDisplayPubKey(false)
                   setOnDisplayMultipleRaw(false)
                   setBits("")
                   setEntropy("")
