@@ -36,8 +36,8 @@ function GeneratePubKey({ setBits, setEntropy, setOnDisplayMultipleRaw, setDispl
         </div>
         <div className="interface__block-cell">
           <div className="interface__block-cell__description-block">
-            <div className="interface__block-cell--thin">Step x: Derive Public Key</div>
-            <div className="interface__block-cell--thick">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil nisi et hic impedit perspiciatis minima voluptas vel quam pariatur distinctio officia id, itaque ratione nemo eveniet recusandae a excepturi natus?</div>
+            <div className="interface__block-cell--thin">Step 2: Derive Public Key</div>
+            <div className="interface__block-cell--thick">Through the cryptographic magic of elliptic curve, secp256k1, you can derive a public key from the private key. The public key is used to derive a public address, as well as in verification of transactions via the digital signature algorithm of ECDSA.</div>
           </div>
         </div>
       </div>
@@ -46,7 +46,18 @@ function GeneratePubKey({ setBits, setEntropy, setOnDisplayMultipleRaw, setDispl
         <>
           <div className="interface__block">
             <div className="interface__block-cell">Public Key Generated!</div>
-            <div className="interface__block-cell interface__block-cell--display-block interface__block-cell--thick interface__block-cell--thick--font-large input-white">{showCompressed ? compressedPubKey : "(" + pubKeyX + ", " + pubKeyY + ")"}</div>
+            <div className="interface__block-cell interface__block-cell--display-block interface__block-cell--thick interface__block-cell--thick--font-large input-white">
+              {showCompressed ? (
+                compressedPubKey
+              ) : (
+                <>
+                  <span style={{ color: "red" }}>&#40;</span>
+                  {pubKeyX}
+                  <span style={{ color: "red" }}>&#44;</span> {pubKeyY}
+                  <span style={{ color: "red" }}>&#41;</span>
+                </>
+              )}
+            </div>
           </div>
           <div className="interface__block">
             <div className="interface__block-cell">

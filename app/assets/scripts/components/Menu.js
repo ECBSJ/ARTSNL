@@ -58,11 +58,11 @@ function Menu() {
         </div>
       </div>
 
-      <CSSTransition in={isExportOpen} timeout={1000} classNames="menu__cover" unmountOnExit>
+      <CSSTransition in={isExportOpen} timeout={300} classNames="menu__cover" unmountOnExit>
         <ExportPage isExportOpen={isExportOpen} setIsExportOpen={setIsExportOpen} />
       </CSSTransition>
 
-      <CSSTransition in={isImportOpen} timeout={1000} classNames="menu__cover" unmountOnExit>
+      <CSSTransition in={isImportOpen} timeout={300} classNames="menu__cover" unmountOnExit>
         <ImportPage isImportOpen={isImportOpen} setIsImportOpen={setIsImportOpen} />
       </CSSTransition>
     </>

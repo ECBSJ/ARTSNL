@@ -38,8 +38,8 @@ function Display3Formats({ setBits, setEntropy, binary, decimal, hex, handlePubl
         </div>
         <div className="interface__block-cell">
           <div className="interface__block-cell__description-block">
-            <div className="interface__block-cell--thin">Step x: Your Private Key</div>
-            <div className="interface__block-cell--thick">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil nisi et hic impedit perspiciatis minima voluptas vel quam pariatur distinctio officia id, itaque ratione nemo eveniet recusandae a excepturi natus?</div>
+            <div className="interface__block-cell--thin">3 Formats, 1 Private Key</div>
+            <div className="interface__block-cell--thick">Below is your private key shown in 3 different formats, but all 32 bytes in size. It doesn&rsquo;t matter if you store your key in binary, hexadecimal, or decimal format. As long as you are able to convert format if needed, then you&rsquo;ll always have access to your assets.</div>
           </div>
         </div>
       </div>

@@ -343,7 +343,7 @@ function App() {
           <IconContext.Provider value={{ size: "3rem" }}>
             <div className="container">
               <BrowserRouter>
-                <CSSTransition in={state.isMenuOpen} timeout={1000} classNames="menu__cover" unmountOnExit>
+                <CSSTransition in={state.isMenuOpen} timeout={300} classNames="menu__cover" unmountOnExit>
                   <Menu />
                 </CSSTransition>
                 <Suspense fallback={<LazyLoadFallback />}>

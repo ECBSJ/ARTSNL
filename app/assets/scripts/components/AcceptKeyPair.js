@@ -104,17 +104,21 @@ function AcceptKeyPair({ setBits, setEntropy, setOnDisplayMultipleRaw, uncompres
         </div>
         <div className="interface__block-cell">
           <div className="interface__block-cell__description-block">
-            <div className="interface__block-cell--thin">Step x: Confirm Key Pair</div>
-            <div className="interface__block-cell--thick">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil nisi et hic impedit perspiciatis minima voluptas vel quam pariatur distinctio officia id, itaque ratione nemo eveniet recusandae a excepturi natus?</div>
+            <div className="interface__block-cell--thin">Step 3: Confirm Key Pair</div>
+            <div className="interface__block-cell--thick">Your private and public key essentially makes up your key pair. Do note for this app, your private key is stored in hexadecimal format and your public key is stored in uncompressed hexadecimal format. You can always export them in the menu option.</div>
           </div>
         </div>
       </div>
       <div className="interface__block">
         <div className="interface__block-cell">FOR YOUR EYES ONLY 👀</div>
         <div className="interface__block-cell interface__block-cell--display-block interface__block-cell--thick interface__block-cell--thick--font-large input-white">
-          <div>Private Key: {uint8arraytools.toHex(privKeyBuf)}</div>
+          <div>
+            <span style={{ color: "white" }}>Private Key:</span> {uint8arraytools.toHex(privKeyBuf)}
+          </div>
           <br />
-          <div>Public Key: {uint8arraytools.toHex(uncompressedBufferPub)}</div>
+          <div>
+            <span style={{ color: "white" }}>Public Key:</span> {uint8arraytools.toHex(uncompressedBufferPub)}
+          </div>
           <br />
           <CopyToClipboard text={JSON.stringify(keyPair)} onCopy={handleCopyPopup}>
             <div id="copiedElement">

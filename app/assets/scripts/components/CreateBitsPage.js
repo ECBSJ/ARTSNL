@@ -70,8 +70,8 @@ function CreateBitsPage({ bits, setBits, setOnCreateBitsPage, setOnDisplayMultip
         </div>
         <div className="interface__block-cell">
           <div className="interface__block-cell__description-block">
-            <div className="interface__block-cell--thin">Step 1: Title</div>
-            <div className="interface__block-cell--thick">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil nisi et hic impedit perspiciatis minima voluptas vel quam pariatur distinctio officia id, itaque ratione nemo eveniet recusandae a excepturi natus?</div>
+            <div className="interface__block-cell--thin">Step 1: DIY 256 bits</div>
+            <div className="interface__block-cell--thick">Every private key is 32 bytes in size. It might not seem large on face value but the number of possible 32 byte-sized keys is astronomically large, which makes your key secure. 1 byte is 8 bits. 32 bytes is 256 bits &#40;binary numbers&#41;.</div>
           </div>
         </div>
       </div>
