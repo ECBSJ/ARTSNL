@@ -64,6 +64,7 @@ function App() {
     })
   }
 
+  // generate addresses from browser storage encrypted key pair
   function generateBitcoinAddress(bufferPubKey) {
     let riped = bitcoin.crypto.hash160(bufferPubKey)
     let prefix = Buffer.from("00", "hex")
