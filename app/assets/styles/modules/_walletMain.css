@@ -10,6 +10,7 @@
     justify-content: space-between;
     row-gap: 15px;
     align-items: center;
+    background-color: rgba(255, 182, 193, 0.459);
 
     &-enter {
       transform: translateX(400px);

@@ -1,0 +1,48 @@
+.tx-builder {
+  &__overlay {
+    z-index: 100;
+    position: absolute;
+    width: 100%;
+    height: 534px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+
+    &__outer {
+      width: 370px;
+      height: 75px;
+      background-color: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+  }
+
+  &__blueprint {
+    width: 100%;
+    height: 385px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #b11af734;
+    border-top: 1px solid #b01af7;
+    border-bottom: 1px solid #b01af7;
+
+    &:hover {
+      background-color: #b11af754;
+    }
+
+    &-carousel {
+      width: 100%;
+      height: 300px;
+      padding: 0 14px 0 14px;
+      background-color: rgba(0, 128, 0, 0.342);
+      border-top: 2px solid green;
+      border-bottom: 2px solid green;
+    }
+  }
+}

@@ -464,40 +464,19 @@ function Main() {
         </>
       ) : (
         <>
-          <div style={{ fontSize: "3rem" }}>ARTSNL</div>
+          {/* <div style={{ fontSize: "3rem" }}>ARTSNL</div>
           <div onClick={() => setPage(2)}>
             <MdNavigateNext className="icon" />
-          </div>
+          </div> */}
 
-          {/* <div className="wallet-main__overlay">
+          <div className="tx-builder__overlay">
             <IconContext.Provider value={{ size: "300px" }}>
-              <div className="wallet-main__asset-display wallet-main__asset-display--bitcoin">
-                {static_btc_address ? (
-                  <div className="wallet-main__asset-display--label">
-                    <div style={{ fontSize: ".4em" }}>{isTestnet ? static_btc_testnet_address : static_btc_address}</div>
-                    <div>{isTestnet ? "tBTC" : "BTC"}</div>
-                    <div style={{ fontSize: ".6em" }}>{isTestnet ? "testnet" : "mainnet"}</div>
-                  </div>
-                ) : (
-                  <div className="wallet-main__asset-display--label">
-                    <div>Create a BTC wallet.</div>
-                  </div>
-                )}
-                <FaBitcoin className="wallet-main__asset-display--bitcoin-logo" />
+              <div className="tx-builder__overlay__outer">Step 1: Select UTXOs</div>
+              <div className="tx-builder__blueprint">
+                <div className="tx-builder__blueprint-carousel"></div>
               </div>
-              <div className="wallet-main__asset-display wallet-main__asset-display--ethereum">
-                {static_eth_address ? (
-                  <div className="wallet-main__asset-display--label">
-                    <div style={{ fontSize: ".4em" }}>{static_eth_address}</div>
-                    <div>{isTestnet ? "gETH" : "ETH"}</div>
-                    <div style={{ fontSize: ".6em" }}>{isTestnet ? "goerli" : "mainnet"}</div>
-                  </div>
-                ) : (
-                  <div className="wallet-main__asset-display--label">
-                    <div>Create an ETH wallet.</div>
-                  </div>
-                )}
-                <FaEthereum className="wallet-main__asset-display--ethereum-logo" />
+              <div className="tx-builder__overlay__outer">
+                <button className="button-purple"></button>
               </div>
             </IconContext.Provider>
           </div>
@@ -505,11 +484,11 @@ function Main() {
           <div className="interface__block">
             <div className="interface__block-cell interface__block-cell--space-between">
               <div className="title-font title-font--large">
-                <div className="title__subtitle">Your crypto journey starts here.</div>
+                <div className="title__subtitle">Build your own transaction.</div>
                 <div style={{ display: "inline-block" }} className="purple-font">
-                  🏠Your
+                  🏗️ TX
                 </div>{" "}
-                Wallet
+                Builder
               </div>
               <MdMenu className="icon" />
             </div>
@@ -531,7 +510,7 @@ function Main() {
               <BsReception4 className="icon" />
               <MdLibraryBooks className="icon" />
             </div>
-          </div> */}
+          </div>
         </>
       )}
     </>

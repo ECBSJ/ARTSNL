@@ -13,7 +13,7 @@
 @import "modules/_menu.css";
 @import "modules/_qrCode.css";
 @import "modules/_walletMain.css";
-
+@import "modules/_txBuilder.css";
 @import "modules/_standards.css";
 
 /* z-index values */
@@ -22,6 +22,7 @@
 .menu__cover--higher-z-index: 500
 .icon--higher-z-index: 300
 .menu__cover: 200
+.tx-builder__overlay: 100
 .wallet-main__overlay: 100
 .modal__drop-down: 10
 .modal__cover: 9
