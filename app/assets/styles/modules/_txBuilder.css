@@ -41,8 +41,12 @@
       height: 300px;
       padding: 0 14px 0 14px;
       background-color: rgba(0, 128, 0, 0.342);
-      border-top: 2px solid green;
-      border-bottom: 2px solid green;
+      border-top: 2px solid #bfff8c;
+      border-bottom: 2px solid #bfff8c;
+
+      &:hover {
+        background-color: rgba(0, 128, 0, 0.5);
+      }
     }
   }
 }

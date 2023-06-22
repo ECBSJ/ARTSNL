@@ -26,6 +26,7 @@ const WalletMain = React.lazy(() => import("./components/WalletMain"))
 import Menu from "./components/Menu"
 const BitcoinAddress = React.lazy(() => import("./components/BitcoinAddress"))
 const EthereumAddress = React.lazy(() => import("./components/EthereumAddress"))
+const BitcoinTxBuilder = React.lazy(() => import("./components/BitcoinTxBuilder"))
 
 function App() {
   // cookie setter/getter
@@ -349,12 +350,14 @@ function App() {
                 </CSSTransition>
                 <Suspense fallback={<LazyLoadFallback />}>
                   <Routes>
-                    <Route path="/" element={state.hasBrowserStorage ? <WalletMain /> : <Main />} />
+                    {/* <Route path="/" element={state.hasBrowserStorage ? <WalletMain /> : <Main />} /> */}
+                    <Route path="/" element={<BitcoinTxBuilder />} />
                     <Route path="/CreateKeys" element={<CreateKeys />} />
                     <Route path="/AddressSelection" element={<AddressSelection />} />
                     <Route path="/BitcoinAddress" element={<BitcoinAddress />} />
                     <Route path="/EthereumAddress" element={<EthereumAddress />} />
                     <Route path="/WalletMain" element={<WalletMain />} />
+                    <Route path="/BitcoinTxBuilder" element={<BitcoinTxBuilder />} />
                   </Routes>
                 </Suspense>
               </BrowserRouter>

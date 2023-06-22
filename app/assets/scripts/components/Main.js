@@ -36,12 +36,6 @@ function Main() {
   const Mainnet = bitcoin.networks.bitcoin
   let Testnet = bitcoin.networks.testnet
 
-  const testnetPrivKey = "938zbGqYYvZvFaHNXMNDpQZ4hEQE89ugGEjrv9QCKWCL6H2c4ps"
-  const testnetAdd = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
-
-  const testnetPrivKey_2 = "93MPV1RsWMvfLCpGZcnPG1U8EA3QDqdNxkCVJwmeTGrjEHFZ5v6"
-  const testnetAdd_2 = "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w"
-
   // let testnetKeyPair = ECPair.fromWIF(testnetPrivKey, Testnet)
   // const p2pkhObject = bitcoin.payments.p2pkh({ pubkey: testnetKeyPair.publicKey, network: Testnet })
 
@@ -464,12 +458,12 @@ function Main() {
         </>
       ) : (
         <>
-          {/* <div style={{ fontSize: "3rem" }}>ARTSNL</div>
+          <div style={{ fontSize: "3rem" }}>ARTSNL</div>
           <div onClick={() => setPage(2)}>
             <MdNavigateNext className="icon" />
-          </div> */}
+          </div>
 
-          <div className="tx-builder__overlay">
+          {/* <div className="tx-builder__overlay">
             <IconContext.Provider value={{ size: "300px" }}>
               <div className="tx-builder__overlay__outer">Step 1: Select UTXOs</div>
               <div className="tx-builder__blueprint">
@@ -510,7 +504,7 @@ function Main() {
               <BsReception4 className="icon" />
               <MdLibraryBooks className="icon" />
             </div>
-          </div>
+          </div> */}
         </>
       )}
     </>
