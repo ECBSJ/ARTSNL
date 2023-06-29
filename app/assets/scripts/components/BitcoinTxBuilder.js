@@ -5,6 +5,9 @@ import { TbRefresh } from "react-icons/tb"
 import { BsHddNetworkFill, BsHddNetwork, BsReception1, BsReception4 } from "react-icons/bs"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+import Carousel from "react-multi-carousel"
+import "react-multi-carousel/lib/styles.css"
+import UtxoDisplayCard from "./UtxoDisplayCard"
 
 function BitcoinTxBuilder() {
   const appState = useContext(StateContext)
@@ -26,6 +29,25 @@ function BitcoinTxBuilder() {
     console.log(utxoData_Array)
   }
 
+  const responsive = {
+    superLargeDesktop: {
+      breakpoint: { max: 4000, min: 3000 },
+      items: 1
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 1
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 1
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1
+    }
+  }
+
   useEffect(() => {
     getUtxoData()
   }, [])
@@ -36,7 +58,12 @@ function BitcoinTxBuilder() {
         <IconContext.Provider value={{ size: "300px" }}>
           <div className="tx-builder__overlay__outer">Step 1: Select UTXOs</div>
           <div className="tx-builder__blueprint">
-            <div className="tx-builder__blueprint-carousel"></div>
+            <div className="tx-builder__blueprint-carousel">
+              {utxoData_Array.map((utxo, index) => {
+                return <UtxoDisplayCard key={index} txid={utxo.txid} vout={utxo.vout} confirmed={utxo.status.confirmed} block_height={utxo.status.block_height} block_hash={utxo.status.block_hash} block_time={utxo.status.block_time} value={utxo.value} />
+              })}
+              {/* <UtxoDisplayCard txid={utxoData_Array[0].txid} vout={utxoData_Array[0].vout} confirmed={utxoData_Array[0].status.confirmed} block_height={utxoData_Array[0].status.block_height} block_hash={utxoData_Array[0].status.block_hash} block_time={utxoData_Array[0].status.block_time} value={utxoData_Array[0].value} /> */}
+            </div>
           </div>
           <div className="tx-builder__overlay__outer">
             <button className="button-purple"></button>
