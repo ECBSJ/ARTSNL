@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState } from "react"
 import { IconContext } from "react-icons"
-import { MdNavigateNext, MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
+import { MdOutlineArrowCircleLeft, MdOutlineArrowCircleRight, MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
 import { BsHddNetworkFill, BsHddNetwork, BsReception1, BsReception4 } from "react-icons/bs"
 import StateContext from "../StateContext"
@@ -48,6 +48,10 @@ function BitcoinTxBuilder() {
     }
   }
 
+  function handleShowNext() {
+    null
+  }
+
   useEffect(() => {
     getUtxoData()
   }, [])
@@ -55,13 +59,16 @@ function BitcoinTxBuilder() {
   return (
     <>
       <div className="tx-builder__overlay">
-        <IconContext.Provider value={{ size: "300px" }}>
+        <IconContext.Provider value={{ size: "30px" }}>
           <div className="tx-builder__overlay__outer">Step 1: Select UTXOs</div>
           <div className="tx-builder__blueprint">
             <div className="tx-builder__blueprint-carousel">
-              {utxoData_Array.map((utxo, index) => {
-                return <UtxoDisplayCard key={index} txid={utxo.txid} vout={utxo.vout} confirmed={utxo.status.confirmed} block_height={utxo.status.block_height} block_hash={utxo.status.block_hash} block_time={utxo.status.block_time} value={utxo.value} />
-              })}
+              <MdOutlineArrowCircleRight onClick={() => handleShowNext()} style={{ top: "10", right: "10" }} className={"icon icon--position-absolute " + (utxoData_Array.length == 1 ? "visibility-hidden" : "")} />
+              <div className="tx-builder__blueprint-carousel-container">
+                {utxoData_Array.map((utxo, index) => {
+                  return <UtxoDisplayCard key={index} txid={utxo.txid} vout={utxo.vout} confirmed={utxo.status.confirmed} block_height={utxo.status.block_height} block_hash={utxo.status.block_hash} block_time={utxo.status.block_time} value={utxo.value} />
+                })}
+              </div>
               {/* <UtxoDisplayCard txid={utxoData_Array[0].txid} vout={utxoData_Array[0].vout} confirmed={utxoData_Array[0].status.confirmed} block_height={utxoData_Array[0].status.block_height} block_hash={utxoData_Array[0].status.block_hash} block_time={utxoData_Array[0].status.block_time} value={utxoData_Array[0].value} /> */}
             </div>
           </div>
