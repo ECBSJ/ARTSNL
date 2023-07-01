@@ -1,9 +1,17 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
+import { MdIndeterminateCheckBox, MdCheckBox } from "react-icons/md"
 
-function UtxoDisplayCard({ txid, vout, confirmed, block_height, block_hash, block_time, value }) {
+function UtxoDisplayCard({ index, txid, vout, confirmed, block_height, block_hash, block_time, value, pushIndexToSelectedArray }) {
+  const [isSelected, setIsSelected] = useState(false)
+
+  function handleSelect() {
+    pushIndexToSelectedArray(index)
+    setIsSelected(!isSelected)
+  }
+
   return (
     <>
-      <div className="utxo__display-card">
+      <div onClick={() => handleSelect()} className={"utxo__display-card " + (isSelected ? "utxo__display-card--selected" : "")}>
         <span>&#123;</span>
         <br />
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>txid&#58; &#34;{txid.slice(0, 12) + "..." + txid.slice(-12)}&#34;,</span>
@@ -25,6 +33,7 @@ function UtxoDisplayCard({ txid, vout, confirmed, block_height, block_hash, bloc
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>value&#58; {value}</span>
         <br />
         <span>&#125;</span>
+        {isSelected ? <MdCheckBox style={{ position: "absolute", bottom: "0", right: "0", color: "lightGreen" }} className="icon icon--position-absolute" /> : <MdIndeterminateCheckBox style={{ position: "absolute", bottom: "0", right: "0", color: "white" }} className="icon icon--position-absolute" />}
       </div>
     </>
   )

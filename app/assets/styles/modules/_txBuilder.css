@@ -24,6 +24,7 @@
   &__blueprint {
     width: 100%;
     height: 385px;
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -58,14 +59,25 @@
         height: 300px;
         display: flex;
         justify-content: flex-start;
-        column-gap: 71px;
+        column-gap: 28px;
         align-items: center;
+        transition: all 300ms ease-out;
       }
     }
   }
 }
 
 .utxo__display-card {
-  width: 370px;
+  min-width: 370px;
+  position: relative;
   font-size: 0.7em;
+  color: rgb(189, 189, 189);
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &--selected {
+    color: white;
+  }
 }
