@@ -5,13 +5,15 @@ import { TbRefresh } from "react-icons/tb"
 import { BsHddNetworkFill, BsHddNetwork, BsReception1, BsReception4 } from "react-icons/bs"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
-import Carousel from "react-multi-carousel"
-import "react-multi-carousel/lib/styles.css"
+import { CSSTransition } from "react-transition-group"
 import UtxoDisplayCard from "./UtxoDisplayCard"
+import SelectUtxo from "./SelectUtxo"
 
 function BitcoinTxBuilder() {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
+
+  const [txStatus, setTxStatus] = useState(1)
 
   const testnetPrivKey = "938zbGqYYvZvFaHNXMNDpQZ4hEQE89ugGEjrv9QCKWCL6H2c4ps"
   const testnetAdd = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
@@ -28,46 +30,6 @@ function BitcoinTxBuilder() {
   async function getUtxoData() {
     // let result = appState.bitcoin.testnetProvider?.bitcoin.addresses.getAddressTxsUtxo({ address }).then(console.log)
     console.log(utxoData_Array)
-  }
-
-  const responsive = {
-    superLargeDesktop: {
-      breakpoint: { max: 4000, min: 3000 },
-      items: 1
-    },
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 1
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 1
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1
-    }
-  }
-
-  let translateXConstant = -398
-  const [translateXMultiplier, setTranslateXMultipler] = useState(0)
-
-  let translateXAmount = translateXConstant * translateXMultiplier
-
-  let translateXStyle = {
-    translate: translateXAmount.toString() + "px"
-  }
-
-  function handleShowNext() {
-    if (translateXMultiplier < utxoData_Array.length - 1) {
-      setTranslateXMultipler(prev => prev + 1)
-    }
-  }
-
-  function handleShowPrev() {
-    if (translateXMultiplier > 0) {
-      setTranslateXMultipler(prev => prev - 1)
-    }
   }
 
   const [selectedArray, setSelectedArray] = useState([])
@@ -103,31 +65,9 @@ function BitcoinTxBuilder() {
 
   return (
     <>
-      <div className="tx-builder__overlay">
-        <IconContext.Provider value={{ size: "30px" }}>
-          <div className="tx-builder__overlay__outer">Step 1: Select UTXOs</div>
-          <div className="tx-builder__blueprint">
-            <p style={{ position: "absolute", top: "-8px", left: "28px" }}>
-              UTXO Carousel: &#91;{translateXMultiplier + 1} of {utxoData_Array.length}&#93;
-            </p>
-            <div className="tx-builder__blueprint-carousel">
-              <MdOutlineArrowCircleLeft onClick={() => handleShowPrev()} style={{ top: "10", left: "10", zIndex: "1" }} className={"icon icon--position-absolute " + (utxoData_Array.length == 1 || translateXMultiplier == 0 ? "visibility-hidden" : "")} />
-              <MdOutlineArrowCircleRight onClick={() => handleShowNext()} style={{ top: "10", right: "10", zIndex: "1" }} className={"icon icon--position-absolute " + (utxoData_Array.length == 1 || translateXMultiplier == utxoData_Array.length - 1 ? "visibility-hidden" : "")} />
-              <div style={translateXStyle} className="tx-builder__blueprint-carousel-container">
-                {utxoData_Array.map((utxo, index) => {
-                  return <UtxoDisplayCard key={index} index={index} txid={utxo.txid} vout={utxo.vout} confirmed={utxo.status.confirmed} block_height={utxo.status.block_height} block_hash={utxo.status.block_hash} block_time={utxo.status.block_time} value={utxo.value} pushIndexToSelectedArray={pushIndexToSelectedArray} />
-                })}
-              </div>
-              {/* <UtxoDisplayCard txid={utxoData_Array[0].txid} vout={utxoData_Array[0].vout} confirmed={utxoData_Array[0].status.confirmed} block_height={utxoData_Array[0].status.block_height} block_hash={utxoData_Array[0].status.block_hash} block_time={utxoData_Array[0].status.block_time} value={utxoData_Array[0].value} /> */}
-            </div>
-            <p style={{ position: "absolute", bottom: "10px", left: "28px", fontSize: "0.6em" }}>UTXOs Selected: {selectedArray.length}</p>
-            <p style={{ position: "absolute", bottom: "-4px", left: "28px", fontSize: "0.6em" }}>Total UTXO Value Selected: {totalUtxoValueSelected}</p>
-          </div>
-          <div className="tx-builder__overlay__outer">
-            <button className="button-purple"></button>
-          </div>
-        </IconContext.Provider>
-      </div>
+      <CSSTransition in={txStatus === 1} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
+        <SelectUtxo utxoData_Array={utxoData_Array} pushIndexToSelectedArray={pushIndexToSelectedArray} selectedArray={selectedArray} totalUtxoValueSelected={totalUtxoValueSelected} />
+      </CSSTransition>
 
       <div className="interface__block">
         <div className="interface__block-cell interface__block-cell--space-between">
@@ -138,7 +78,7 @@ function BitcoinTxBuilder() {
             </div>{" "}
             Builder
           </div>
-          <MdMenu className="icon" />
+          <MdMenu onClick={() => appDispatch({ type: "toggleMenu" })} className="icon" />
         </div>
         <div className="interface__block-cell"></div>
         <div className="interface__block-cell"></div>

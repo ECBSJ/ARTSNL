@@ -2,8 +2,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  &--column {
+    flex-direction: column;
+  }
 }
 
 .visibility-hidden {
   visibility: hidden;
+}
+
+.position-absolute {
+  position: absolute;
 }

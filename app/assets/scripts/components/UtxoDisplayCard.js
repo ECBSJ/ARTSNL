@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react"
 import { MdIndeterminateCheckBox, MdCheckBox } from "react-icons/md"
 
-function UtxoDisplayCard({ index, txid, vout, confirmed, block_height, block_hash, block_time, value, pushIndexToSelectedArray }) {
+function UtxoDisplayCard({ index, txid, vout, confirmed, block_height, block_hash, block_time, value, pushIndexToSelectedArray, selectedArray }) {
   const [isSelected, setIsSelected] = useState(false)
 
   function handleSelect() {
     pushIndexToSelectedArray(index)
     setIsSelected(!isSelected)
   }
+
+  useEffect(() => {
+    if (selectedArray.includes(index)) {
+      setIsSelected(!isSelected)
+    }
+  }, [])
 
   return (
     <>

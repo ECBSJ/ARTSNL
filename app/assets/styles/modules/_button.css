@@ -257,6 +257,13 @@ button {
   bottom: 5;
 }
 
+.utxo-capsule {
+  width: 296px;
+  min-height: 50px;
+  max-height: 50px;
+  font-size: 0.7em;
+}
+
 /* ANIMATIONS */
 @keyframes purple-bg-pulse {
   0% {
