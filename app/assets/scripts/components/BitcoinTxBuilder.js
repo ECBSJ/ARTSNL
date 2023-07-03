@@ -8,12 +8,16 @@ import DispatchContext from "../DispatchContext"
 import { CSSTransition } from "react-transition-group"
 import UtxoDisplayCard from "./UtxoDisplayCard"
 import SelectUtxo from "./SelectUtxo"
+import InputRcvrAddress from "./InputRcvrAddress"
 
 function BitcoinTxBuilder() {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
   const [txStatus, setTxStatus] = useState(1)
+  // txStatus codes:
+  // 1. Select UTXOs
+  // 2. Specify Rcvr Address
 
   const testnetPrivKey = "938zbGqYYvZvFaHNXMNDpQZ4hEQE89ugGEjrv9QCKWCL6H2c4ps"
   const testnetAdd = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
@@ -63,10 +67,23 @@ function BitcoinTxBuilder() {
     getUtxoData()
   }, [])
 
+  function handleRcvrAddress() {
+    appDispatch({ type: "setUtxoData_Array", value: utxoData_Array })
+    appDispatch({ type: "setSelectedUtxo_Array", value: selectedArray })
+    appDispatch({ type: "setTotalUtxoValueSelected", value: totalUtxoValueSelected })
+
+    // Go to specify receiver page
+    setTxStatus(2)
+  }
+
   return (
     <>
       <CSSTransition in={txStatus === 1} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
-        <SelectUtxo utxoData_Array={utxoData_Array} pushIndexToSelectedArray={pushIndexToSelectedArray} selectedArray={selectedArray} totalUtxoValueSelected={totalUtxoValueSelected} />
+        <SelectUtxo utxoData_Array={utxoData_Array} pushIndexToSelectedArray={pushIndexToSelectedArray} selectedArray={selectedArray} totalUtxoValueSelected={totalUtxoValueSelected} handleRcvrAddress={handleRcvrAddress} />
+      </CSSTransition>
+
+      <CSSTransition in={txStatus === 2} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
+        <InputRcvrAddress />
       </CSSTransition>
 
       <div className="interface__block">

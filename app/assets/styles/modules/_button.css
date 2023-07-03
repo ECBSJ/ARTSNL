@@ -262,6 +262,12 @@ button {
   min-height: 50px;
   max-height: 50px;
   font-size: 0.7em;
+  border: 1px solid greenyellow;
+  background-color: rgba(0, 128, 0, 0.5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px 0 15px;
 }
 
 /* ANIMATIONS */

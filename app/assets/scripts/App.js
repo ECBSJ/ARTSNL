@@ -117,7 +117,12 @@ function App() {
       activeProvider: null,
       keyPair: null,
       address: null,
-      testnetAddress: null
+      testnetAddress: null,
+      txBuilder: {
+        utxoData_Array: [],
+        selectedArray: [],
+        totalUtxoValueSelected: 0
+      }
     },
     ethereum: {
       mainnetProvider: null,
@@ -273,6 +278,15 @@ function App() {
 
         localStorage.clear()
         deleteCookie("encryptedKeyPair")
+        return
+      case "setUtxoData_Array":
+        draft.bitcoin.txBuilder.utxoData_Array = action.value
+        return
+      case "setSelectedUtxo_Array":
+        draft.bitcoin.txBuilder.selectedArray = action.value
+        return
+      case "setTotalUtxoValueSelected":
+        draft.bitcoin.txBuilder.totalUtxoValueSelected = action.value
         return
     }
   }

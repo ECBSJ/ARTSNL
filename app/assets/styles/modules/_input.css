@@ -37,6 +37,15 @@ input:valid ~ span {
 
 /* INPUT CLASS */
 .input {
+  &-container {
+    width: 370px;
+    height: 76px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   &-purple {
     border: 1px solid #b01af7;
 

@@ -19,6 +19,24 @@
       align-items: center;
       text-align: center;
     }
+
+    &-enter {
+      transform: translateX(400px);
+    }
+
+    &-enter-active {
+      transform: translateX(0);
+      transition: all 300ms ease-in-out;
+    }
+
+    &-exit {
+      transform: translateX(0);
+    }
+
+    &-exit-active {
+      transform: translateX(-400px);
+      transition: all 300ms ease-in-out;
+    }
   }
 
   &__blueprint {
