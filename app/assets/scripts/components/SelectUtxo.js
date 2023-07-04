@@ -18,7 +18,7 @@ function SelectUtxo({ utxoData_Array, pushIndexToSelectedArray, selectedArray, t
               ""
             ) : (
               <p style={{ position: "absolute", top: "-8px", left: "28px" }}>
-                UTXO Carousel: &#91;{translateXMultiplier + 1} of {utxoData_Array.length}&#93;
+                UTXO Carousel: &#91;{utxoData_Array.length === 0 ? "0" : translateXMultiplier + 1} of {utxoData_Array.length}&#93;
               </p>
             )}
             <CSSTransition in={displayCarousel} timeout={300} classNames="tx-builder__blueprint-carousel" unmountOnExit>

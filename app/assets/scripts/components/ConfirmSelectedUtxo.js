@@ -13,8 +13,8 @@ function ConfirmSelectedUtxo({ utxoData_Array, pushIndexToSelectedArray, selecte
         <p style={{ position: "absolute", top: "3px", left: "114px", fontSize: ".6rem", color: "gray" }}>UTXOs pending signature: {selectedArray.length}</p>
 
         <div className="tx-builder__blueprint-carousel-confirm__container">
-          {selectedArray.map(selectedUtxoIndex => {
-            return <UtxoCapsule selectedUtxoIndex={selectedUtxoIndex} utxoData_Array={utxoData_Array} />
+          {selectedArray.map((selectedUtxoIndex, index) => {
+            return <UtxoCapsule key={index} selectedUtxoIndex={selectedUtxoIndex} utxoData_Array={utxoData_Array} />
           })}
         </div>
       </div>

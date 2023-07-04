@@ -1,4 +1,5 @@
 import React, { useEffect, useContext, useState } from "react"
+import * as bitcoin from "../../../../bitcoinjs-lib"
 import { IconContext } from "react-icons"
 import { MdOutlineArrowCircleLeft, MdOutlineArrowCircleRight, MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
@@ -25,15 +26,27 @@ function BitcoinTxBuilder() {
   const testnetPrivKey_2 = "93MPV1RsWMvfLCpGZcnPG1U8EA3QDqdNxkCVJwmeTGrjEHFZ5v6"
   const testnetAdd_2 = "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w"
 
-  let utxoData_Array = [
-    { txid: "9153e5420b1092ff65d90a028df8840e0e3dfc8b9c8e1c1c0664e02f000c5def", vout: 0, status: { confirmed: true, block_height: 2434520, block_hash: "000000000000000f4632a88a45d61cd4e777040fc0203108661e7ebedcddc4bb", block_time: 1684648693 }, value: 13700 },
-    { txid: "a296be122cc5c90bfc7e50f65b2c2e12d231a761d69ff05ec8a05b48f6f16b9a", vout: 0, status: { confirmed: true, block_height: 2434362, block_hash: "000000000000000588988168cfb4f924fcd912f6a7c9d909fbd978067be31f01", block_time: 1684590437 }, value: 5800 },
-    { txid: "d8cd4aa054d0a20777df2e106370b2de7ef2a43e97f9b6a59bf975a58307ca61", vout: 0, status: { confirmed: true, block_height: 2434365, block_hash: "00000000000000246093cb4135d16e262433d4dd8ce6bd0214029214c24380f3", block_time: 1684592176 }, value: 11564 }
-  ]
+  const [utxoData_Array, setUtxoData_Array] = useState([])
+
+  // let utxoData_Array = [
+  //   { txid: "9153e5420b1092ff65d90a028df8840e0e3dfc8b9c8e1c1c0664e02f000c5def", vout: 0, status: { confirmed: true, block_height: 2434520, block_hash: "000000000000000f4632a88a45d61cd4e777040fc0203108661e7ebedcddc4bb", block_time: 1684648693 }, value: 13700 },
+  //   { txid: "a296be122cc5c90bfc7e50f65b2c2e12d231a761d69ff05ec8a05b48f6f16b9a", vout: 0, status: { confirmed: true, block_height: 2434362, block_hash: "000000000000000588988168cfb4f924fcd912f6a7c9d909fbd978067be31f01", block_time: 1684590437 }, value: 5800 },
+  //   { txid: "d8cd4aa054d0a20777df2e106370b2de7ef2a43e97f9b6a59bf975a58307ca61", vout: 0, status: { confirmed: true, block_height: 2434365, block_hash: "00000000000000246093cb4135d16e262433d4dd8ce6bd0214029214c24380f3", block_time: 1684592176 }, value: 11564 }
+  // ]
 
   async function getUtxoData() {
-    // let result = appState.bitcoin.testnetProvider?.bitcoin.addresses.getAddressTxsUtxo({ address }).then(console.log)
-    console.log(utxoData_Array)
+    let address = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
+
+    let result = appState.bitcoin.testnetProvider?.bitcoin.addresses
+      .getAddressTxsUtxo({ address })
+      .then(res => {
+        setUtxoData_Array(res)
+        console.log(res)
+      })
+      .catch(err => {
+        // handle errors from pulling utxo data
+        console.error(err)
+      })
   }
 
   const [selectedArray, setSelectedArray] = useState([])
@@ -75,6 +88,11 @@ function BitcoinTxBuilder() {
     // Go to specify receiver page
     setTxStatus(2)
   }
+
+  const Mainnet = bitcoin.networks.bitcoin
+  let Testnet = bitcoin.networks.testnet
+
+  let p2pkhCheck = bitcoin.address.fromBase58Check("mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW")
 
   return (
     <>
