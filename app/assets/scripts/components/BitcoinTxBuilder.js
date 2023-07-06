@@ -37,16 +37,13 @@ function BitcoinTxBuilder() {
   async function getUtxoData() {
     let address = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
 
-    let result = appState.bitcoin.testnetProvider?.bitcoin.addresses
-      .getAddressTxsUtxo({ address })
-      .then(res => {
-        setUtxoData_Array(res)
-        console.log(res)
-      })
-      .catch(err => {
-        // handle errors from pulling utxo data
-        console.error(err)
-      })
+    try {
+      let result = await appState.bitcoin.testnetProvider?.bitcoin.addresses.getAddressTxsUtxo({ address })
+      setUtxoData_Array(result)
+      console.log(result)
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   const [selectedArray, setSelectedArray] = useState([])
