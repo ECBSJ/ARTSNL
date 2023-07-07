@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react"
+import React, { useEffect, useContext, useState, Suspense } from "react"
 import * as bitcoin from "../../../../bitcoinjs-lib"
 import { IconContext } from "react-icons"
 import { MdOutlineArrowCircleLeft, MdOutlineArrowCircleRight, MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
@@ -10,6 +10,8 @@ import { CSSTransition } from "react-transition-group"
 import UtxoDisplayCard from "./UtxoDisplayCard"
 import SelectUtxo from "./SelectUtxo"
 import InputRcvrAddress from "./InputRcvrAddress"
+import LazyLoadFallback from "./LazyLoadFallback"
+import ErrorBoundary from "./ErrorBoundary"
 
 function BitcoinTxBuilder() {
   const appState = useContext(StateContext)
@@ -66,7 +68,7 @@ function BitcoinTxBuilder() {
   function calculateTotalUtxoValueSelected() {
     let totalValue = 0
 
-    selectedArray.forEach(selectedUtxoIndex => {
+    selectedArray.forEach((selectedUtxoIndex) => {
       totalValue += utxoData_Array[selectedUtxoIndex].value
     })
 
@@ -94,7 +96,11 @@ function BitcoinTxBuilder() {
   return (
     <>
       <CSSTransition in={txStatus === 1} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
-        <SelectUtxo utxoData_Array={utxoData_Array} pushIndexToSelectedArray={pushIndexToSelectedArray} selectedArray={selectedArray} totalUtxoValueSelected={totalUtxoValueSelected} handleRcvrAddress={handleRcvrAddress} />
+        <ErrorBoundary fallback={"fuck!"}>
+          <Suspense fallback={<LazyLoadFallback />}>
+            <SelectUtxo utxoData_Array={utxoData_Array} pushIndexToSelectedArray={pushIndexToSelectedArray} selectedArray={selectedArray} totalUtxoValueSelected={totalUtxoValueSelected} handleRcvrAddress={handleRcvrAddress} />
+          </Suspense>
+        </ErrorBoundary>
       </CSSTransition>
 
       <CSSTransition in={txStatus === 2} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
