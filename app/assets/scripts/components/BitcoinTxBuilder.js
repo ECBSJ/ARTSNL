@@ -17,7 +17,7 @@ function BitcoinTxBuilder() {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
-  const [txStatus, setTxStatus] = useState(1)
+  const [txStatus, setTxStatus] = useState(2)
   // txStatus codes:
   // 1. Select UTXOs
   // 2. Specify Rcvr Address
@@ -28,22 +28,32 @@ function BitcoinTxBuilder() {
   const testnetPrivKey_2 = "93MPV1RsWMvfLCpGZcnPG1U8EA3QDqdNxkCVJwmeTGrjEHFZ5v6"
   const testnetAdd_2 = "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w"
 
-  const [utxoData_Array, setUtxoData_Array] = useState([])
+  let utxoData_Array = [
+    { txid: "9153e5420b1092ff65d90a028df8840e0e3dfc8b9c8e1c1c0664e02f000c5def", vout: 0, status: { confirmed: true, block_height: 2434520, block_hash: "000000000000000f4632a88a45d61cd4e777040fc0203108661e7ebedcddc4bb", block_time: 1684648693 }, value: 13700 },
+    { txid: "a296be122cc5c90bfc7e50f65b2c2e12d231a761d69ff05ec8a05b48f6f16b9a", vout: 0, status: { confirmed: true, block_height: 2434362, block_hash: "000000000000000588988168cfb4f924fcd912f6a7c9d909fbd978067be31f01", block_time: 1684590437 }, value: 5800 },
+    { txid: "d8cd4aa054d0a20777df2e106370b2de7ef2a43e97f9b6a59bf975a58307ca61", vout: 0, status: { confirmed: true, block_height: 2434365, block_hash: "00000000000000246093cb4135d16e262433d4dd8ce6bd0214029214c24380f3", block_time: 1684592176 }, value: 11564 }
+  ]
 
-  // let utxoData_Array = [
-  //   { txid: "9153e5420b1092ff65d90a028df8840e0e3dfc8b9c8e1c1c0664e02f000c5def", vout: 0, status: { confirmed: true, block_height: 2434520, block_hash: "000000000000000f4632a88a45d61cd4e777040fc0203108661e7ebedcddc4bb", block_time: 1684648693 }, value: 13700 },
-  //   { txid: "a296be122cc5c90bfc7e50f65b2c2e12d231a761d69ff05ec8a05b48f6f16b9a", vout: 0, status: { confirmed: true, block_height: 2434362, block_hash: "000000000000000588988168cfb4f924fcd912f6a7c9d909fbd978067be31f01", block_time: 1684590437 }, value: 5800 },
-  //   { txid: "d8cd4aa054d0a20777df2e106370b2de7ef2a43e97f9b6a59bf975a58307ca61", vout: 0, status: { confirmed: true, block_height: 2434365, block_hash: "00000000000000246093cb4135d16e262433d4dd8ce6bd0214029214c24380f3", block_time: 1684592176 }, value: 11564 }
-  // ]
+  const [utxoData_hasError, setUtxoData_hasError] = useState(false)
 
   async function getUtxoData() {
     let address = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
 
+    // let address
+
+    // if (appState.isTestnet == true) {
+    //   address = appState.bitcoin.testnetAddress
+    // } else {
+    //   address = appState.bitcoin.address
+    // }
+
     try {
+      // let result = await appState.bitcoin.activeProvider?.bitcoin.addresses.getAddressTxsUtxo({ address })
       let result = await appState.bitcoin.testnetProvider?.bitcoin.addresses.getAddressTxsUtxo({ address })
-      setUtxoData_Array(result)
+      appDispatch({ type: "setUtxoData_Array", value: result })
       console.log(result)
     } catch (err) {
+      setUtxoData_hasError(true)
       console.error(err)
     }
   }
@@ -68,19 +78,14 @@ function BitcoinTxBuilder() {
   function calculateTotalUtxoValueSelected() {
     let totalValue = 0
 
-    selectedArray.forEach((selectedUtxoIndex) => {
+    selectedArray.forEach(selectedUtxoIndex => {
       totalValue += utxoData_Array[selectedUtxoIndex].value
     })
 
     setTotalUtxoValueSelected(totalValue)
   }
 
-  useEffect(() => {
-    getUtxoData()
-  }, [])
-
   function handleRcvrAddress() {
-    appDispatch({ type: "setUtxoData_Array", value: utxoData_Array })
     appDispatch({ type: "setSelectedUtxo_Array", value: selectedArray })
     appDispatch({ type: "setTotalUtxoValueSelected", value: totalUtxoValueSelected })
 
@@ -88,19 +93,26 @@ function BitcoinTxBuilder() {
     setTxStatus(2)
   }
 
+  // useEffect(() => {
+  //   getUtxoData()
+  // }, [])
+
+  function refreshTxBuilder() {
+    setUtxoData_hasError(false)
+    setTotalUtxoValueSelected(0)
+    setSelectedArray([])
+    appDispatch({ type: "setUtxoData_Array", value: [] })
+    setTxStatus(1)
+    getUtxoData()
+  }
+
   const Mainnet = bitcoin.networks.bitcoin
   let Testnet = bitcoin.networks.testnet
-
-  let p2pkhCheck = bitcoin.address.fromBase58Check("mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW")
 
   return (
     <>
       <CSSTransition in={txStatus === 1} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
-        <ErrorBoundary fallback={"fuck!"}>
-          <Suspense fallback={<LazyLoadFallback />}>
-            <SelectUtxo utxoData_Array={utxoData_Array} pushIndexToSelectedArray={pushIndexToSelectedArray} selectedArray={selectedArray} totalUtxoValueSelected={totalUtxoValueSelected} handleRcvrAddress={handleRcvrAddress} />
-          </Suspense>
-        </ErrorBoundary>
+        <SelectUtxo utxoData_Array={utxoData_Array} pushIndexToSelectedArray={pushIndexToSelectedArray} selectedArray={selectedArray} totalUtxoValueSelected={totalUtxoValueSelected} handleRcvrAddress={handleRcvrAddress} utxoData_hasError={utxoData_hasError} />
       </CSSTransition>
 
       <CSSTransition in={txStatus === 2} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
@@ -130,7 +142,7 @@ function BitcoinTxBuilder() {
         <div className="interface__block-cell"></div>
         <div className="interface__block-cell"></div>
         <div className="interface__block-cell interface__block-cell__footer">
-          <TbRefresh className="icon" />
+          <TbRefresh onClick={() => refreshTxBuilder()} className="icon" />
           <BsHddNetwork className="icon" />
           <div className="icon">ARTSNL</div>
           <BsReception4 className="icon" />

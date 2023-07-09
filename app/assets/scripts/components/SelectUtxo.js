@@ -4,56 +4,9 @@ import { CSSTransition } from "react-transition-group"
 import UtxoCarousel from "./UtxoCarousel"
 import ConfirmSelectedUtxo from "./ConfirmSelectedUtxo"
 
-function SelectUtxo({ utxoData_Array, pushIndexToSelectedArray, selectedArray, totalUtxoValueSelected, handleRcvrAddress }) {
+function SelectUtxo({ utxoData_Array, pushIndexToSelectedArray, selectedArray, totalUtxoValueSelected, handleRcvrAddress, utxoData_hasError }) {
   const [displayCarousel, setDisplayCarousel] = useState(true)
   const [translateXMultiplier, setTranslateXMultipler] = useState(0)
-
-  const [promise, setPromise] = useState()
-
-  function suspensify(promise) {
-    let status = "pending"
-    let result
-
-    let suspender = promise.then(
-      (res) => {
-        status = "success"
-        result = res
-      },
-      (error) => {
-        status = "error"
-        result = error
-      }
-    )
-
-    return {
-      read() {
-        if (status === "pending") {
-          console.log("threw suspender")
-          throw suspender
-        } else if (status === "error") {
-          console.log("threw error")
-          throw result
-        } else if (status === "success") {
-          console.log("threw success")
-          return result
-        }
-      },
-    }
-  }
-
-  async function grabData() {
-    let result = await fetch("https://mempool.space/api/block/000000000000000015dc777b3ff2611091336355d3f0ee9766a2cf3be8e4b1ce/txids")
-
-    return result.json()
-  }
-
-  const onClick = () => {
-    setPromise(suspensify(grabData()))
-  }
-
-  if (promise) {
-    let readPromise = promise.read()
-  }
 
   return (
     <>
@@ -69,7 +22,7 @@ function SelectUtxo({ utxoData_Array, pushIndexToSelectedArray, selectedArray, t
               </p>
             )}
             <CSSTransition in={displayCarousel} timeout={300} classNames="tx-builder__blueprint-carousel" unmountOnExit>
-              <UtxoCarousel utxoData_Array={utxoData_Array} pushIndexToSelectedArray={pushIndexToSelectedArray} translateXMultiplier={translateXMultiplier} setTranslateXMultipler={setTranslateXMultipler} selectedArray={selectedArray} />
+              <UtxoCarousel utxoData_Array={utxoData_Array} pushIndexToSelectedArray={pushIndexToSelectedArray} translateXMultiplier={translateXMultiplier} setTranslateXMultipler={setTranslateXMultipler} selectedArray={selectedArray} utxoData_hasError={utxoData_hasError} />
             </CSSTransition>
 
             <CSSTransition in={!displayCarousel} timeout={300} classNames="tx-builder__blueprint-carousel-confirm" unmountOnExit>
@@ -90,7 +43,7 @@ function SelectUtxo({ utxoData_Array, pushIndexToSelectedArray, selectedArray, t
             </div>
           ) : (
             <div className="tx-builder__overlay__outer">
-              <button onClick={() => onClick()} className="button-purple">
+              <button onClick={() => handleRcvrAddress()} className="button-purple">
                 Rcvr Address
               </button>
             </div>

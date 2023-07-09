@@ -343,14 +343,14 @@ function App() {
     }
   }, [])
 
-  useEffect(() => {
-    dispatch({ type: "setBitcoinProviders" })
-    dispatch({ type: "setEthereumProviders" })
-  }, [])
+  // useEffect(() => {
+  //   dispatch({ type: "setBitcoinProviders" })
+  //   dispatch({ type: "setEthereumProviders" })
+  // }, [])
 
-  useEffect(() => {
-    dispatch({ type: "setActiveProvider" })
-  }, [state.isTestnet])
+  // useEffect(() => {
+  //   dispatch({ type: "setActiveProvider" })
+  // }, [state.isTestnet])
 
   return (
     <>
