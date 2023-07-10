@@ -75,12 +75,18 @@ input:valid ~ span {
       color: red;
       bottom: -23;
       font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
     }
 
     &--success {
       color: greenyellow;
       bottom: -23;
       font-size: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
     }
   }
 
@@ -89,6 +95,8 @@ input:valid ~ span {
   }
 
   &--focus-red {
+    border-width: 2px;
+
     &:focus {
       border-color: red;
     }
@@ -96,9 +104,11 @@ input:valid ~ span {
 
   &--focus-green {
     border-color: green;
+    border-width: 2px;
 
     &:focus {
       border-color: green;
+      border-width: 2px;
     }
   }
 }

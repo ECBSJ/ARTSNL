@@ -1,8 +1,11 @@
-import React, { useEffect, useContext, useState } from "react"
+import React, { useEffect, useContext, useState, useRef } from "react"
 import { IconContext } from "react-icons"
+import { MdCheckCircle, MdError } from "react-icons/md"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import * as bitcoin from "../../../../bitcoinjs-lib"
+import ModalDropDown from "./ModalDropDown"
+import { CSSTransition } from "react-transition-group"
 
 function InputRcvrAddress() {
   const appState = useContext(StateContext)
@@ -58,8 +61,14 @@ function InputRcvrAddress() {
           setValidationErrorMessage("Segwit & Taproot currently unsupported.")
         }
 
+        // script validation
+        if (value.startsWith("3")) {
+          setHasError(true)
+          setValidationErrorMessage("Script currently unsupported.")
+        }
+
         // invalid address catch all
-        if (!value.startsWith("1") && !value.startsWith("bc1")) {
+        if (!value.startsWith("1") && !value.startsWith("bc1") && !value.startsWith("3")) {
           setHasError(true)
           setValidationErrorMessage("Invalid bitcoin address.")
         }
@@ -72,19 +81,59 @@ function InputRcvrAddress() {
     }
   }
 
+  const [isModalDropDownOpen, setIsModalDropDownOpen] = useState(false)
+  const modalDropDownRef = useRef()
+
+  useEffect(() => {
+    let handler = e => {
+      if (isModalDropDownOpen) {
+        if (modalDropDownRef.current.contains(e.target)) {
+          setIsModalDropDownOpen(!isModalDropDownOpen)
+        }
+      }
+    }
+
+    document.addEventListener("mousedown", handler)
+
+    return () => {
+      document.removeEventListener("mousedown", handler)
+    }
+  })
+
   return (
     <>
+      <CSSTransition in={isModalDropDownOpen} timeout={400} classNames="modal__cover" unmountOnExit>
+        <div ref={modalDropDownRef} className="modal__cover"></div>
+      </CSSTransition>
+
+      <CSSTransition in={isModalDropDownOpen} timeout={600} classNames="modal__drop-down" unmountOnExit>
+        <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"🔍"} title={"Confirm Address"} subtitle={"Please confirm the receipient"} subtitle_2={"address you inputted."} hasData={false} data={""} showFullData={false} ending_content={"Click on 'YES'"} ending_content_2={"if you have confirmed."} />
+      </CSSTransition>
+
       <div className="tx-builder__overlay">
         <IconContext.Provider value={{ size: "30px" }}>
           <div className="tx-builder__overlay__outer">Step 2: Input Rcvr Address</div>
 
           <div className="tx-builder__blueprint">
             <div className="input-container">
-              <input onChange={(e) => addressValidator(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (validInputtedAddress ? "input--focus-green" : "")} type="text" required />
+              <input onChange={e => addressValidator(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (validInputtedAddress ? "input--focus-green" : "")} type="text" required />
               <span className="input-placeholder">Input Rcvr Add</span>
               <div className="input-validation">character count: {characterCounter.length}</div>
-              {hasError ? <div className="input-validation input-validation--error">{validationErrorMessage}</div> : ""}
-              {!hasError && addressType ? <div className="input-validation input-validation--success">{"Accepted " + addressType + " format."}</div> : ""}
+              {hasError ? (
+                <div className="input-validation input-validation--error">
+                  <MdError style={{ width: "12px", height: "12px" }} className="icon--error" />
+                  &nbsp;{validationErrorMessage}
+                </div>
+              ) : (
+                ""
+              )}
+              {!hasError && addressType ? (
+                <div className="input-validation input-validation--success">
+                  <MdCheckCircle style={{ width: "14px", height: "14px" }} className="icon--checked" /> {"Accepted " + addressType + " format."}
+                </div>
+              ) : (
+                ""
+              )}
             </div>
 
             <p style={{ position: "absolute", bottom: "10px", left: "28px", fontSize: "0.6em" }}>UTXOs Selected: {appState.bitcoin.txBuilder.selectedArray.length}</p>
@@ -92,8 +141,8 @@ function InputRcvrAddress() {
           </div>
 
           <div className="tx-builder__overlay__outer">
-            <button onClick={() => null} className="button-purple">
-              Next
+            <button onClick={() => setIsModalDropDownOpen(!isModalDropDownOpen)} className="button-purple">
+              Confirm Address
             </button>
           </div>
         </IconContext.Provider>

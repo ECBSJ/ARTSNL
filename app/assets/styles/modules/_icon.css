@@ -29,6 +29,10 @@
     }
   }
 
+  &--checked {
+    color: greenyellow;
+  }
+
   &-copy {
     &--active {
       color: lightseagreen;
