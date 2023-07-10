@@ -76,6 +76,12 @@ input:valid ~ span {
       bottom: -23;
       font-size: 0.7rem;
     }
+
+    &--success {
+      color: greenyellow;
+      bottom: -23;
+      font-size: 0.7rem;
+    }
   }
 
   &--position-off {

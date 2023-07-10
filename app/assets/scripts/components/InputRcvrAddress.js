@@ -12,14 +12,22 @@ function InputRcvrAddress() {
   let p2pkhCheck = bitcoin.address.fromBase58Check("18cBEMRxXHqzWWCxZNtU91F5sbUNKhL5PX")
   let p2wpkhCheck = bitcoin.address.fromBech32("bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq")
 
+  const [characterCounter, setCharacterCounter] = useState("")
   const [validInputtedAddress, setValidInputtedAddress] = useState("")
+  const [validInputtedAddress_Decoded, setValidInputtedAddress_Decoded] = useState(null)
+  const [addressType, setAddressType] = useState("")
   const [hasError, setHasError] = useState(false)
   const [validationErrorMessage, setValidationErrorMessage] = useState("")
 
   function addressValidator(value) {
+    setCharacterCounter(value)
+
     if (!value.trim()) {
       setHasError(false)
+      setValidationErrorMessage("")
       setValidInputtedAddress("")
+      setValidInputtedAddress_Decoded(null)
+      setAddressType("")
     } else {
       // MAINNET VALIDATION
       if (!appState.isTestnet) {
@@ -27,17 +35,33 @@ function InputRcvrAddress() {
         if (value.startsWith("1")) {
           if (value.length == 34) {
             try {
-              let result = bitcoin.address.fromBase58Check("18cBEMRxXHqzWWCxZNtU91F5sbUNKhL5PX")
+              let result = bitcoin.address.fromBase58Check(value)
+              setHasError(false)
               result && setValidInputtedAddress(value)
+              setValidInputtedAddress_Decoded(result)
+              setAddressType("p2pkh")
+              console.log(result)
             } catch (error) {
               setHasError(true)
-              setValidationErrorMessage("Invalid base58 checksum. Check address or input different address.")
+              setValidationErrorMessage("Invalid checksum. Use different address.")
               console.error(error)
             }
           } else {
             setHasError(true)
             setValidationErrorMessage("Invalid length of Legacy P2PKH address.")
           }
+        }
+
+        // segwit & taproot validation
+        if (value.startsWith("bc1")) {
+          setHasError(true)
+          setValidationErrorMessage("Segwit & Taproot currently unsupported.")
+        }
+
+        // invalid address catch all
+        if (!value.startsWith("1") && !value.startsWith("bc1")) {
+          setHasError(true)
+          setValidationErrorMessage("Invalid bitcoin address.")
         }
       }
 
@@ -56,8 +80,11 @@ function InputRcvrAddress() {
 
           <div className="tx-builder__blueprint">
             <div className="input-container">
-              <input onChange={e => addressValidator(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (validInputtedAddress ? "input--focus-green" : "")} type="text" required />
+              <input onChange={(e) => addressValidator(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (validInputtedAddress ? "input--focus-green" : "")} type="text" required />
               <span className="input-placeholder">Input Rcvr Add</span>
+              <div className="input-validation">character count: {characterCounter.length}</div>
+              {hasError ? <div className="input-validation input-validation--error">{validationErrorMessage}</div> : ""}
+              {!hasError && addressType ? <div className="input-validation input-validation--success">{"Accepted " + addressType + " format."}</div> : ""}
             </div>
 
             <p style={{ position: "absolute", bottom: "10px", left: "28px", fontSize: "0.6em" }}>UTXOs Selected: {appState.bitcoin.txBuilder.selectedArray.length}</p>
