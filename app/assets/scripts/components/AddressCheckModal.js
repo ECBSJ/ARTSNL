@@ -16,10 +16,14 @@ function AddressCheckModal() {
   return (
     <>
       <div>Double check the address.</div>
-      <div>
+      <div className="address-quadrant-container">
         {array.map((quadrant, index) => {
           console.log(index + ": " + quadrant)
-          return <span key={index}>{quadrant}</span>
+          return (
+            <span className="address-quadrant-text" key={index}>
+              {quadrant}
+            </span>
+          )
         })}
       </div>
     </>

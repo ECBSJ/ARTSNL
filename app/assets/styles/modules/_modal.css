@@ -82,6 +82,19 @@
   }
 }
 
+.address-quadrant {
+  &-container {
+    width: 319px;
+    margin-top: 15px;
+    font-size: 0.7em;
+    overflow-wrap: anywhere;
+  }
+
+  &-text {
+    margin-right: 10px;
+  }
+}
+
 @keyframes drop-down {
   0% {
     transform: translateY(-480px);
