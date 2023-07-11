@@ -107,7 +107,7 @@ function InputRcvrAddress() {
       </CSSTransition>
 
       <CSSTransition in={isModalDropDownOpen} timeout={600} classNames="modal__drop-down" unmountOnExit>
-        <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"🔍"} title={"Confirm Address"} subtitle={"Please confirm the receipient"} subtitle_2={"address you inputted."} hasData={false} data={""} showFullData={false} ending_content={"Click on 'YES'"} ending_content_2={"if you have confirmed."} />
+        <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"🔍"} title={"Confirm Address"} subtitle={"Please confirm the receipient"} subtitle_2={"address you inputted."} hasData={false} data={validInputtedAddress} showFullData={false} ending_content={"Click on 'YES'"} ending_content_2={"if you have confirmed."} hideDoubleArrow={true} checkAddress={true} />
       </CSSTransition>
 
       <div className="tx-builder__overlay">
