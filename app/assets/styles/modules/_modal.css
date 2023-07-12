@@ -84,14 +84,25 @@
 
 .address-quadrant {
   &-container {
-    width: 319px;
+    width: 276px;
     margin-top: 15px;
-    font-size: 0.7em;
+    font-family: monospace;
+    font-size: 1em;
+    font-weight: bold;
     overflow-wrap: anywhere;
   }
 
   &-text {
     margin-right: 10px;
+  }
+
+  &-buttons-container {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 10px;
   }
 }
 

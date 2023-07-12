@@ -85,7 +85,7 @@ function InputRcvrAddress() {
   const modalDropDownRef = useRef()
 
   useEffect(() => {
-    let handler = e => {
+    let handler = (e) => {
       if (isModalDropDownOpen) {
         if (modalDropDownRef.current.contains(e.target)) {
           setIsModalDropDownOpen(!isModalDropDownOpen)
@@ -116,7 +116,7 @@ function InputRcvrAddress() {
 
           <div className="tx-builder__blueprint">
             <div className="input-container">
-              <input onChange={e => addressValidator(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (validInputtedAddress ? "input--focus-green" : "")} type="text" required />
+              <input onChange={(e) => addressValidator(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (validInputtedAddress ? "input--focus-green" : "")} type="text" required />
               <span className="input-placeholder">Input Rcvr Add</span>
               <div className="input-validation">character count: {characterCounter.length}</div>
               {hasError ? (
@@ -141,9 +141,13 @@ function InputRcvrAddress() {
           </div>
 
           <div className="tx-builder__overlay__outer">
-            <button onClick={() => setIsModalDropDownOpen(!isModalDropDownOpen)} className="button-purple">
-              Confirm Address
-            </button>
+            {!hasError && validInputtedAddress ? (
+              <button onClick={() => setIsModalDropDownOpen(!isModalDropDownOpen)} className="button-purple">
+                Confirm Address
+              </button>
+            ) : (
+              ""
+            )}
           </div>
         </IconContext.Provider>
       </div>

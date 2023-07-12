@@ -21,7 +21,7 @@ function ModalDropDown({ setIsModalDropDownOpen, isModalDropDownOpen, emoji, tit
         {checkAddress ? (
           <>
             <div className="modal__drop-down__overlay">
-              <AddressCheckModal />
+              <AddressCheckModal setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} data={data} />
             </div>
           </>
         ) : (
