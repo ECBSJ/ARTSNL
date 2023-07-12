@@ -70,13 +70,50 @@ function InputRcvrAddress() {
         // invalid address catch all
         if (!value.startsWith("1") && !value.startsWith("bc1") && !value.startsWith("3")) {
           setHasError(true)
-          setValidationErrorMessage("Invalid bitcoin address.")
+          setValidationErrorMessage("Invalid mainnet bitcoin address.")
         }
       }
 
       // TESTNET VALIDATION
       if (appState.isTestnet) {
-        null
+        // legacy validation
+        if (value.startsWith("m") || value.startsWith("n")) {
+          if (value.length == 34) {
+            try {
+              let result = bitcoin.address.fromBase58Check(value)
+              setHasError(false)
+              result && setValidInputtedAddress(value)
+              setValidInputtedAddress_Decoded(result)
+              setAddressType("p2pkh")
+              console.log(result)
+            } catch (error) {
+              setHasError(true)
+              setValidationErrorMessage("Invalid checksum. Use different address.")
+              console.error(error)
+            }
+          } else {
+            setHasError(true)
+            setValidationErrorMessage("Invalid length of Legacy P2PKH address.")
+          }
+        }
+
+        // segwit & taproot validation
+        if (value.startsWith("tb1")) {
+          setHasError(true)
+          setValidationErrorMessage("Segwit & Taproot currently unsupported.")
+        }
+
+        // script validation
+        if (value.startsWith("2")) {
+          setHasError(true)
+          setValidationErrorMessage("Script currently unsupported.")
+        }
+
+        // invalid address catch all
+        if (!value.startsWith("m") && !value.startsWith("n") && !value.startsWith("tb1") && !value.startsWith("2")) {
+          setHasError(true)
+          setValidationErrorMessage("Invalid testnet bitcoin address.")
+        }
       }
     }
   }

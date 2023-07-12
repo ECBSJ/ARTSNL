@@ -4,6 +4,7 @@ import { IconContext } from "react-icons"
 import { MdOutlineArrowCircleLeft, MdOutlineArrowCircleRight, MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
 import { BsHddNetworkFill, BsHddNetwork, BsReception1, BsReception4 } from "react-icons/bs"
+import { Tooltip } from "react-tooltip"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import { CSSTransition } from "react-transition-group"
@@ -12,10 +13,12 @@ import SelectUtxo from "./SelectUtxo"
 import InputRcvrAddress from "./InputRcvrAddress"
 import LazyLoadFallback from "./LazyLoadFallback"
 import ErrorBoundary from "./ErrorBoundary"
+import { useNavigate } from "react-router-dom"
 
 function BitcoinTxBuilder() {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
+  const navigate = useNavigate()
 
   const [txStatus, setTxStatus] = useState(2)
   // txStatus codes:
@@ -31,7 +34,7 @@ function BitcoinTxBuilder() {
   let utxoData_Array = [
     { txid: "9153e5420b1092ff65d90a028df8840e0e3dfc8b9c8e1c1c0664e02f000c5def", vout: 0, status: { confirmed: true, block_height: 2434520, block_hash: "000000000000000f4632a88a45d61cd4e777040fc0203108661e7ebedcddc4bb", block_time: 1684648693 }, value: 13700 },
     { txid: "a296be122cc5c90bfc7e50f65b2c2e12d231a761d69ff05ec8a05b48f6f16b9a", vout: 0, status: { confirmed: true, block_height: 2434362, block_hash: "000000000000000588988168cfb4f924fcd912f6a7c9d909fbd978067be31f01", block_time: 1684590437 }, value: 5800 },
-    { txid: "d8cd4aa054d0a20777df2e106370b2de7ef2a43e97f9b6a59bf975a58307ca61", vout: 0, status: { confirmed: true, block_height: 2434365, block_hash: "00000000000000246093cb4135d16e262433d4dd8ce6bd0214029214c24380f3", block_time: 1684592176 }, value: 11564 }
+    { txid: "d8cd4aa054d0a20777df2e106370b2de7ef2a43e97f9b6a59bf975a58307ca61", vout: 0, status: { confirmed: true, block_height: 2434365, block_hash: "00000000000000246093cb4135d16e262433d4dd8ce6bd0214029214c24380f3", block_time: 1684592176 }, value: 11564 },
   ]
 
   const [utxoData_hasError, setUtxoData_hasError] = useState(false)
@@ -78,7 +81,7 @@ function BitcoinTxBuilder() {
   function calculateTotalUtxoValueSelected() {
     let totalValue = 0
 
-    selectedArray.forEach(selectedUtxoIndex => {
+    selectedArray.forEach((selectedUtxoIndex) => {
       totalValue += utxoData_Array[selectedUtxoIndex].value
     })
 
@@ -142,13 +145,16 @@ function BitcoinTxBuilder() {
         <div className="interface__block-cell"></div>
         <div className="interface__block-cell"></div>
         <div className="interface__block-cell interface__block-cell__footer">
-          <TbRefresh onClick={() => refreshTxBuilder()} className="icon" />
-          <BsHddNetwork className="icon" />
-          <div className="icon">ARTSNL</div>
-          <BsReception4 className="icon" />
+          <TbRefresh id="Tooltip" data-tooltip-content={"Refresh TX Builder"} onClick={() => refreshTxBuilder()} className="icon" />
+          {appState.isTestnet ? <BsHddNetwork id="Tooltip" data-tooltip-content={"On Testnet"} className={"icon"} /> : <BsHddNetworkFill id="Tooltip" data-tooltip-content={"On Mainnet"} className={"icon"} />}
+          <div onClick={() => navigate("/WalletMain")} id="Tooltip" data-tooltip-content={"Home"} className="icon">
+            ARTSNL
+          </div>
+          <BsReception4 id="Tooltip" data-tooltip-content={appState.bitcoin.activeProvider && appState.ethereum.activeProvider ? "Network Status: Connected" : "Network Status: Disconnected"} className="icon" />
           <MdLibraryBooks className="icon" />
         </div>
       </div>
+      <Tooltip anchorSelect="#Tooltip" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" />
     </>
   )
 }
