@@ -42,7 +42,7 @@ function DeconstructRcvrAddress() {
       document.querySelector("#hash160").innerText = "Completed Deconstruction!"
       document.querySelector("#hash160").classList.add("orange-capsule__progress-4")
       document.querySelector("#hash160").disabled = true
-      document.querySelectorAll(".appear-grab").forEach((el) => {
+      document.querySelectorAll(".appear-grab").forEach(el => {
         el.classList.toggle("interface__block-cell--appear")
       })
       setShowHash160(true)
@@ -51,7 +51,7 @@ function DeconstructRcvrAddress() {
     setTimeout(() => {
       document.querySelector("#hash160").classList.remove("orange-capsule__progress-4")
       document.querySelector("#hash160").classList.add("orange-capsule__progress-done")
-      document.querySelectorAll(".appear-grab").forEach((el) => {
+      document.querySelectorAll(".appear-grab").forEach(el => {
         el.classList.toggle("interface__block-cell--appear")
       })
     }, 4000)
@@ -64,7 +64,8 @@ function DeconstructRcvrAddress() {
 
   let selectedUtxoAmount = 394872
   let minAmountToSend = 5000
-  let minAmountTxFee = 400
+  let avgTxSize_vBytes = 200
+  const [minAmountTxFee, setMinAmountTxFee] = useState(1) // sat/vBytes
 
   function handleInputtedAmount(value) {
     let value_Number = Number(value)
@@ -84,7 +85,7 @@ function DeconstructRcvrAddress() {
 
       if (Number.isInteger(value_Number) > 0) {
         // check within range of min & max to send
-        if (value_Number > minAmountToSend && value_Number < selectedUtxoAmount - minAmountTxFee) {
+        if (value_Number > minAmountToSend && value_Number <= selectedUtxoAmount - minAmountTxFee * avgTxSize_vBytes) {
           setWithinRange(true)
           setWithinRangeAmount(value_Number)
           setHasError(false)
@@ -102,6 +103,19 @@ function DeconstructRcvrAddress() {
       }
     }
   }
+
+  async function getFeeEstimation() {
+    try {
+      let result = await appState.bitcoin.activeProvider?.bitcoin.fees.getFeesRecommended()
+      result && setMinAmountTxFee(result.halfHourFee)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  useEffect(() => {
+    getFeeEstimation()
+  }, [])
 
   return (
     <>
@@ -136,11 +150,13 @@ function DeconstructRcvrAddress() {
               </button>
               {showHash160 ? (
                 <>
-                  <p style={{ fontSize: ".7em", borderTop: "1px solid gray", paddingTop: "10px" }}>Input amount (satoshis) you want to send (lock) to the public key hash above. Any remaining amount will be sent back to your wallet.</p>
+                  <p style={{ fontSize: ".7em", borderTop: "1px solid gray", paddingTop: "10px", color: "gray" }}>Input amount &#40;satoshis&#41; you want to send &#40;lock&#41; to the public key hash above. Any remaining amount &#40;ex. fees&#41; will be sent back to your wallet.</p>
                   <div className="input-container">
-                    <input onChange={(e) => handleInputtedAmount(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (!hasError && withinRange ? "input--focus-green" : "")} type="text" required />
+                    <input onChange={e => handleInputtedAmount(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (!hasError && withinRange ? "input--focus-green" : "")} type="text" required />
                     <span className="input-placeholder">Send Amount</span>
-                    <div className="input-validation">TX Fees &#40;sats&#41;: {!hasError && withinRange ? Math.abs(withinRangeAmount - selectedUtxoAmount) : 0}</div>
+                    <div className="input-validation">
+                      Est. Fee &#40;{minAmountTxFee} sat/vB&#41; | TX Fees &#40;sats&#41;: {!hasError && withinRange ? minAmountTxFee * avgTxSize_vBytes : 0} | Remaining &#40;sats&#41;: {!hasError && withinRange ? selectedUtxoAmount - (minAmountTxFee * avgTxSize_vBytes + withinRangeAmount) : ""}
+                    </div>
                     {hasError ? (
                       <div className="input-validation input-validation--error">
                         <MdError style={{ width: "12px", height: "12px" }} className="icon--error" />
