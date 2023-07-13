@@ -10,7 +10,9 @@ function ConfirmSelectedUtxo({ utxoData_Array, pushIndexToSelectedArray, selecte
           <MdArrowBack onClick={() => setDisplayCarousel(true)} className="icon" />
           Back to UTXO Carousel
         </p>
-        <p style={{ position: "absolute", top: "3px", left: "114px", fontSize: ".6rem", color: "gray" }}>UTXOs pending signature: {selectedArray.length}</p>
+        <p style={{ position: "absolute", top: "3px", left: "88px", fontSize: ".6rem", color: "gray", textAlign: "center", width: "230px" }}>
+          UTXOs pending signature: {selectedArray.length} <br /> Any remaining UTXOs not selected will stay in your wallet.
+        </p>
 
         <div className="tx-builder__blueprint-carousel-confirm__container">
           {selectedArray.map((selectedUtxoIndex, index) => {

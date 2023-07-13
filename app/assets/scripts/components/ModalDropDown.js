@@ -4,7 +4,7 @@ import { IconContext } from "react-icons"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import AddressCheckModal from "./AddressCheckModal"
 
-function ModalDropDown({ setIsModalDropDownOpen, isModalDropDownOpen, emoji, title, subtitle, subtitle_2, hasData, data, showFullData, ending_content, ending_content_2, hideDoubleArrow, checkAddress }) {
+function ModalDropDown({ setIsModalDropDownOpen, isModalDropDownOpen, emoji, title, subtitle, subtitle_2, hasData, data, showFullData, ending_content, ending_content_2, hideDoubleArrow, checkAddress, handleDeconstructRcvrAddress }) {
   function handleCopyPopup_modal() {
     document.querySelector(".icon-copy-modal").classList.toggle("icon")
     document.querySelector(".icon-copy-modal").classList.toggle("icon-copy--active")
@@ -21,7 +21,7 @@ function ModalDropDown({ setIsModalDropDownOpen, isModalDropDownOpen, emoji, tit
         {checkAddress ? (
           <>
             <div className="modal__drop-down__overlay">
-              <AddressCheckModal setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} data={data} />
+              <AddressCheckModal setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} data={data} handleDeconstructRcvrAddress={handleDeconstructRcvrAddress} />
             </div>
           </>
         ) : (

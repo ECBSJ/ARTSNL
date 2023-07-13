@@ -14,13 +14,14 @@ import InputRcvrAddress from "./InputRcvrAddress"
 import LazyLoadFallback from "./LazyLoadFallback"
 import ErrorBoundary from "./ErrorBoundary"
 import { useNavigate } from "react-router-dom"
+import DeconstructRcvrAddress from "./DeconstructRcvrAddress"
 
 function BitcoinTxBuilder() {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
   const navigate = useNavigate()
 
-  const [txStatus, setTxStatus] = useState(2)
+  const [txStatus, setTxStatus] = useState(3)
   // txStatus codes:
   // 1. Select UTXOs
   // 2. Specify Rcvr Address
@@ -119,7 +120,11 @@ function BitcoinTxBuilder() {
       </CSSTransition>
 
       <CSSTransition in={txStatus === 2} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
-        <InputRcvrAddress />
+        <InputRcvrAddress setTxStatus={setTxStatus} />
+      </CSSTransition>
+
+      <CSSTransition in={txStatus === 3} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
+        <DeconstructRcvrAddress />
       </CSSTransition>
 
       <div className="interface__block">

@@ -122,6 +122,8 @@ function App() {
         utxoData_Array: [],
         selectedArray: [],
         totalUtxoValueSelected: 0,
+        validInputtedAddress: "",
+        validInputtedAddress_Decoded: {},
       },
     },
     ethereum: {
@@ -287,6 +289,12 @@ function App() {
         return
       case "setTotalUtxoValueSelected":
         draft.bitcoin.txBuilder.totalUtxoValueSelected = action.value
+        return
+      case "setValidInputtedAddress":
+        draft.bitcoin.txBuilder.validInputtedAddress = action.value
+        return
+      case "setValidInputtedAddress_Decoded":
+        draft.bitcoin.txBuilder.validInputtedAddress_Decoded = action.value
         return
     }
   }

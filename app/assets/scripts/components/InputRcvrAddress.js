@@ -7,7 +7,7 @@ import * as bitcoin from "../../../../bitcoinjs-lib"
 import ModalDropDown from "./ModalDropDown"
 import { CSSTransition } from "react-transition-group"
 
-function InputRcvrAddress() {
+function InputRcvrAddress({ setTxStatus }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
@@ -137,6 +137,15 @@ function InputRcvrAddress() {
     }
   })
 
+  function handleDeconstructRcvrAddress() {
+    setIsModalDropDownOpen(!isModalDropDownOpen)
+    appDispatch({ type: "setValidInputtedAddress", value: validInputtedAddress })
+    appDispatch({ type: "setValidInputtedAddress_Decoded", value: validInputtedAddress_Decoded })
+
+    // Go to deconstruct rcvr address page
+    setTimeout(() => setTxStatus(3), 700)
+  }
+
   return (
     <>
       <CSSTransition in={isModalDropDownOpen} timeout={400} classNames="modal__cover" unmountOnExit>
@@ -144,7 +153,7 @@ function InputRcvrAddress() {
       </CSSTransition>
 
       <CSSTransition in={isModalDropDownOpen} timeout={600} classNames="modal__drop-down" unmountOnExit>
-        <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"🔍"} title={"Confirm Address"} subtitle={"Please confirm the receipient"} subtitle_2={"address you inputted."} hasData={false} data={validInputtedAddress} showFullData={false} ending_content={"Click on 'YES'"} ending_content_2={"if you have confirmed."} hideDoubleArrow={true} checkAddress={true} />
+        <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"🔍"} title={"Confirm Address"} subtitle={"Please confirm the receipient"} subtitle_2={"address you inputted."} hasData={false} data={validInputtedAddress} showFullData={false} ending_content={"Click on 'YES'"} ending_content_2={"if you have confirmed."} hideDoubleArrow={true} checkAddress={true} handleDeconstructRcvrAddress={handleDeconstructRcvrAddress} />
       </CSSTransition>
 
       <div className="tx-builder__overlay">
