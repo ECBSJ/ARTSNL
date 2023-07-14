@@ -1,11 +1,13 @@
-import React, { useEffect, useContext, useState } from "react"
+import React, { useEffect, useContext, useState, useRef } from "react"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import { IconContext } from "react-icons"
 import { MdCheckCircle, MdError } from "react-icons/md"
 import { Tooltip } from "react-tooltip"
+import { CSSTransition } from "react-transition-group"
+import ModalDropDown from "./ModalDropDown"
 
-function DeconstructRcvrAddress() {
+function DeconstructRcvrAddress({ setTxStatus }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
@@ -42,7 +44,7 @@ function DeconstructRcvrAddress() {
       document.querySelector("#hash160").innerText = "Completed Deconstruction!"
       document.querySelector("#hash160").classList.add("orange-capsule__progress-4")
       document.querySelector("#hash160").disabled = true
-      document.querySelectorAll(".appear-grab").forEach(el => {
+      document.querySelectorAll(".appear-grab").forEach((el) => {
         el.classList.toggle("interface__block-cell--appear")
       })
       setShowHash160(true)
@@ -51,7 +53,7 @@ function DeconstructRcvrAddress() {
     setTimeout(() => {
       document.querySelector("#hash160").classList.remove("orange-capsule__progress-4")
       document.querySelector("#hash160").classList.add("orange-capsule__progress-done")
-      document.querySelectorAll(".appear-grab").forEach(el => {
+      document.querySelectorAll(".appear-grab").forEach((el) => {
         el.classList.toggle("interface__block-cell--appear")
       })
     }, 4000)
@@ -66,6 +68,13 @@ function DeconstructRcvrAddress() {
   let minAmountToSend = 5000
   let avgTxSize_vBytes = 200
   const [minAmountTxFee, setMinAmountTxFee] = useState(1) // sat/vBytes
+  const [recommendFees, setRecommendedFees] = useState({
+    fastestFee: 0,
+    halfHourFee: 0,
+    hourFee: 0,
+    economyFee: 0,
+    minimumFee: 0,
+  })
 
   function handleInputtedAmount(value) {
     let value_Number = Number(value)
@@ -108,6 +117,7 @@ function DeconstructRcvrAddress() {
     try {
       let result = await appState.bitcoin.activeProvider?.bitcoin.fees.getFeesRecommended()
       result && setMinAmountTxFee(result.halfHourFee)
+      setRecommendedFees(result)
     } catch (err) {
       console.error(err)
     }
@@ -117,8 +127,63 @@ function DeconstructRcvrAddress() {
     getFeeEstimation()
   }, [])
 
+  const [isModalDropDownOpen, setIsModalDropDownOpen] = useState(false)
+  const modalDropDownRef = useRef()
+
+  useEffect(() => {
+    let handler = (e) => {
+      if (isModalDropDownOpen) {
+        if (modalDropDownRef.current.contains(e.target)) {
+          setIsModalDropDownOpen(!isModalDropDownOpen)
+        }
+      }
+    }
+
+    document.addEventListener("mousedown", handler)
+
+    return () => {
+      document.removeEventListener("mousedown", handler)
+    }
+  })
+
+  function navigateToScriptPubKey() {
+    setIsModalDropDownOpen(!isModalDropDownOpen)
+    appDispatch({ type: "setSendAmount", value: withinRangeAmount })
+    appDispatch({ type: "setFeeAmount", value: avgTxSize_vBytes * minAmountTxFee })
+    appDispatch({ type: "setChangeAmount", value: selectedUtxoAmount - (minAmountTxFee * avgTxSize_vBytes + withinRangeAmount) })
+
+    // navigate to build scriptpubkey page
+    setTimeout(() => setTxStatus(4), 700)
+  }
+
+  const [sendAmountCheckObject, setSendAmountCheckObject] = useState({
+    available: 0,
+    send: 0,
+    fees: 0,
+    remaining: 0,
+  })
+
+  function handleNext() {
+    setSendAmountCheckObject({
+      available: selectedUtxoAmount,
+      send: withinRangeAmount,
+      fees: avgTxSize_vBytes * minAmountTxFee,
+      remaining: selectedUtxoAmount - (minAmountTxFee * avgTxSize_vBytes + withinRangeAmount),
+    })
+
+    setIsModalDropDownOpen(!isModalDropDownOpen)
+  }
+
   return (
     <>
+      <CSSTransition in={isModalDropDownOpen} timeout={400} classNames="modal__cover" unmountOnExit>
+        <div ref={modalDropDownRef} className="modal__cover"></div>
+      </CSSTransition>
+
+      <CSSTransition in={isModalDropDownOpen} timeout={600} classNames="modal__drop-down" unmountOnExit>
+        <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"📋"} title={"Confirm Send Amount"} subtitle={"Please confirm the send amount"} subtitle_2={"details you inputted."} hasData={false} data={""} showFullData={false} ending_content={"Click on 'YES'"} ending_content_2={"if you have confirmed."} hideDoubleArrow={true} checkSendAmount={true} sendAmountCheckObject={sendAmountCheckObject} navigateToScriptPubKey={navigateToScriptPubKey} />
+      </CSSTransition>
+
       <div className="tx-builder__overlay">
         <IconContext.Provider value={{ size: "30px" }}>
           <div className="tx-builder__overlay__outer">Step 3: Deconstruct Rcvr Address</div>
@@ -150,12 +215,12 @@ function DeconstructRcvrAddress() {
               </button>
               {showHash160 ? (
                 <>
-                  <p style={{ fontSize: ".7em", borderTop: "1px solid gray", paddingTop: "10px", color: "gray" }}>Input amount &#40;satoshis&#41; you want to send &#40;lock&#41; to the public key hash above. Any remaining amount &#40;ex. fees&#41; will be sent back to your wallet.</p>
+                  <p style={{ fontSize: ".7em", borderTop: "1px solid gray", paddingTop: "10px", color: "gray" }}>Input amount &#40;sats&#41; you want to send &#40;lock&#41; to the public key hash above. Any remaining amount &#40;ex. fees&#41; will be sent back to your wallet.</p>
                   <div className="input-container">
-                    <input onChange={e => handleInputtedAmount(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (!hasError && withinRange ? "input--focus-green" : "")} type="text" required />
+                    <input onChange={(e) => handleInputtedAmount(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (!hasError && withinRange ? "input--focus-green" : "")} type="text" required />
                     <span className="input-placeholder">Send Amount</span>
                     <div className="input-validation">
-                      Est. Fee &#40;{minAmountTxFee} sat/vB&#41; | TX Fees &#40;sats&#41;: {!hasError && withinRange ? minAmountTxFee * avgTxSize_vBytes : 0} | Remaining &#40;sats&#41;: {!hasError && withinRange ? selectedUtxoAmount - (minAmountTxFee * avgTxSize_vBytes + withinRangeAmount) : ""}
+                      <span style={{ color: "gray" }}>Est. Fee</span> &#40;{minAmountTxFee} sat/vB&#41; <span style={{ color: "purple" }}>|</span> <span style={{ color: "gray" }}>TX Fees &#40;sats&#41;:</span> {!hasError && withinRange ? minAmountTxFee * avgTxSize_vBytes : 0} <span style={{ color: "purple" }}>|</span> <span style={{ color: "gray" }}>Remaining &#40;sats&#41;:</span> {!hasError && withinRange ? selectedUtxoAmount - (minAmountTxFee * avgTxSize_vBytes + withinRangeAmount) : ""}
                     </div>
                     {hasError ? (
                       <div className="input-validation input-validation--error">
@@ -167,7 +232,7 @@ function DeconstructRcvrAddress() {
                     )}
                     {!hasError && withinRange ? (
                       <div className="input-validation input-validation--success">
-                        <MdCheckCircle style={{ width: "14px", height: "14px" }} className="icon--checked" /> {"Proper amount within range."}
+                        <MdCheckCircle style={{ width: "14px", height: "14px" }} className="icon--checked" /> {"Amount within acceptable range."}
                       </div>
                     ) : (
                       ""
@@ -186,7 +251,9 @@ function DeconstructRcvrAddress() {
           <div className="tx-builder__overlay__outer">
             {!hasError && withinRange ? (
               <>
-                <button className="button-purple">Next</button>
+                <button onClick={() => handleNext()} className="button-purple">
+                  Next
+                </button>
               </>
             ) : (
               ""

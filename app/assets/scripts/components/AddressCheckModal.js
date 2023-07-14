@@ -16,18 +16,18 @@ function AddressCheckModal({ setIsModalDropDownOpen, isModalDropDownOpen, data, 
   return (
     <>
       <div>Double check the address.</div>
-      <div className="address-quadrant-container">
+      <div className="modal-overlay-container">
         {array.map((quadrant, index) => {
           console.log(index + ": " + quadrant)
           return (
-            <span style={index % 2 === 0 ? { color: "lightSeaGreen" } : { color: "gray" }} className="address-quadrant-text" key={index}>
+            <span style={index % 2 === 0 ? { color: "lightSeaGreen", marginRight: "10px" } : { color: "gray", marginRight: "10px" }} key={index}>
               {quadrant}
             </span>
           )
         })}
       </div>
       <div style={{ width: "100%", fontSize: "0.4em", color: "darkGray", marginTop: "20px" }}>Is the receiver address correct?</div>
-      <div className="address-quadrant-buttons-container">
+      <div className="modal-overlay-buttons-container">
         <button onClick={() => handleDeconstructRcvrAddress()} style={{ backgroundColor: "limegreen" }}>
           YES
         </button>

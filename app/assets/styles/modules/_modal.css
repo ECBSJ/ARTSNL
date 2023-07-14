@@ -82,18 +82,16 @@
   }
 }
 
-.address-quadrant {
+.modal-overlay {
   &-container {
     width: 276px;
+    min-height: 140px;
     margin-top: 15px;
+    position: relative;
     font-family: monospace;
     font-size: 1em;
     font-weight: bold;
     overflow-wrap: anywhere;
-  }
-
-  &-text {
-    margin-right: 10px;
   }
 
   &-buttons-container {
