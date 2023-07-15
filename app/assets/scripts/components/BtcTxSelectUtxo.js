@@ -4,7 +4,7 @@ import { CSSTransition } from "react-transition-group"
 import UtxoCarousel from "./UtxoCarousel"
 import ConfirmSelectedUtxo from "./ConfirmSelectedUtxo"
 
-function SelectUtxo({ utxoData_Array, pushIndexToSelectedArray, selectedArray, totalUtxoValueSelected, handleRcvrAddress, utxoData_hasError }) {
+function BtcTxSelectUtxo({ utxoData_Array, pushIndexToSelectedArray, selectedArray, totalUtxoValueSelected, handleRcvrAddress, utxoData_hasError }) {
   const [displayCarousel, setDisplayCarousel] = useState(true)
   const [translateXMultiplier, setTranslateXMultipler] = useState(0)
 
@@ -54,4 +54,4 @@ function SelectUtxo({ utxoData_Array, pushIndexToSelectedArray, selectedArray, t
   )
 }
 
-export default SelectUtxo
+export default BtcTxSelectUtxo

@@ -7,7 +7,7 @@ import * as bitcoin from "../../../../bitcoinjs-lib"
 import ModalDropDown from "./ModalDropDown"
 import { CSSTransition } from "react-transition-group"
 
-function InputRcvrAddress({ setTxStatus }) {
+function BtcTxInputRcvrAddress({ setTxStatus }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
@@ -122,7 +122,7 @@ function InputRcvrAddress({ setTxStatus }) {
   const modalDropDownRef = useRef()
 
   useEffect(() => {
-    let handler = (e) => {
+    let handler = e => {
       if (isModalDropDownOpen) {
         if (modalDropDownRef.current.contains(e.target)) {
           setIsModalDropDownOpen(!isModalDropDownOpen)
@@ -162,7 +162,7 @@ function InputRcvrAddress({ setTxStatus }) {
 
           <div className="tx-builder__blueprint">
             <div className="input-container">
-              <input onChange={(e) => addressValidator(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (validInputtedAddress ? "input--focus-green" : "")} type="text" required />
+              <input onChange={e => addressValidator(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (validInputtedAddress ? "input--focus-green" : "")} type="text" required />
               <span className="input-placeholder">Input Rcvr Add</span>
               <div className="input-validation">character count: {characterCounter.length}</div>
               {hasError ? (
@@ -201,4 +201,4 @@ function InputRcvrAddress({ setTxStatus }) {
   )
 }
 
-export default InputRcvrAddress
+export default BtcTxInputRcvrAddress

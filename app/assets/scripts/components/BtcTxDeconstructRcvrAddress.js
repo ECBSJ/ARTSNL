@@ -7,7 +7,7 @@ import { Tooltip } from "react-tooltip"
 import { CSSTransition } from "react-transition-group"
 import ModalDropDown from "./ModalDropDown"
 
-function DeconstructRcvrAddress({ setTxStatus }) {
+function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
@@ -44,8 +44,8 @@ function DeconstructRcvrAddress({ setTxStatus }) {
       document.querySelector("#hash160").innerText = "Completed Deconstruction!"
       document.querySelector("#hash160").classList.add("orange-capsule__progress-4")
       document.querySelector("#hash160").disabled = true
-      document.querySelectorAll(".appear-grab").forEach((el) => {
-        el.classList.toggle("interface__block-cell--appear")
+      document.querySelectorAll(".appear-grab").forEach(el => {
+        el.classList.toggle("interface__block-cell--appear-2")
       })
       setShowHash160(true)
     }, 3000)
@@ -53,7 +53,7 @@ function DeconstructRcvrAddress({ setTxStatus }) {
     setTimeout(() => {
       document.querySelector("#hash160").classList.remove("orange-capsule__progress-4")
       document.querySelector("#hash160").classList.add("orange-capsule__progress-done")
-      document.querySelectorAll(".appear-grab").forEach((el) => {
+      document.querySelectorAll(".appear-grab").forEach(el => {
         el.classList.toggle("interface__block-cell--appear")
       })
     }, 4000)
@@ -73,7 +73,7 @@ function DeconstructRcvrAddress({ setTxStatus }) {
     halfHourFee: 0,
     hourFee: 0,
     economyFee: 0,
-    minimumFee: 0,
+    minimumFee: 0
   })
 
   function handleInputtedAmount(value) {
@@ -131,7 +131,7 @@ function DeconstructRcvrAddress({ setTxStatus }) {
   const modalDropDownRef = useRef()
 
   useEffect(() => {
-    let handler = (e) => {
+    let handler = e => {
       if (isModalDropDownOpen) {
         if (modalDropDownRef.current.contains(e.target)) {
           setIsModalDropDownOpen(!isModalDropDownOpen)
@@ -160,7 +160,7 @@ function DeconstructRcvrAddress({ setTxStatus }) {
     available: 0,
     send: 0,
     fees: 0,
-    remaining: 0,
+    remaining: 0
   })
 
   function handleNext() {
@@ -168,7 +168,7 @@ function DeconstructRcvrAddress({ setTxStatus }) {
       available: selectedUtxoAmount,
       send: withinRangeAmount,
       fees: avgTxSize_vBytes * minAmountTxFee,
-      remaining: selectedUtxoAmount - (minAmountTxFee * avgTxSize_vBytes + withinRangeAmount),
+      remaining: selectedUtxoAmount - (minAmountTxFee * avgTxSize_vBytes + withinRangeAmount)
     })
 
     setIsModalDropDownOpen(!isModalDropDownOpen)
@@ -217,13 +217,13 @@ function DeconstructRcvrAddress({ setTxStatus }) {
                 <>
                   <p style={{ fontSize: ".7em", borderTop: "1px solid gray", paddingTop: "10px", color: "gray" }}>Input amount &#40;sats&#41; you want to send &#40;lock&#41; to the public key hash above. Any remaining amount &#40;ex. fees&#41; will be sent back to your wallet.</p>
                   <div className="input-container">
-                    <input onChange={(e) => handleInputtedAmount(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (!hasError && withinRange ? "input--focus-green" : "")} type="text" required />
+                    <input onChange={e => handleInputtedAmount(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (!hasError && withinRange ? "input--focus-green" : "")} type="text" required />
                     <span className="input-placeholder">Send Amount</span>
-                    <div className="input-validation">
+                    <div style={{ cursor: "default" }} className="input-validation">
                       <span style={{ color: "gray" }}>Est. Fee</span> &#40;{minAmountTxFee} sat/vB&#41; <span style={{ color: "purple" }}>|</span> <span style={{ color: "gray" }}>TX Fees &#40;sats&#41;:</span> {!hasError && withinRange ? minAmountTxFee * avgTxSize_vBytes : 0} <span style={{ color: "purple" }}>|</span> <span style={{ color: "gray" }}>Remaining &#40;sats&#41;:</span> {!hasError && withinRange ? selectedUtxoAmount - (minAmountTxFee * avgTxSize_vBytes + withinRangeAmount) : ""}
                     </div>
                     {hasError ? (
-                      <div className="input-validation input-validation--error">
+                      <div style={{ cursor: "default" }} className="input-validation input-validation--error">
                         <MdError style={{ width: "12px", height: "12px" }} className="icon--error" />
                         &nbsp;{validationErrorMessage}
                       </div>
@@ -231,7 +231,7 @@ function DeconstructRcvrAddress({ setTxStatus }) {
                       ""
                     )}
                     {!hasError && withinRange ? (
-                      <div className="input-validation input-validation--success">
+                      <div style={{ cursor: "default" }} className="input-validation input-validation--success">
                         <MdCheckCircle style={{ width: "14px", height: "14px" }} className="icon--checked" /> {"Amount within acceptable range."}
                       </div>
                     ) : (
@@ -244,8 +244,8 @@ function DeconstructRcvrAddress({ setTxStatus }) {
               )}
             </div>
 
-            <p style={{ position: "absolute", bottom: "10px", left: "28px", fontSize: "0.6em" }}>UTXOs Selected: {appState.bitcoin.txBuilder.selectedArray.length}</p>
-            <p style={{ position: "absolute", bottom: "-4px", left: "28px", fontSize: "0.6em" }}>Total UTXO Value Selected: {appState.bitcoin.txBuilder.totalUtxoValueSelected}</p>
+            <p style={{ position: "absolute", bottom: "10px", left: "28px", fontSize: "0.6em", cursor: "default" }}>UTXOs Selected: {appState.bitcoin.txBuilder.selectedArray.length}</p>
+            <p style={{ position: "absolute", bottom: "-4px", left: "28px", fontSize: "0.6em", cursor: "default" }}>Total UTXO Value Selected: {appState.bitcoin.txBuilder.totalUtxoValueSelected}</p>
           </div>
 
           <div className="tx-builder__overlay__outer">
@@ -265,4 +265,4 @@ function DeconstructRcvrAddress({ setTxStatus }) {
   )
 }
 
-export default DeconstructRcvrAddress
+export default BtcTxDeconstructRcvrAddress

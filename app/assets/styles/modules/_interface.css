@@ -94,6 +94,19 @@
           animation: appear-pulse 1s linear;
         }
       }
+
+      &--appear-2 {
+        position: relative;
+
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 400px;
+          animation: appear-pulse 1s linear;
+        }
+      }
     }
   }
 }
