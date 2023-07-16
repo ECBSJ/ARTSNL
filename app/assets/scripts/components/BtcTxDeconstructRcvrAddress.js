@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, useRef } from "react"
+import React, { useEffect, useContext, useState, useRef, Suspense } from "react"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import { IconContext } from "react-icons"
@@ -6,6 +6,11 @@ import { MdCheckCircle, MdError } from "react-icons/md"
 import { Tooltip } from "react-tooltip"
 import { CSSTransition } from "react-transition-group"
 import ModalDropDown from "./ModalDropDown"
+import FeeDataDisplay from "./FeeDataDisplay"
+import ErrorBoundary from "./ErrorBoundary"
+import LazyLoadFallback from "./LazyLoadFallback"
+import FeeDataDisplayLoading from "./FeeDataDisplayLoading"
+import FeeDataDisplayError from "./FeeDataDisplayError"
 
 function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
   const appState = useContext(StateContext)
@@ -75,6 +80,17 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
     economyFee: 0,
     minimumFee: 0
   })
+
+  useEffect(() => {
+    setHasError(false)
+    setValidationErrorMessage("")
+    setWithinRange(false)
+    setWithinRangeAmount(0)
+
+    if (document.getElementById("input-grab")) {
+      document.getElementById("input-grab").value = ""
+    }
+  }, [minAmountTxFee])
 
   function handleInputtedAmount(value) {
     let value_Number = Number(value)
@@ -193,7 +209,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
               {showHash160 ? (
                 <>
                   <div data-tooltip-id="hash160" data-tooltip-content={hash160}>
-                    {"{" + hash160.slice(0, 10) + "..." + hash160.slice(-10) + "}"}
+                    {"{ " + hash160.slice(0, 10) + "..." + hash160.slice(-10) + " }"}
                   </div>
                   <Tooltip id="hash160" style={{ fontSize: "0.6rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" />
 
@@ -217,13 +233,13 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
                 <>
                   <p style={{ fontSize: ".7em", borderTop: "1px solid gray", paddingTop: "10px", color: "gray" }}>Input amount &#40;sats&#41; you want to send &#40;lock&#41; to the public key hash above. Any remaining amount &#40;ex. fees&#41; will be sent back to your wallet.</p>
                   <div className="input-container">
-                    <input onChange={e => handleInputtedAmount(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (!hasError && withinRange ? "input--focus-green" : "")} type="text" required />
+                    <input onChange={e => handleInputtedAmount(e.target.value)} id="input-grab" className={"input-white " + (hasError ? "input--focus-red" : "") + (!hasError && withinRange ? "input--focus-green" : "")} type="text" required />
                     <span className="input-placeholder">Send Amount</span>
-                    <div style={{ cursor: "default" }} className="input-validation">
-                      <span style={{ color: "gray" }}>Est. Fee</span> &#40;{minAmountTxFee} sat/vB&#41; <span style={{ color: "purple" }}>|</span> <span style={{ color: "gray" }}>TX Fees &#40;sats&#41;:</span> {!hasError && withinRange ? minAmountTxFee * avgTxSize_vBytes : 0} <span style={{ color: "purple" }}>|</span> <span style={{ color: "gray" }}>Remaining &#40;sats&#41;:</span> {!hasError && withinRange ? selectedUtxoAmount - (minAmountTxFee * avgTxSize_vBytes + withinRangeAmount) : ""}
+                    <div style={{ cursor: "default", bottom: "-17" }} className="input-validation">
+                      <span style={{ color: "gray" }}>Fee Rate</span> &#40;{minAmountTxFee} sat/vB&#41; <span style={{ color: "purple" }}>|</span> <span style={{ color: "gray" }}>TX Fees &#40;sats&#41;:</span> {!hasError && withinRange ? minAmountTxFee * avgTxSize_vBytes : 0} <span style={{ color: "purple" }}>|</span> <br /> <span style={{ color: "gray" }}>Remaining &#40;sats&#41;:</span> {!hasError && withinRange ? selectedUtxoAmount - (minAmountTxFee * avgTxSize_vBytes + withinRangeAmount) : ""}
                     </div>
                     {hasError ? (
-                      <div style={{ cursor: "default" }} className="input-validation input-validation--error">
+                      <div style={{ cursor: "default", bottom: "-35" }} className="input-validation input-validation--error">
                         <MdError style={{ width: "12px", height: "12px" }} className="icon--error" />
                         &nbsp;{validationErrorMessage}
                       </div>
@@ -231,7 +247,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
                       ""
                     )}
                     {!hasError && withinRange ? (
-                      <div style={{ cursor: "default" }} className="input-validation input-validation--success">
+                      <div style={{ cursor: "default", bottom: "-35" }} className="input-validation input-validation--success">
                         <MdCheckCircle style={{ width: "14px", height: "14px" }} className="icon--checked" /> {"Amount within acceptable range."}
                       </div>
                     ) : (
@@ -246,6 +262,16 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
 
             <p style={{ position: "absolute", bottom: "10px", left: "28px", fontSize: "0.6em", cursor: "default" }}>UTXOs Selected: {appState.bitcoin.txBuilder.selectedArray.length}</p>
             <p style={{ position: "absolute", bottom: "-4px", left: "28px", fontSize: "0.6em", cursor: "default" }}>Total UTXO Value Selected: {appState.bitcoin.txBuilder.totalUtxoValueSelected}</p>
+
+            {showHash160 ? (
+              <ErrorBoundary fallback={<FeeDataDisplayError />}>
+                <Suspense fallback={<FeeDataDisplayLoading />}>
+                  <FeeDataDisplay setMinAmountTxFee={setMinAmountTxFee} />
+                </Suspense>
+              </ErrorBoundary>
+            ) : (
+              ""
+            )}
           </div>
 
           <div className="tx-builder__overlay__outer">

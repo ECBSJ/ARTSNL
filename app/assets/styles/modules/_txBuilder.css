@@ -193,4 +193,13 @@
   justify-content: center;
   align-items: center;
   font-size: 0.6em;
+  cursor: default;
+
+  &--correct {
+    background-color: limegreen;
+  }
+
+  &--incorrect {
+    background-color: red;
+  }
 }

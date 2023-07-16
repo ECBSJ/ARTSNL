@@ -22,7 +22,7 @@ function BitcoinTxBuilder() {
   const appDispatch = useContext(DispatchContext)
   const navigate = useNavigate()
 
-  const [txStatus, setTxStatus] = useState(4)
+  const [txStatus, setTxStatus] = useState(3)
   // txStatus codes:
   // 1. Select UTXOs => function handleRcvrAddress
   // 2. Specify Rcvr Address => function handleDeconstructRcvrAddress
