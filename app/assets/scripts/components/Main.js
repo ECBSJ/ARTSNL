@@ -36,37 +36,46 @@ function Main() {
   const Mainnet = bitcoin.networks.bitcoin
   let Testnet = bitcoin.networks.testnet
 
-  // let testnetKeyPair = ECPair.fromWIF(testnetPrivKey, Testnet)
-  // const p2pkhObject = bitcoin.payments.p2pkh({ pubkey: testnetKeyPair.publicKey, network: Testnet })
+  const testnetPrivKey = "938zbGqYYvZvFaHNXMNDpQZ4hEQE89ugGEjrv9QCKWCL6H2c4ps"
+  const testnetAdd = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
 
-  // const validator = (pubkey, msghash, signature) => ECPair.fromPublicKey(pubkey).verify(msghash, signature)
+  let testnetKeyPair = ECPair.fromWIF(testnetPrivKey, Testnet)
+  const p2pkhObject = bitcoin.payments.p2pkh({ pubkey: testnetKeyPair.publicKey, network: Testnet })
 
-  // const psbt = new bitcoin.Psbt({ network: Testnet })
+  const validator = (pubkey, msghash, signature) => ECPair.fromPublicKey(pubkey).verify(msghash, signature)
 
-  // psbt.addInput({
-  //   hash: "2cb6fa84428fc0ec7a9938888263d38262ab8eced7f32b086093fae1c44b066a",
-  //   index: 0,
-  //   nonWitnessUtxo: Buffer.from("0200000002b934e59a25ff84414975d05fc944a770ee17542326eb708851b7cb87d0c24cc5000000008a47304402202c0b9314b95df5ad4a4e87c8c856a1cad0e8969792c105301b8ba6e7f885de7302205aab52e8258d16630a3346874aae063212b68d0ee263fb52593a24d3ebf26b7e014104a5631b324d8f870a2693236b4c89e42f2ed0cda08a0e6a07db95884d1e82e9bec0e44c0885e281ab8dfb58f53215e70d7f33ee4359ac0f9c421c2f07544ae177ffffffff507d63594f9749a26bfeb583bf36f4188006757eb006d21dc2e61e3846a79186000000008b4830450221009384c907b787322bff92172554782440bb3f564616a6486850a4db40fbab97f002204e7d4ee290225551f95b90a32b2e6256db003bb72a7b329204109cd08d17d78c014104a5631b324d8f870a2693236b4c89e42f2ed0cda08a0e6a07db95884d1e82e9bec0e44c0885e281ab8dfb58f53215e70d7f33ee4359ac0f9c421c2f07544ae177ffffffff01bc2e0000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388ac00000000", "hex")
-  // })
+  const psbt = new bitcoin.Psbt({ network: Testnet })
 
-  // psbt.addInput({
-  //   hash: "8691a746381ee6c21dd206b07e75068018f436bf83b5fe6ba249974f59637d50",
-  //   index: 0,
-  //   nonWitnessUtxo: Buffer.from("020000000001019462cf8959a06d5b65215a648ad8ccb17814efa08f70f7b2c8ee376415176e5a000000001716001497cccf62d2ed3dded4a86d6cce118bd08c571cbdfeffffff023c1b0000000000001976a914b58515a69527c806fd404d3d4aa490d56692310b88aceb32f901000000001976a914c80c4fdbc8d70bac6a20a7af273d137132f3c89788ac0247304402205085f90c858ea1eb81938371b0b6659a191f2c0c1816b6f48b64ff96fa404ffc02205321c63d54db7c3fb68667c1c95009f0522aa3a2b8c2a191a30419eca06aa9f30121025404399c93d61fa75f76c49377bd7eea76efe4a73021a4e04fd237b4913c2e5e7f212500", "hex")
-  // })
+  psbt.addInput({
+    hash: "a296be122cc5c90bfc7e50f65b2c2e12d231a761d69ff05ec8a05b48f6f16b9a",
+    index: 0,
+    nonWitnessUtxo: Buffer.from("02000000000101fc17bccc0117b0d0f1955d6ac84d1bf47399f77d6a8944f73c3ab0bb8c035a320100000000feffffff02a8160000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acf2d71300000000001976a914845b731431f519d2856ccc481087621eda16cc8a88ac0247304402206d0d4095dd5b45a84b01eadafce1ba87d6ebb2b51c43ace4982867a84991b83c02206bab4d2ae888deb8282149de576beadbced24b53e1285699f051dcfd0736d0f10121037955b1e146d3f87f4ebb897e6fbdd34ce2abe63641aea18aaa774c6a40d63b6639252500", "hex")
+  })
 
-  // psbt.addOutput({
-  //   address: "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w",
-  //   value: 11564
-  // })
+  psbt.addInput({
+    hash: "9153e5420b1092ff65d90a028df8840e0e3dfc8b9c8e1c1c0664e02f000c5def",
+    index: 0,
+    nonWitnessUtxo: Buffer.from("02000000000101e46381154e9fcc1dec31a5edb6afd23063508c83b647c80b01433709440482740000000000feffffff0284350000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acfb1b1500000000001976a914428d17adc0c17119b9f5c5689b61cd094b00c7e088ac0247304402201ffb958b864bcf2ac92b6f6485c6bc0cf9e9a9d223ee913fdb88eaa9945a670402203c80ae2cb29696cdbb4ac25d8ffb92f7811636197900bb5633591870587c5b65012103f2ebb8d108f78594dd2829f9e283e1977f226165d985278a6aa8ecc91302e3c1d7252500", "hex")
+  })
 
-  // psbt.signInput(0, testnetKeyPair)
-  // psbt.signInput(1, testnetKeyPair)
-  // psbt.validateSignaturesOfInput(0, validator)
-  // psbt.validateSignaturesOfInput(1, validator)
-  // psbt.finalizeAllInputs()
+  psbt.addOutput({
+    address: "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w",
+    value: 19000
+  })
 
-  // const transactionHEX = psbt.extractTransaction().toHex()
+  psbt.signInput(0, testnetKeyPair)
+  psbt.signInput(1, testnetKeyPair)
+  psbt.validateSignaturesOfInput(0, validator)
+  psbt.validateSignaturesOfInput(1, validator)
+  psbt.finalizeAllInputs()
+
+  // has finalScriptSig
+  // console.log(psbt)
+
+  const transactionHEX = psbt.extractTransaction().toHex()
+  const raw = psbt.extractTransaction()
+  // console.log(uint8arraytools.toHex(raw.ins[0].script))
+  // console.log(uint8arraytools.toHex(raw.ins[1].script))
 
   // Main - Select UTXOs to use (carousel selection)
   // Main - Show selected UTXOs
