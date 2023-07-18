@@ -1,11 +1,11 @@
 import React, { useEffect } from "react"
-import { MdCopyAll, MdKeyboardDoubleArrowUp } from "react-icons/md"
+import { MdCopyAll, MdKeyboardDoubleArrowUp, MdSkipNext } from "react-icons/md"
 import { IconContext } from "react-icons"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import AddressCheckModal from "./AddressCheckModal"
 import ModalOverlaySendAmountCheck from "./ModalOverlaySendAmountCheck"
 
-function ModalDropDown({ setIsModalDropDownOpen, isModalDropDownOpen, emoji, title, subtitle, subtitle_2, hasData, data, showFullData, ending_content, ending_content_2, hideDoubleArrow, checkAddress, handleDeconstructRcvrAddress, checkSendAmount, sendAmountCheckObject, navigateToScriptPubKey }) {
+function ModalDropDown({ setIsModalDropDownOpen, isModalDropDownOpen, emoji, title, subtitle, subtitle_2, hasData, data, showFullData, ending_content, ending_content_2, hideDoubleArrow, checkAddress, handleDeconstructRcvrAddress, checkSendAmount, sendAmountCheckObject, navigateToScriptPubKey, displayNextArrow }) {
   function handleCopyPopup_modal() {
     document.querySelector(".icon-copy-modal").classList.toggle("icon")
     document.querySelector(".icon-copy-modal").classList.toggle("icon-copy--active")
@@ -69,6 +69,7 @@ function ModalDropDown({ setIsModalDropDownOpen, isModalDropDownOpen, emoji, tit
         {ending_content_2}
         <br />
         <br />
+        {displayNextArrow ? <MdSkipNext onClick={() => null} className={"icon icon--floating"} /> : ""}
         <MdKeyboardDoubleArrowUp onClick={() => setIsModalDropDownOpen(!isModalDropDownOpen)} className={"icon icon--floating " + (hideDoubleArrow ? "display-none" : "")} />
       </div>
     </>

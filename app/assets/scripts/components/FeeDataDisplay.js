@@ -15,7 +15,7 @@ function FeeDataDisplay({ setMinAmountTxFee }) {
     } else {
       urlForFetch = "https://mempool.space/api/v1/fees/recommended"
     }
-    let result = await fetch(urlForFetch)
+    let result = await fetch("https://mempool.space/api/v1/fees/recommended")
 
     return result.json()
   }
@@ -25,9 +25,8 @@ function FeeDataDisplay({ setMinAmountTxFee }) {
   }
 
   if (promise) {
-    let readPromise = promise.read()
-    console.log(readPromise)
-    readPromise && setMinAmountTxFee(readPromise.fastestFee)
+    let result = promise.read()
+    result && setMinAmountTxFee(result.fastestFee)
   }
 
   return (

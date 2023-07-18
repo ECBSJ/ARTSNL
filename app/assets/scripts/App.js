@@ -112,6 +112,7 @@ function App() {
       bufferPubKey: null,
     },
     bitcoin: {
+      bitcoinJsNetwork: null,
       mainnetProvider: null,
       testnetProvider: null,
       activeProvider: null,
@@ -200,6 +201,13 @@ function App() {
 
         // setting encrypted as cookie
         setCookie("encryptedKeyPair", encrypted, { "max-age": 3600000000000 })
+        return
+      case "setBitcoinJsNetwork":
+        if (draft.isTestnet == false) {
+          draft.bitcoin.bitcoinJsNetwork = bitcoin.networks.bitcoin
+        } else {
+          draft.bitcoin.bitcoinJsNetwork = bitcoin.networks.testnet
+        }
         return
       case "setBitcoinProviders":
         let mempoolProvider = mempoolJS({
@@ -362,6 +370,10 @@ function App() {
       console.log("useEffect detected no browser storage.")
     }
   }, [])
+
+  useEffect(() => {
+    dispatch({ type: "setBitcoinJsNetwork" })
+  }, [state.isTestnet])
 
   // useEffect(() => {
   //   dispatch({ type: "setBitcoinProviders" })

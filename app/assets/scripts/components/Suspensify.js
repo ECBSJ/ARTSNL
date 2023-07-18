@@ -3,11 +3,11 @@ function Suspensify(promise) {
   let result
 
   let suspender = promise.then(
-    res => {
+    (res) => {
       status = "success"
       result = res
     },
-    error => {
+    (error) => {
       status = "error"
       result = error
     }
@@ -16,16 +16,13 @@ function Suspensify(promise) {
   return {
     read() {
       if (status === "pending") {
-        console.log("threw suspender")
         throw suspender
       } else if (status === "error") {
-        console.log("threw error")
         throw result
       } else if (status === "success") {
-        console.log("threw success")
         return result
       }
-    }
+    },
   }
 }
 
