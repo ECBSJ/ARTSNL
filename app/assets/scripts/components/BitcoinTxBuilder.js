@@ -91,7 +91,31 @@ function BitcoinTxBuilder() {
     setTotalUtxoValueSelected(totalValue)
   }
 
-  function handleRcvrAddress() {
+  function getSelectedUtxoTxHex() {
+    let selectedUtxoTxHex_Array = selectedArray.map(async (utxoIndex, index) => {
+      let txid = utxoData_Array[utxoIndex].txid
+      let txHex
+
+      try {
+        let result = await appState.bitcoin.activeProvider?.bitcoin.transactions.getTxHex({ txid })
+        if (result) {
+          txHex = result
+        }
+      } catch (error) {
+        console.error(error)
+      }
+
+      return txHex
+    })
+
+    return Promise.all(selectedUtxoTxHex_Array)
+  }
+
+  async function handleRcvrAddress() {
+    await getSelectedUtxoTxHex().then((res) => {
+      // setSelectedUtxoTxHex_Array
+      appDispatch({ type: "setSelectedUtxoTxHex_Array", value: res })
+    })
     appDispatch({ type: "setSelectedUtxo_Array", value: selectedArray })
     appDispatch({ type: "setTotalUtxoValueSelected", value: totalUtxoValueSelected })
 
