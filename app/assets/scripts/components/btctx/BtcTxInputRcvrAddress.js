@@ -1,10 +1,10 @@
 import React, { useEffect, useContext, useState, useRef } from "react"
 import { IconContext } from "react-icons"
 import { MdCheckCircle, MdError } from "react-icons/md"
-import StateContext from "../StateContext"
-import DispatchContext from "../DispatchContext"
-import * as bitcoin from "../../../../bitcoinjs-lib"
-import ModalDropDown from "./ModalDropDown"
+import StateContext from "../../StateContext"
+import DispatchContext from "../../DispatchContext"
+import * as bitcoin from "../../../../../bitcoinjs-lib"
+import ModalDropDown from "../ModalDropDown"
 import { CSSTransition } from "react-transition-group"
 
 function BtcTxInputRcvrAddress({ setTxStatus }) {

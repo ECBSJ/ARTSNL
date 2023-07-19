@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react"
 import { MdOutlineArrowCircleLeft, MdOutlineArrowCircleRight } from "react-icons/md"
 import UtxoDisplayCard from "./UtxoDisplayCard"
-import LazyLoadFallback from "./LazyLoadFallback"
+import LazyLoadFallback from "../LazyLoadFallback"
 import { VscBracketError } from "react-icons/vsc"
 
 function UtxoCarousel({ utxoData_Array, pushIndexToSelectedArray, translateXMultiplier, setTranslateXMultipler, selectedArray, utxoData_hasError }) {

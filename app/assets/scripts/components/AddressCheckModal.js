@@ -18,7 +18,6 @@ function AddressCheckModal({ setIsModalDropDownOpen, isModalDropDownOpen, data, 
       <div>Double check the address.</div>
       <div className="modal-overlay-container">
         {array.map((quadrant, index) => {
-          console.log(index + ": " + quadrant)
           return (
             <span style={index % 2 === 0 ? { color: "lightSeaGreen", marginRight: "10px" } : { color: "gray", marginRight: "10px" }} key={index}>
               {quadrant}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, memo } from "react"
-import Suspensify from "./Suspensify"
-import StateContext from "../StateContext"
+import Suspensify from "../Suspensify"
+import StateContext from "../../StateContext"
 
 function FeeDataDisplay({ setMinAmountTxFee }) {
   const appState = useContext(StateContext)
@@ -15,7 +15,7 @@ function FeeDataDisplay({ setMinAmountTxFee }) {
     } else {
       urlForFetch = "https://mempool.space/api/v1/fees/recommended"
     }
-    let result = await fetch("https://mempool.space/api/v1/fees/recommended")
+    let result = await fetch(urlForFetch)
 
     return result.json()
   }
@@ -31,8 +31,8 @@ function FeeDataDisplay({ setMinAmountTxFee }) {
 
   return (
     <>
-      <div onClick={() => onClick()} style={{ width: "144px", height: "34px", borderRadius: "7px", backgroundColor: "#b3670a", position: "absolute", bottom: "7px", right: "20px", fontSize: "0.6em", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center" }}>
-        Use High Fee Rate
+      <div onClick={() => onClick()} style={{ width: "103px", height: "34px", borderRadius: "7px", backgroundColor: "#b3670a", position: "absolute", bottom: "7px", right: "15px", fontSize: "0.6em", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        Use High Fee
       </div>
     </>
   )

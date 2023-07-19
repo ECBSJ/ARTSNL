@@ -1,35 +1,39 @@
-import React, { useEffect, useContext, useState, Suspense } from "react"
-import * as bitcoin from "../../../../bitcoinjs-lib"
-import { IconContext } from "react-icons"
-import { MdOutlineArrowCircleLeft, MdOutlineArrowCircleRight, MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
-import { TbRefresh } from "react-icons/tb"
-import { BsHddNetworkFill, BsHddNetwork, BsReception1, BsReception4 } from "react-icons/bs"
-import { Tooltip } from "react-tooltip"
+import React, { useContext, useState } from "react"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+
+// MAIN BITCOINJS LIBRARY
+import * as bitcoin from "../../../../bitcoinjs-lib"
+
+// REACT NPM TOOLS
+import { MdMenu, MdLibraryBooks } from "react-icons/md"
+import { TbRefresh } from "react-icons/tb"
+import { BsHddNetworkFill, BsHddNetwork, BsReception4 } from "react-icons/bs"
+import { Tooltip } from "react-tooltip"
 import { CSSTransition } from "react-transition-group"
-import UtxoDisplayCard from "./UtxoDisplayCard"
-import BtcTxSelectUtxo from "./BtcTxSelectUtxo"
-import BtcTxInputRcvrAddress from "./BtcTxInputRcvrAddress"
-import LazyLoadFallback from "./LazyLoadFallback"
-import ErrorBoundary from "./ErrorBoundary"
 import { useNavigate } from "react-router-dom"
-import BtcTxDeconstructRcvrAddress from "./BtcTxDeconstructRcvrAddress"
-import BtcTxScriptPubKey from "./BtcTxScriptPubKey"
-import BtcTxSignInputs from "./BtcTxSignInputs"
+
+// BITCOIN TX COMPONENTS
+import BtcTxSelectUtxo from "./btctx/BtcTxSelectUtxo"
+import BtcTxInputRcvrAddress from "./btctx/BtcTxInputRcvrAddress"
+import BtcTxDeconstructRcvrAddress from "./btctx/BtcTxDeconstructRcvrAddress"
+import BtcTxScriptPubKey from "./btctx/BtcTxScriptPubKey"
+import BtcTxSignInputs from "./btctx/BtcTxSignInputs"
 
 function BitcoinTxBuilder() {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
   const navigate = useNavigate()
 
-  const [txStatus, setTxStatus] = useState(4)
-  // txStatus codes:
-  // 1. Select UTXOs => function handleRcvrAddress
-  // 2. Specify Rcvr Address => function handleDeconstructRcvrAddress
-  // 3. Deconstruct address & specify send amount => function navigateToScriptPubKey
-  // 4. Build scriptpubkey
+  const [txStatus, setTxStatus] = useState(1)
+  // TX STATUS CODES
+  // 1. Select UTXOs (<BtcTxSelectUtxo />) / function navigateToRcvrAddress navigates to txStatus 2
+  // 2. Specify Rcvr Address (<BtcTxInputRcvrAddress />) / function handleDeconstructRcvrAddress navigates to txStatus 3
+  // 3. Deconstruct address & specify send amount (<BtcTxDeconstructRcvrAddress />) / function navigateToScriptPubKey navigates to txStatus 4
+  // 4. Build scriptpubkey (<BtcTxScriptPubKey />) / function navigateToSignInputs navigates to txStatus 5
+  // 5. Sign inputs (<BtcTxSignInputs />)
 
+  // TESTING WALLETS
   const testnetPrivKey = "938zbGqYYvZvFaHNXMNDpQZ4hEQE89ugGEjrv9QCKWCL6H2c4ps"
   const testnetAdd = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
 
@@ -44,6 +48,7 @@ function BitcoinTxBuilder() {
 
   const [utxoData_hasError, setUtxoData_hasError] = useState(false)
 
+  // called in this component's useEffect below and in function refreshTxBuilder
   async function getUtxoData() {
     let address = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
 
@@ -67,6 +72,7 @@ function BitcoinTxBuilder() {
 
   const [selectedArray, setSelectedArray] = useState([])
 
+  // passed as prop to <BtcTxSelectUtxo /> when user selects utxo
   function pushIndexToSelectedArray(index) {
     if (selectedArray.includes(index)) {
       // remove utxo from array
@@ -82,6 +88,7 @@ function BitcoinTxBuilder() {
 
   const [totalUtxoValueSelected, setTotalUtxoValueSelected] = useState(0)
 
+  // called in function pushIndexToSelectedArray
   function calculateTotalUtxoValueSelected() {
     let totalValue = 0
 
@@ -92,6 +99,7 @@ function BitcoinTxBuilder() {
     setTotalUtxoValueSelected(totalValue)
   }
 
+  // called in function navigateToRcvrAddress to get selected utxo's full tx hex
   function getSelectedUtxoTxHex() {
     let selectedUtxoTxHex_Array = selectedArray.map(async (utxoIndex, index) => {
       let txid = utxoData_Array[utxoIndex].txid
@@ -112,7 +120,8 @@ function BitcoinTxBuilder() {
     return Promise.all(selectedUtxoTxHex_Array)
   }
 
-  async function handleRcvrAddress() {
+  // navigates to txStatus 2 and sets global state variables for selectedUtxoTxHex_Array, selectedUtxo_Array, totalUtxoValueSelected
+  async function navigateToRcvrAddress() {
     await getSelectedUtxoTxHex().then(res => {
       // setSelectedUtxoTxHex_Array
       appDispatch({ type: "setSelectedUtxoTxHex_Array", value: res })
@@ -137,13 +146,10 @@ function BitcoinTxBuilder() {
     getUtxoData()
   }
 
-  const Mainnet = bitcoin.networks.bitcoin
-  let Testnet = bitcoin.networks.testnet
-
   return (
     <>
       <CSSTransition in={txStatus === 1} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
-        <BtcTxSelectUtxo utxoData_Array={utxoData_Array} pushIndexToSelectedArray={pushIndexToSelectedArray} selectedArray={selectedArray} totalUtxoValueSelected={totalUtxoValueSelected} handleRcvrAddress={handleRcvrAddress} utxoData_hasError={utxoData_hasError} />
+        <BtcTxSelectUtxo utxoData_Array={utxoData_Array} pushIndexToSelectedArray={pushIndexToSelectedArray} selectedArray={selectedArray} totalUtxoValueSelected={totalUtxoValueSelected} navigateToRcvrAddress={navigateToRcvrAddress} utxoData_hasError={utxoData_hasError} />
       </CSSTransition>
 
       <CSSTransition in={txStatus === 2} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
@@ -162,6 +168,7 @@ function BitcoinTxBuilder() {
         <BtcTxSignInputs setTxStatus={setTxStatus} />
       </CSSTransition>
 
+      {/* the below jsx is used as the header, footer, and backbone foundational layout for the above components */}
       <div className="interface__block">
         <div className="interface__block-cell interface__block-cell--space-between">
           <div style={{ cursor: "default" }} className="title-font title-font--large">

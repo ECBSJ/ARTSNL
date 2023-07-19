@@ -4,7 +4,7 @@ import { CSSTransition } from "react-transition-group"
 import UtxoCarousel from "./UtxoCarousel"
 import ConfirmSelectedUtxo from "./ConfirmSelectedUtxo"
 
-function BtcTxSelectUtxo({ utxoData_Array, pushIndexToSelectedArray, selectedArray, totalUtxoValueSelected, handleRcvrAddress, utxoData_hasError }) {
+function BtcTxSelectUtxo({ utxoData_Array, pushIndexToSelectedArray, selectedArray, totalUtxoValueSelected, navigateToRcvrAddress, utxoData_hasError }) {
   const [displayCarousel, setDisplayCarousel] = useState(true)
   const [translateXMultiplier, setTranslateXMultipler] = useState(0)
 
@@ -43,7 +43,7 @@ function BtcTxSelectUtxo({ utxoData_Array, pushIndexToSelectedArray, selectedArr
             </div>
           ) : (
             <div className="tx-builder__overlay__outer">
-              <button onClick={() => handleRcvrAddress()} className="button-purple">
+              <button onClick={() => navigateToRcvrAddress()} className="button-purple">
                 Rcvr Address
               </button>
             </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from "react"
-import StateContext from "../StateContext"
-import DispatchContext from "../DispatchContext"
+import StateContext from "../../StateContext"
+import DispatchContext from "../../DispatchContext"
 import { IconContext } from "react-icons"
 
 function BtcTxSignInputs({ setTxStatus }) {

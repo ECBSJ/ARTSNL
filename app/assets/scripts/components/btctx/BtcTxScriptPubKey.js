@@ -1,10 +1,10 @@
 import React, { useEffect, useContext, useState, useRef } from "react"
-import StateContext from "../StateContext"
-import DispatchContext from "../DispatchContext"
+import StateContext from "../../StateContext"
+import DispatchContext from "../../DispatchContext"
 import { IconContext } from "react-icons"
 import { CSSTransition } from "react-transition-group"
-import ModalDropDown from "./ModalDropDown"
-import * as bitcoin from "../../../../bitcoinjs-lib"
+import ModalDropDown from "../ModalDropDown"
+import * as bitcoin from "../../../../../bitcoinjs-lib"
 import * as uint8arraytools from "uint8array-tools"
 
 function BtcTxScriptPubKey({ setTxStatus }) {
