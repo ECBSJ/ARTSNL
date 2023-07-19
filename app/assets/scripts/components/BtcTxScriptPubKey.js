@@ -7,7 +7,7 @@ import ModalDropDown from "./ModalDropDown"
 import * as bitcoin from "../../../../bitcoinjs-lib"
 import * as uint8arraytools from "uint8array-tools"
 
-function BtcTxScriptPubKey() {
+function BtcTxScriptPubKey({ setTxStatus }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
@@ -178,6 +178,12 @@ function BtcTxScriptPubKey() {
     setIsModalDropDownOpen(!isModalDropDownOpen)
   }
 
+  function navigateToSignInputs() {
+    setIsModalDropDownOpen(!isModalDropDownOpen)
+
+    setTimeout(() => setTxStatus(5), 700)
+  }
+
   return (
     <>
       <CSSTransition in={isModalDropDownOpen} timeout={400} classNames="modal__cover" unmountOnExit>
@@ -185,7 +191,7 @@ function BtcTxScriptPubKey() {
       </CSSTransition>
 
       <CSSTransition in={isModalDropDownOpen} timeout={600} classNames="modal__drop-down" unmountOnExit>
-        <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"🧱"} title={"ScriptPubKey Initialized"} subtitle={"The 25 byte sized locking script, scriptpubkey,"} subtitle_2={"is now initialized for the receiver's address."} hasData={true} data={scriptPubKey} showFullData={false} ending_content={"Click on 'NEXT' icon"} ending_content_2={"below to proceed."} hideDoubleArrow={true} displayNextArrow={true} functionToRunOnNext={null} />
+        <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"🧱"} title={"ScriptPubKey Initialized"} subtitle={"The 25 byte sized locking script, scriptpubkey,"} subtitle_2={"is now initialized for the receiver's address."} hasData={true} data={scriptPubKey} showFullData={false} ending_content={"Click on 'NEXT' icon"} ending_content_2={"below to proceed."} hideDoubleArrow={true} displayNextArrow={true} functionToRunOnNext={navigateToSignInputs} />
       </CSSTransition>
 
       <div className="tx-builder__overlay">
