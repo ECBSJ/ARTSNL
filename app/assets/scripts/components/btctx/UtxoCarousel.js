@@ -1,14 +1,15 @@
 import React, { useEffect, useState, useContext } from "react"
 import { MdOutlineArrowCircleLeft, MdOutlineArrowCircleRight } from "react-icons/md"
-import UtxoDisplayCard from "./UtxoDisplayCard"
-import LazyLoadFallback from "../LazyLoadFallback"
 import { VscBracketError } from "react-icons/vsc"
 
+// UTXO CAROUSEL COMPONENTS
+import UtxoDisplayCard from "./UtxoDisplayCard"
+import LazyLoadFallback from "../LazyLoadFallback"
+
 function UtxoCarousel({ utxoData_Array, pushIndexToSelectedArray, translateXMultiplier, setTranslateXMultipler, selectedArray, utxoData_hasError }) {
+  // config for inline styling of translateX amount movement in carousel
   let translateXConstant = -398
-
   let translateXAmount = translateXConstant * translateXMultiplier
-
   let translateXStyle = {
     translate: translateXAmount.toString() + "px"
   }
@@ -38,6 +39,7 @@ function UtxoCarousel({ utxoData_Array, pushIndexToSelectedArray, translateXMult
             </>
           ) : (
             <>
+              {/* LazyLoadFallback will display on initial load during utxo fetching process */}
               {utxoData_Array.length === 0 ? (
                 <>
                   <LazyLoadFallback />

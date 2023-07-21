@@ -1,11 +1,14 @@
 import React, { useEffect, useContext, useState, useRef } from "react"
 import StateContext from "../../StateContext"
 import DispatchContext from "../../DispatchContext"
-import { IconContext } from "react-icons"
-import { CSSTransition } from "react-transition-group"
-import ModalDropDown from "../ModalDropDown"
+
 import * as bitcoin from "../../../../../bitcoinjs-lib"
 import * as uint8arraytools from "uint8array-tools"
+
+import { IconContext } from "react-icons"
+import { CSSTransition } from "react-transition-group"
+
+import ModalDropDown from "../ModalDropDown"
 
 function BtcTxScriptPubKey({ setTxStatus }) {
   const appState = useContext(StateContext)
@@ -13,6 +16,7 @@ function BtcTxScriptPubKey({ setTxStatus }) {
 
   let rawHash160 = "87d26e56b26e58354cabc60edc09c4c878d85c83"
 
+  // initial opCodes stack
   const [opCodesArray_scriptPubKey_incorrect, setOpCodesArray_scriptPubKey_incorrect] = useState([
     {
       opCodeName: "OP_EQUALVERIFY",
@@ -36,6 +40,7 @@ function BtcTxScriptPubKey({ setTxStatus }) {
     }
   ])
 
+  // refresher stack
   const defaultIncorrectStack = [
     {
       opCodeName: "OP_EQUALVERIFY",
@@ -59,6 +64,7 @@ function BtcTxScriptPubKey({ setTxStatus }) {
     }
   ]
 
+  // stack to compare opCodesStacked state with
   const opCodesArray_scriptPubKey_correct = [
     {
       opCodeName: "OP_CHECKSIG",
@@ -84,6 +90,8 @@ function BtcTxScriptPubKey({ setTxStatus }) {
 
   const [opCodesStacked, setOpCodesStacked] = useState([])
   const [isStackCorrect, setIsStackCorrect] = useState(false)
+
+  // drag & drop functions
 
   function handleOnDragStart(e, opCodeObject) {
     e.dataTransfer.setData("opCodeObject", JSON.stringify(opCodeObject))
@@ -123,6 +131,7 @@ function BtcTxScriptPubKey({ setTxStatus }) {
     setOpCodesStacked([...opCodesStacked, JSON.parse(opCodeObject)])
   }
 
+  // opCodesStacked validation
   useEffect(() => {
     if (opCodesStacked.length === 5) {
       if (JSON.stringify(opCodesStacked) == JSON.stringify(opCodesArray_scriptPubKey_correct)) {
@@ -165,9 +174,9 @@ function BtcTxScriptPubKey({ setTxStatus }) {
     }
   })
 
-  // type string
-  const [scriptPubKey, setScriptPubKey] = useState()
+  const [scriptPubKey, setScriptPubKey] = useState() // type string
 
+  // triggers modal drop down and displays scriptpubkey
   function handleConcatenate() {
     let network = appState.bitcoin.bitcoinJsNetwork
     // let address = appState.bitcoin.txBuilder.validInputtedAddress
@@ -178,6 +187,7 @@ function BtcTxScriptPubKey({ setTxStatus }) {
     setIsModalDropDownOpen(!isModalDropDownOpen)
   }
 
+  // sets txStatus 5 / called in ModalDropDown on next button
   function navigateToSignInputs() {
     setIsModalDropDownOpen(!isModalDropDownOpen)
 
@@ -202,7 +212,7 @@ function BtcTxScriptPubKey({ setTxStatus }) {
             <p style={{ position: "absolute", top: "-5px", left: "28px", right: "28px", fontSize: "0.6em", color: "gray" }}>Drag & drop script opcodes to form ScriptPubKey. Decoded receiver address, hash160, should be included in the middle of the stack.</p>
 
             <div style={{ width: "100%", height: "80%", display: "flex", justifyContent: "center", alignItems: "center", padding: "10px" }}>
-              <div style={{ position: "relative", flex: 1, width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "flex-end", alignItems: "center" }}>
+              <div id="drag-target" style={{ position: "relative", flex: 1, width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "flex-end", alignItems: "center" }}>
                 <span style={{ position: "absolute", top: "2", left: "55", fontSize: ".5em", color: "#d1bbff", cursor: "default" }}>Script OpCodes</span>
                 {opCodesArray_scriptPubKey_incorrect.map((opCodeObject, index) => (
                   <div className="drag" key={index} draggable onDragStart={e => handleOnDragStart(e, opCodeObject)} onDragEnd={e => handleOnDragEnd(e)}>
@@ -210,9 +220,9 @@ function BtcTxScriptPubKey({ setTxStatus }) {
                   </div>
                 ))}
               </div>
+
               <div id="drop-target" style={{ zIndex: "102", position: "relative", flex: 1, width: "100%", height: "286px", overflowY: "scroll", display: "flex", flexDirection: "column-reverse", justifyContent: "flex-start", alignItems: "center", marginLeft: "7px", backgroundColor: "#2a2a3ad9", borderRadius: "6px" }} onDrop={e => handleOnDrop(e)} onDragOver={e => handleDragOver(e)} onDragEnter={e => handleDragEnter(e)} onDragLeave={e => handleDragLeave(e)}>
                 <span style={{ position: "absolute", top: "2", left: "55", fontSize: ".5em", color: "#d1bbff", cursor: "default" }}>Script Stack</span>
-
                 {opCodesStacked.map((opCodeObject, index) => (
                   <div className="drop" key={index}>
                     {opCodeObject.opCodeName == "rawHash160" ? <>{"{ " + opCodeObject.opCodeValue.slice(0, 5) + "..." + opCodeObject.opCodeValue.slice(-5) + " }"}</> : opCodeObject.opCodeValue}

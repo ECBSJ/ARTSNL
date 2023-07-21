@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { BsFileEarmarkLock2Fill } from "react-icons/bs"
 
 function UtxoCapsule({ selectedUtxoIndex, utxoData_Array }) {

@@ -1,8 +1,10 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { MdArrowBack } from "react-icons/md"
+
+// utxo capsule component
 import UtxoCapsule from "./UtxoCapsule"
 
-function ConfirmSelectedUtxo({ utxoData_Array, pushIndexToSelectedArray, selectedArray, totalUtxoValueSelected, setDisplayCarousel }) {
+function ConfirmSelectedUtxo({ utxoData_Array, selectedArray, setDisplayCarousel }) {
   return (
     <>
       <div className="tx-builder__blueprint-carousel-confirm">

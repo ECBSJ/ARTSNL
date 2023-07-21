@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { IconContext } from "react-icons"
 import { CSSTransition } from "react-transition-group"
+
+// SELECT UTXO COMPONENTS
 import UtxoCarousel from "./UtxoCarousel"
 import ConfirmSelectedUtxo from "./ConfirmSelectedUtxo"
 

@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react"
 import { MdIndeterminateCheckBox, MdCheckBox } from "react-icons/md"
 
 function UtxoDisplayCard({ index, txid, vout, confirmed, block_height, block_hash, block_time, value, pushIndexToSelectedArray, selectedArray }) {
+  // green checkmark icon will appear on bottom right of card when isSelected is true
   const [isSelected, setIsSelected] = useState(false)
 
   function handleSelect() {
+    // called from <BitcoinTxBuilder />
     pushIndexToSelectedArray(index)
     setIsSelected(!isSelected)
   }
 
+  // to sustain isSelected boolean when user switches back from <ConfirmSelectedUtxo /> to <UtxoCarousel />
   useEffect(() => {
     if (selectedArray.includes(index)) {
       setIsSelected(!isSelected)

@@ -62,7 +62,7 @@ function ImportPage({ isImportOpen, setIsImportOpen }) {
 
   return (
     <>
-      {openQRreader ? <QRreaderPopup setInputImportKey={setInputImportKey} setScannedValue={setScannedValue} openQRreader={openQRreader} setOpenQRreader={setOpenQRreader} /> : ""}
+      {openQRreader ? <QRreaderPopup setInputValue={setInputImportKey} setScannedValue={setScannedValue} openQRreader={openQRreader} setOpenQRreader={setOpenQRreader} /> : ""}
 
       <div className="menu__cover menu__cover--no-opacity">
         <div className="menu__label">

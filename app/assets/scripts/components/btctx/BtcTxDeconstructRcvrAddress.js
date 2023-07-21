@@ -1,10 +1,12 @@
 import React, { useEffect, useContext, useState, useRef, Suspense } from "react"
 import StateContext from "../../StateContext"
 import DispatchContext from "../../DispatchContext"
+
 import { IconContext } from "react-icons"
 import { MdCheckCircle, MdError } from "react-icons/md"
 import { Tooltip } from "react-tooltip"
 import { CSSTransition } from "react-transition-group"
+
 import ModalDropDown from "../ModalDropDown"
 import FeeDataDisplay from "./FeeDataDisplay"
 import ErrorBoundary from "../ErrorBoundary"
@@ -19,7 +21,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
   let hash160 = "87d26e56b26e58354cabc60edc09c4c878d85c83"
 
   const [showHash160, setShowHash160] = useState(false)
-
+  // function to deconstruct/decode rcvr address to reveal pub key hash
   async function handleHash160() {
     document.querySelector("#setLoading").classList.add("text--loading")
     document.querySelector("#hash160").innerText = "Decoding..."
@@ -63,14 +65,11 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
     }, 4000)
   }
 
+  // inputted amount state handling
   const [hasError, setHasError] = useState(false)
   const [validationErrorMessage, setValidationErrorMessage] = useState("")
   const [withinRange, setWithinRange] = useState(false)
   const [withinRangeAmount, setWithinRangeAmount] = useState(0)
-
-  let selectedUtxoAmount = 394872
-  let minAmountToSend = 5000
-  let avgTxSize_vBytes = 200
   const [minAmountTxFee, setMinAmountTxFee] = useState(1) // sat/vBytes
   const [recommendFees, setRecommendedFees] = useState({
     fastestFee: 0,
@@ -79,7 +78,11 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
     economyFee: 0,
     minimumFee: 0
   })
+  let selectedUtxoAmount = 394872
+  let minAmountToSend = 5000
+  let avgTxSize_vBytes = 200
 
+  // resets input field if fee rate updates
   useEffect(() => {
     setHasError(false)
     setValidationErrorMessage("")
@@ -91,6 +94,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
     }
   }, [minAmountTxFee])
 
+  // inputted amount validation
   function handleInputtedAmount(value) {
     let value_Number = Number(value)
 
@@ -128,6 +132,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
     }
   }
 
+  // initial fee estimation call for estimated half hour fee
   async function getFeeEstimation() {
     try {
       let result = await appState.bitcoin.activeProvider?.bitcoin.fees.getFeesRecommended()
@@ -161,16 +166,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
     }
   })
 
-  function navigateToScriptPubKey() {
-    setIsModalDropDownOpen(!isModalDropDownOpen)
-    appDispatch({ type: "setSendAmount", value: withinRangeAmount })
-    appDispatch({ type: "setFeeAmount", value: avgTxSize_vBytes * minAmountTxFee })
-    appDispatch({ type: "setChangeAmount", value: selectedUtxoAmount - (minAmountTxFee * avgTxSize_vBytes + withinRangeAmount) })
-
-    // navigate to build scriptpubkey page
-    setTimeout(() => setTxStatus(4), 700)
-  }
-
+  // to display when modal drop down appears to let user check send amount details
   const [sendAmountCheckObject, setSendAmountCheckObject] = useState({
     available: 0,
     send: 0,
@@ -187,6 +183,17 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
     })
 
     setIsModalDropDownOpen(!isModalDropDownOpen)
+  }
+
+  // navigates to txStatus 4 and sets appState for send, fee, and change amounts / called in ModalOverlaySendAmountCheck
+  function navigateToScriptPubKey() {
+    setIsModalDropDownOpen(!isModalDropDownOpen)
+    appDispatch({ type: "setSendAmount", value: withinRangeAmount })
+    appDispatch({ type: "setFeeAmount", value: avgTxSize_vBytes * minAmountTxFee })
+    appDispatch({ type: "setChangeAmount", value: selectedUtxoAmount - (minAmountTxFee * avgTxSize_vBytes + withinRangeAmount) })
+
+    // navigate to build scriptpubkey page
+    setTimeout(() => setTxStatus(4), 700)
   }
 
   return (

@@ -2,10 +2,10 @@ import React from "react"
 import { useZxing } from "react-zxing"
 import { MdClose } from "react-icons/md"
 
-function QRreaderPopup({ setInputImportKey, setScannedValue, openQRreader, setOpenQRreader }) {
+function QRreaderPopup({ setInputValue, setScannedValue, openQRreader, setOpenQRreader }) {
   const { ref } = useZxing({
     onResult(result) {
-      setInputImportKey(result.getText())
+      setInputValue(result.getText())
       setScannedValue(result.getText())
       setOpenQRreader(!openQRreader)
     }

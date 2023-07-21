@@ -26,7 +26,7 @@ const WalletMain = React.lazy(() => import("./components/WalletMain"))
 import Menu from "./components/Menu"
 const BitcoinAddress = React.lazy(() => import("./components/BitcoinAddress"))
 const EthereumAddress = React.lazy(() => import("./components/EthereumAddress"))
-const BitcoinTxBuilder = React.lazy(() => import("./components/BitcoinTxBuilder"))
+const BtcTxBuilder = React.lazy(() => import("./components/BtcTxBuilder"))
 
 function App() {
   // cookie setter/getter
@@ -34,7 +34,7 @@ function App() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options,
+      ...options
     }
 
     if (options.expires instanceof Date) {
@@ -61,7 +61,7 @@ function App() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1,
+      "max-age": -1
     })
   }
 
@@ -109,7 +109,7 @@ function App() {
     isTestnet: true,
     keys: {
       bufferPrivKey: null,
-      bufferPubKey: null,
+      bufferPubKey: null
     },
     bitcoin: {
       bitcoinJsNetwork: null,
@@ -124,20 +124,27 @@ function App() {
         selectedArray: [],
         selectedUtxoTxHex_Array: [],
         totalUtxoValueSelected: 0,
+        rcvrAddressList: [
+          {
+            validInputtedAddress: "",
+            validInputtedAddress_Decoded: {},
+            sendAmount: 0
+          }
+        ],
         validInputtedAddress: "",
         validInputtedAddress_Decoded: {},
         sendAmount: 0,
         feeAmount: 0,
-        changeAmount: 0,
-      },
+        changeAmount: 0
+      }
     },
     ethereum: {
       mainnetProvider: null,
       testnetProvider: null,
       activeProvider: null,
-      address: null,
+      address: null
     },
-    isMenuOpen: false,
+    isMenuOpen: false
   }
 
   function ourReducer(draft, action) {
@@ -171,7 +178,7 @@ function App() {
       case "setLocalStorage":
         let keyPairObject = {
           priv: uint8arraytools.toHex(draft.keys.bufferPrivKey),
-          pub: uint8arraytools.toHex(draft.keys.bufferPubKey),
+          pub: uint8arraytools.toHex(draft.keys.bufferPubKey)
         }
 
         let tobeEncrypted = JSON.stringify(keyPairObject)
@@ -212,12 +219,12 @@ function App() {
         return
       case "setBitcoinProviders":
         let mempoolProvider = mempoolJS({
-          hostname: "mempool.space",
+          hostname: "mempool.space"
         })
 
         let mempoolTestnetProvider = mempoolJS({
           hostname: "mempool.space",
-          network: "testnet",
+          network: "testnet"
         })
 
         draft.bitcoin.mainnetProvider = mempoolProvider
@@ -401,13 +408,13 @@ function App() {
                 <Suspense fallback={<LazyLoadFallback />}>
                   <Routes>
                     {/* <Route path="/" element={state.hasBrowserStorage ? <WalletMain /> : <Main />} /> */}
-                    <Route path="/" element={<BitcoinTxBuilder />} />
+                    <Route path="/" element={<BtcTxBuilder />} />
                     <Route path="/CreateKeys" element={<CreateKeys />} />
                     <Route path="/AddressSelection" element={<AddressSelection />} />
                     <Route path="/BitcoinAddress" element={<BitcoinAddress />} />
                     <Route path="/EthereumAddress" element={<EthereumAddress />} />
                     <Route path="/WalletMain" element={<WalletMain />} />
-                    <Route path="/BitcoinTxBuilder" element={<BitcoinTxBuilder />} />
+                    <Route path="/BtcTxBuilder" element={<BtcTxBuilder />} />
                   </Routes>
                 </Suspense>
               </BrowserRouter>

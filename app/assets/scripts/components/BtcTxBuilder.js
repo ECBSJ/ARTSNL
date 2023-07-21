@@ -1,6 +1,7 @@
-import React, { useContext, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+import * as uint8arraytools from "uint8array-tools"
 
 // MAIN BITCOINJS LIBRARY
 import * as bitcoin from "../../../../bitcoinjs-lib"
@@ -20,12 +21,12 @@ import BtcTxDeconstructRcvrAddress from "./btctx/BtcTxDeconstructRcvrAddress"
 import BtcTxScriptPubKey from "./btctx/BtcTxScriptPubKey"
 import BtcTxSignInputs from "./btctx/BtcTxSignInputs"
 
-function BitcoinTxBuilder() {
+function BtcTxBuilder() {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
   const navigate = useNavigate()
 
-  const [txStatus, setTxStatus] = useState(1)
+  const [txStatus, setTxStatus] = useState(2)
   // TX STATUS CODES
   // 1. Select UTXOs (<BtcTxSelectUtxo />) / function navigateToRcvrAddress navigates to txStatus 2
   // 2. Specify Rcvr Address (<BtcTxInputRcvrAddress />) / function handleDeconstructRcvrAddress navigates to txStatus 3
@@ -47,7 +48,6 @@ function BitcoinTxBuilder() {
   ]
 
   const [utxoData_hasError, setUtxoData_hasError] = useState(false)
-
   // called in this component's useEffect below and in function refreshTxBuilder
   async function getUtxoData() {
     let address = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
@@ -70,9 +70,9 @@ function BitcoinTxBuilder() {
     }
   }
 
+  // selectedArray state will get pushed up to appState when navigating to txStatus 2
   const [selectedArray, setSelectedArray] = useState([])
-
-  // passed as prop to <BtcTxSelectUtxo /> when user selects utxo
+  // passed as prop initially to <BtcTxSelectUtxo /> and called down in <UtxoDisplayCard /> when user selects utxo
   function pushIndexToSelectedArray(index) {
     if (selectedArray.includes(index)) {
       // remove utxo from array
@@ -87,7 +87,6 @@ function BitcoinTxBuilder() {
   }
 
   const [totalUtxoValueSelected, setTotalUtxoValueSelected] = useState(0)
-
   // called in function pushIndexToSelectedArray
   function calculateTotalUtxoValueSelected() {
     let totalValue = 0
@@ -133,10 +132,6 @@ function BitcoinTxBuilder() {
     setTxStatus(2)
   }
 
-  // useEffect(() => {
-  //   getUtxoData()
-  // }, [])
-
   function refreshTxBuilder() {
     setUtxoData_hasError(false)
     setTotalUtxoValueSelected(0)
@@ -145,6 +140,10 @@ function BitcoinTxBuilder() {
     setTxStatus(1)
     getUtxoData()
   }
+
+  // useEffect(() => {
+  //   getUtxoData()
+  // }, [])
 
   return (
     <>
@@ -206,7 +205,7 @@ function BitcoinTxBuilder() {
   )
 }
 
-export default BitcoinTxBuilder
+export default BtcTxBuilder
 
 {
   /* <div className="tx-builder__overlay">

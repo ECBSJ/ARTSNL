@@ -1,19 +1,24 @@
 import React, { useEffect, useContext, useState, useRef } from "react"
-import { IconContext } from "react-icons"
-import { MdCheckCircle, MdError } from "react-icons/md"
 import StateContext from "../../StateContext"
 import DispatchContext from "../../DispatchContext"
+
 import * as bitcoin from "../../../../../bitcoinjs-lib"
-import ModalDropDown from "../ModalDropDown"
+
+import { IconContext } from "react-icons"
+import { MdCheckCircle, MdError, MdContentPasteGo, MdQrCodeScanner } from "react-icons/md"
 import { CSSTransition } from "react-transition-group"
+
+import ModalDropDown from "../ModalDropDown"
+import QRreaderPopup from "../QRreaderPopup"
 
 function BtcTxInputRcvrAddress({ setTxStatus }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
-  // let p2pkhCheck = bitcoin.address.fromBase58Check("mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW")
-  let p2pkhCheck = bitcoin.address.fromBase58Check("18cBEMRxXHqzWWCxZNtU91F5sbUNKhL5PX")
-  let p2wpkhCheck = bitcoin.address.fromBech32("bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq")
+  // decode testing
+  // let p2pkhCheck_testnet = bitcoin.address.fromBase58Check("mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW")
+  // let p2pkhCheck = bitcoin.address.fromBase58Check("18cBEMRxXHqzWWCxZNtU91F5sbUNKhL5PX")
+  // let p2wpkhCheck = bitcoin.address.fromBech32("bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq")
 
   const [characterCounter, setCharacterCounter] = useState("")
   const [validInputtedAddress, setValidInputtedAddress] = useState("")
@@ -22,6 +27,7 @@ function BtcTxInputRcvrAddress({ setTxStatus }) {
   const [hasError, setHasError] = useState(false)
   const [validationErrorMessage, setValidationErrorMessage] = useState("")
 
+  // inputted address validation
   function addressValidator(value) {
     setCharacterCounter(value)
 
@@ -118,9 +124,21 @@ function BtcTxInputRcvrAddress({ setTxStatus }) {
     }
   }
 
+  function handlePaste() {
+    navigator.clipboard
+      .readText()
+      .then(res => {
+        document.getElementById("address-input").value = res
+        addressValidator(res)
+      })
+      .catch(console.error)
+  }
+
+  const [openQRreader, setOpenQRreader] = useState(false)
+  const [scannedValue, setScannedValue] = useState()
+
   const [isModalDropDownOpen, setIsModalDropDownOpen] = useState(false)
   const modalDropDownRef = useRef()
-
   useEffect(() => {
     let handler = e => {
       if (isModalDropDownOpen) {
@@ -137,7 +155,8 @@ function BtcTxInputRcvrAddress({ setTxStatus }) {
     }
   })
 
-  function handleDeconstructRcvrAddress() {
+  // navigates to txStatus 3 and sets appState for validInputtedAddress and it's public key hash / called in <AddressCheckModal />
+  function navigateToDeconstructRcvrAddress() {
     setIsModalDropDownOpen(!isModalDropDownOpen)
     appDispatch({ type: "setValidInputtedAddress", value: validInputtedAddress })
     appDispatch({ type: "setValidInputtedAddress_Decoded", value: validInputtedAddress_Decoded })
@@ -153,8 +172,10 @@ function BtcTxInputRcvrAddress({ setTxStatus }) {
       </CSSTransition>
 
       <CSSTransition in={isModalDropDownOpen} timeout={600} classNames="modal__drop-down" unmountOnExit>
-        <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"🔍"} title={"Confirm Address"} subtitle={"Please confirm the receipient"} subtitle_2={"address you inputted."} hasData={false} data={validInputtedAddress} showFullData={false} ending_content={"Click on 'YES'"} ending_content_2={"if you have confirmed."} hideDoubleArrow={true} checkAddress={true} handleDeconstructRcvrAddress={handleDeconstructRcvrAddress} />
+        <ModalDropDown setIsModalDropDownOpen={setIsModalDropDownOpen} isModalDropDownOpen={isModalDropDownOpen} emoji={"🔍"} title={"Confirm Address"} subtitle={"Please confirm the receipient"} subtitle_2={"address you inputted."} hasData={false} data={validInputtedAddress} showFullData={false} ending_content={"Click on 'YES'"} ending_content_2={"if you have confirmed."} hideDoubleArrow={true} checkAddress={true} navigateToDeconstructRcvrAddress={navigateToDeconstructRcvrAddress} />
       </CSSTransition>
+
+      {openQRreader ? <QRreaderPopup setInputValue={addressValidator} setScannedValue={setScannedValue} openQRreader={openQRreader} setOpenQRreader={setOpenQRreader} /> : ""}
 
       <div className="tx-builder__overlay">
         <IconContext.Provider value={{ size: "30px" }}>
@@ -162,7 +183,9 @@ function BtcTxInputRcvrAddress({ setTxStatus }) {
 
           <div className="tx-builder__blueprint">
             <div className="input-container">
-              <input onChange={e => addressValidator(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (validInputtedAddress ? "input--focus-green" : "")} type="text" required />
+              <MdContentPasteGo onClick={() => handlePaste()} style={{ zIndex: "1", right: "52px" }} className="icon icon--position-absolute" />
+              <MdQrCodeScanner onClick={() => setOpenQRreader(!openQRreader)} style={{ zIndex: "1", right: "15px" }} className="icon icon--position-absolute" />
+              <input id="address-input" onChange={e => addressValidator(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (validInputtedAddress ? "input--focus-green" : "")} value={scannedValue ? scannedValue : undefined} onFocus={() => setScannedValue()} type="text" required />
               <span className="input-placeholder">Input Rcvr Add</span>
               <div className="input-validation">character count: {characterCounter.length}</div>
               {hasError ? (
