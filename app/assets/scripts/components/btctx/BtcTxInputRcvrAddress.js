@@ -183,7 +183,7 @@ function BtcTxInputRcvrAddress({ setTxStatus }) {
 
           <div className="tx-builder__blueprint">
             <div className="input-container">
-              <MdContentPasteGo onClick={() => handlePaste()} style={{ zIndex: "1", right: "52px" }} className="icon icon--position-absolute" />
+              <MdContentPasteGo onClick={() => handlePaste()} style={{ zIndex: "1", right: "52px", transform: "scaleX(-1)" }} className="icon icon--position-absolute" />
               <MdQrCodeScanner onClick={() => setOpenQRreader(!openQRreader)} style={{ zIndex: "1", right: "15px" }} className="icon icon--position-absolute" />
               <input id="address-input" onChange={e => addressValidator(e.target.value)} className={"input-white " + (hasError ? "input--focus-red" : "") + (validInputtedAddress ? "input--focus-green" : "")} value={scannedValue ? scannedValue : undefined} onFocus={() => setScannedValue()} type="text" required />
               <span className="input-placeholder">Input Rcvr Add</span>

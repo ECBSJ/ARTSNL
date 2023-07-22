@@ -8,6 +8,7 @@ html {
 
 ::-webkit-scrollbar {
   width: 0.3vw;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-thumb {

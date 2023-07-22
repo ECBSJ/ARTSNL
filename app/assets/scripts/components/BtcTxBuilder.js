@@ -15,6 +15,7 @@ import { CSSTransition } from "react-transition-group"
 import { useNavigate } from "react-router-dom"
 
 // BITCOIN TX COMPONENTS
+import BtcTxDashboard from "./btctx/BtcTxDashboard"
 import BtcTxSelectUtxo from "./btctx/BtcTxSelectUtxo"
 import BtcTxInputRcvrAddress from "./btctx/BtcTxInputRcvrAddress"
 import BtcTxDeconstructRcvrAddress from "./btctx/BtcTxDeconstructRcvrAddress"
@@ -26,10 +27,11 @@ function BtcTxBuilder() {
   const appDispatch = useContext(DispatchContext)
   const navigate = useNavigate()
 
-  const [txStatus, setTxStatus] = useState(2)
+  const [txStatus, setTxStatus] = useState(0)
   // TX STATUS CODES
+  // 0. TX Builder Dashboard / Overview display of inputs & outputs selected
   // 1. Select UTXOs (<BtcTxSelectUtxo />) / function navigateToRcvrAddress navigates to txStatus 2
-  // 2. Specify Rcvr Address (<BtcTxInputRcvrAddress />) / function handleDeconstructRcvrAddress navigates to txStatus 3
+  // 2. Specify Rcvr Address (<BtcTxInputRcvrAddress />) / function navigateToDeconstructRcvrAddress navigates to txStatus 3
   // 3. Deconstruct address & specify send amount (<BtcTxDeconstructRcvrAddress />) / function navigateToScriptPubKey navigates to txStatus 4
   // 4. Build scriptpubkey (<BtcTxScriptPubKey />) / function navigateToSignInputs navigates to txStatus 5
   // 5. Sign inputs (<BtcTxSignInputs />)
@@ -147,6 +149,10 @@ function BtcTxBuilder() {
 
   return (
     <>
+      <CSSTransition in={txStatus === 0} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
+        <BtcTxDashboard setTxStatus={setTxStatus} />
+      </CSSTransition>
+
       <CSSTransition in={txStatus === 1} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
         <BtcTxSelectUtxo utxoData_Array={utxoData_Array} pushIndexToSelectedArray={pushIndexToSelectedArray} selectedArray={selectedArray} totalUtxoValueSelected={totalUtxoValueSelected} navigateToRcvrAddress={navigateToRcvrAddress} utxoData_hasError={utxoData_hasError} />
       </CSSTransition>

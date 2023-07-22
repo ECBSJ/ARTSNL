@@ -270,6 +270,24 @@ button {
   padding: 0 15px 0 15px;
 }
 
+.put-capsule {
+  min-width: 250px;
+  max-width: 250px;
+  min-height: 70px;
+  max-height: 70px;
+  font-size: 0.7em;
+  background-color: rgba(255, 255, 255, 0.205);
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px 0 15px;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.452);
+  }
+}
+
 /* ANIMATIONS */
 @keyframes purple-bg-pulse {
   0% {
