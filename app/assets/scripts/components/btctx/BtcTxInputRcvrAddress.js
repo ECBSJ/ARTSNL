@@ -158,8 +158,13 @@ function BtcTxInputRcvrAddress({ setTxStatus }) {
   // navigates to txStatus 3 and sets appState for validInputtedAddress and it's public key hash / called in <AddressCheckModal />
   function navigateToDeconstructRcvrAddress() {
     setIsModalDropDownOpen(!isModalDropDownOpen)
-    appDispatch({ type: "setValidInputtedAddress", value: validInputtedAddress })
-    appDispatch({ type: "setValidInputtedAddress_Decoded", value: validInputtedAddress_Decoded })
+
+    let object = {
+      validInputtedAddress: validInputtedAddress,
+      validInputtedAddress_Decoded: validInputtedAddress_Decoded
+    }
+
+    appDispatch({ type: "pushToOutputsArray", value: object })
 
     // Go to deconstruct rcvr address page
     setTimeout(() => setTxStatus(3), 700)

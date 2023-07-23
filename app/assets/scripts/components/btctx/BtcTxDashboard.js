@@ -4,7 +4,7 @@ import DispatchContext from "../../DispatchContext"
 import { IconContext } from "react-icons"
 import { FaQuestionCircle } from "react-icons/fa"
 import { MdInput, MdOutput } from "react-icons/md"
-import { BsFillFileEarmarkPlusFill, BsFileEarmarkLock2Fill } from "react-icons/bs"
+import { BsFillFileEarmarkPlusFill, BsFileEarmarkLock2Fill, BsFillFileEarmarkTextFill, BsFileEarmarkDiffFill } from "react-icons/bs"
 import { BiExpand, BiCollapse } from "react-icons/bi"
 
 function BtcTxDashboard({ setTxStatus }) {
@@ -28,7 +28,7 @@ function BtcTxDashboard({ setTxStatus }) {
               <div className="tx-builder__blueprint-dashboard__puts-container">
                 <div className="tx-builder__blueprint-dashboard__puts-container-row1">
                   <span style={{ cursor: "default" }} className="display-flex">
-                    <MdInput style={{ marginRight: "6px" }} /> Inputs &#91;{"0"}&#93; <FaQuestionCircle style={{ width: "16px", height: "16px", marginLeft: "7px" }} className="icon" />
+                    <MdInput style={{ marginRight: "6px" }} /> Inputs &#91;{appState.bitcoin.txBuilder.selectedArray.length === 0 ? 0 : appState.bitcoin.txBuilder.selectedArray.length}&#93; <FaQuestionCircle style={{ width: "16px", height: "16px", marginLeft: "7px" }} className="icon" />
                   </span>
                 </div>
                 <div className="tx-builder__blueprint-dashboard__puts-container-row2">
@@ -40,7 +40,7 @@ function BtcTxDashboard({ setTxStatus }) {
                     <>
                       {appState.bitcoin.txBuilder.selectedArray.map((selectedUtxo, index) => {
                         return (
-                          <button className="put-capsule">
+                          <button key={index} className="put-capsule">
                             <BsFileEarmarkLock2Fill style={{ marginRight: "6px" }} />
                             <div style={{ textAlign: "left", fontSize: "0.9em" }}>
                               <span>UTXO: ...{appState.bitcoin.txBuilder.utxoData_Array[selectedUtxo].txid.slice(-4)}</span>
@@ -63,7 +63,48 @@ function BtcTxDashboard({ setTxStatus }) {
                     <MdOutput style={{ marginRight: "6px" }} /> Outputs &#91;{"0"}&#93; <FaQuestionCircle style={{ width: "16px", height: "16px", marginLeft: "7px" }} className="icon" />
                   </span>
                 </div>
-                <div className="tx-builder__blueprint-dashboard__puts-container-row2"></div>
+                <div className="tx-builder__blueprint-dashboard__puts-container-row2">
+                  {appState.bitcoin.txBuilder.outputs_Array.length === 0 && appState.bitcoin.txBuilder.selectedArray.length === 0 ? (
+                    ""
+                  ) : appState.bitcoin.txBuilder.outputs_Array.length > 0 ? (
+                    <>
+                      {appState.bitcoin.txBuilder.outputs_Array.map((output, index) => {
+                        return (
+                          <button key={index} className="put-capsule">
+                            <BsFillFileEarmarkTextFill style={{ marginRight: "6px" }} />
+                            <div style={{ textAlign: "left", fontSize: "0.9em" }}>
+                              <span>To: ...{output.validInputtedAddress.slice(-4)}</span>
+                              <br />
+                              <span>Value: {output.sendAmount}</span>
+                              <br />
+                              <span>Index: &#91;{index}&#93;</span>
+                            </div>
+                            <BiExpand />
+                          </button>
+                        )
+                      })}
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => setTxStatus(2)} className="put-capsule">
+                        <BsFillFileEarmarkPlusFill style={{ marginRight: "6px" }} /> Add Output
+                      </button>
+                    </>
+                  )}
+
+                  {appState.bitcoin.txBuilder.estimatedRemainingAmount > 0 && (
+                    <button onClick={() => setTxStatus(2)} className="put-capsule">
+                      <BsFileEarmarkDiffFill style={{ marginRight: "6px" }} />
+                      <div style={{ textAlign: "left", fontSize: "0.9em" }}>
+                        <span>Remainder: {appState.bitcoin.txBuilder.estimatedRemainingAmount}</span>
+                        <br />
+                        <span>Default Return Address: Your Wallet</span>
+                        <br />
+                        <span>Or Click to add new Output</span>
+                      </div>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -71,7 +112,17 @@ function BtcTxDashboard({ setTxStatus }) {
             <p style={{ position: "absolute", bottom: "-4px", left: "28px", fontSize: "0.6em" }}>Total UTXO Value Selected: {appState.bitcoin.txBuilder.totalUtxoValueSelected}</p>
           </div>
 
-          <div className="tx-builder__overlay__outer"></div>
+          <div className="tx-builder__overlay__outer">
+            {appState.bitcoin.txBuilder.outputs_Array.length > 0 ? (
+              <>
+                <button onClick={() => setTxStatus(5)} className="button-purple">
+                  Sign Inputs
+                </button>
+              </>
+            ) : (
+              ""
+            )}
+          </div>
         </IconContext.Provider>
       </div>
     </>

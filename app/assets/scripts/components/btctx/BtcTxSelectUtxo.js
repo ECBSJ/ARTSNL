@@ -37,7 +37,7 @@ function BtcTxSelectUtxo({ utxoData_Array, pushIndexToSelectedArray, selectedArr
             <div className="tx-builder__overlay__outer">
               {!selectedArray.length == 0 ? (
                 <button onClick={() => setDisplayCarousel(!displayCarousel)} className="button-purple">
-                  Confirm Selections
+                  Review Selections
                 </button>
               ) : (
                 ""
@@ -46,7 +46,7 @@ function BtcTxSelectUtxo({ utxoData_Array, pushIndexToSelectedArray, selectedArr
           ) : (
             <div className="tx-builder__overlay__outer">
               <button onClick={() => navigateToRcvrAddress()} className="button-purple">
-                Rcvr Address
+                Confirm Inputs
               </button>
             </div>
           )}

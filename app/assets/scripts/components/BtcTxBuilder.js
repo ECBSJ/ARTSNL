@@ -30,10 +30,10 @@ function BtcTxBuilder() {
   const [txStatus, setTxStatus] = useState(0)
   // TX STATUS CODES
   // 0. TX Builder Dashboard / Overview display of inputs & outputs selected
-  // 1. Select UTXOs (<BtcTxSelectUtxo />) / function navigateToRcvrAddress navigates to txStatus 2
+  // 1. Select UTXOs (<BtcTxSelectUtxo />) / function navigateToRcvrAddress navigates back to dashboard to add output
   // 2. Specify Rcvr Address (<BtcTxInputRcvrAddress />) / function navigateToDeconstructRcvrAddress navigates to txStatus 3
   // 3. Deconstruct address & specify send amount (<BtcTxDeconstructRcvrAddress />) / function navigateToScriptPubKey navigates to txStatus 4
-  // 4. Build scriptpubkey (<BtcTxScriptPubKey />) / function navigateToSignInputs navigates to txStatus 5
+  // 4. Build scriptpubkey (<BtcTxScriptPubKey />) / function navigateToSignInputs navigates back to dashboard
   // 5. Sign inputs (<BtcTxSignInputs />)
 
   // TESTING WALLETS
@@ -43,11 +43,15 @@ function BtcTxBuilder() {
   const testnetPrivKey_2 = "93MPV1RsWMvfLCpGZcnPG1U8EA3QDqdNxkCVJwmeTGrjEHFZ5v6"
   const testnetAdd_2 = "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w"
 
+  const testnetAdd_3 = "ms2qxPw1Q2nTkm4eMHqe6mM7JAFqAwDhpB"
+
   let utxoData_Array = [
-    { txid: "9153e5420b1092ff65d90a028df8840e0e3dfc8b9c8e1c1c0664e02f000c5def", vout: 0, status: { confirmed: true, block_height: 2434520, block_hash: "000000000000000f4632a88a45d61cd4e777040fc0203108661e7ebedcddc4bb", block_time: 1684648693 }, value: 13700 },
     { txid: "a296be122cc5c90bfc7e50f65b2c2e12d231a761d69ff05ec8a05b48f6f16b9a", vout: 0, status: { confirmed: true, block_height: 2434362, block_hash: "000000000000000588988168cfb4f924fcd912f6a7c9d909fbd978067be31f01", block_time: 1684590437 }, value: 5800 },
-    { txid: "d8cd4aa054d0a20777df2e106370b2de7ef2a43e97f9b6a59bf975a58307ca61", vout: 0, status: { confirmed: true, block_height: 2434365, block_hash: "00000000000000246093cb4135d16e262433d4dd8ce6bd0214029214c24380f3", block_time: 1684592176 }, value: 11564 }
+    { txid: "be7610fcaad261bf04241854c3cc41625283833fb5f09f56648c3769741eaf02", vout: 1, status: { confirmed: true, block_height: 2443296, block_hash: "0000000000000005a06960c65d7b9eeec50e358be78b64737ea920f90a3975ce", block_time: 1690082989 }, value: 8158 },
+    { txid: "9153e5420b1092ff65d90a028df8840e0e3dfc8b9c8e1c1c0664e02f000c5def", vout: 0, status: { confirmed: true, block_height: 2434520, block_hash: "000000000000000f4632a88a45d61cd4e777040fc0203108661e7ebedcddc4bb", block_time: 1684648693 }, value: 13700 }
   ]
+
+  let selectedUtxoTxHex_Array = ["02000000000101fc17bccc0117b0d0f1955d6ac84d1bf47399f77d6a8944f73c3ab0bb8c035a320100000000feffffff02a8160000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acf2d71300000000001976a914845b731431f519d2856ccc481087621eda16cc8a88ac0247304402206d0d4095dd5b45a84b01eadafce1ba87d6ebb2b51c43ace4982867a84991b83c02206bab4d2ae888deb8282149de576beadbced24b53e1285699f051dcfd0736d0f10121037955b1e146d3f87f4ebb897e6fbdd34ce2abe63641aea18aaa774c6a40d63b6639252500", "02000000000101fbb8b8a9dedd556941520f9324aab56776d830f4f49a5f13c7766c32f06a431a0000000000feffffff023ff21600000000001976a9148c3d34589112063d48f2b0562c7eca044e236e2688acde1f0000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388ac0247304402207e11ba443b9009d374ef8c04e72d985efb33084160aa08b3ccf1eddb206a4fff022017ab8281404f0152b646bdc476457170a587e0b50b34d23956ce784fab405ac2012103cd8db50d0a5b1c9adb1e1dff7a0a283ba650c6f0a15a9de4daf600ace658ffc31f482500", "02000000000101e46381154e9fcc1dec31a5edb6afd23063508c83b647c80b01433709440482740000000000feffffff0284350000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acfb1b1500000000001976a914428d17adc0c17119b9f5c5689b61cd094b00c7e088ac0247304402201ffb958b864bcf2ac92b6f6485c6bc0cf9e9a9d223ee913fdb88eaa9945a670402203c80ae2cb29696cdbb4ac25d8ffb92f7811636197900bb5633591870587c5b65012103f2ebb8d108f78594dd2829f9e283e1977f226165d985278a6aa8ecc91302e3c1d7252500"]
 
   const [utxoData_hasError, setUtxoData_hasError] = useState(false)
   // called in this component's useEffect below and in function refreshTxBuilder
@@ -121,17 +125,18 @@ function BtcTxBuilder() {
     return Promise.all(selectedUtxoTxHex_Array)
   }
 
-  // navigates to txStatus 2 and sets global state variables for selectedUtxoTxHex_Array, selectedUtxo_Array, totalUtxoValueSelected
+  // navigates backs to dashboard and sets global state variables for selectedUtxoTxHex_Array, selectedUtxo_Array, totalUtxoValueSelected / called in <BtcTxSelectUtxo />
   async function navigateToRcvrAddress() {
-    await getSelectedUtxoTxHex().then(res => {
-      // setSelectedUtxoTxHex_Array
-      appDispatch({ type: "setSelectedUtxoTxHex_Array", value: res })
-    })
+    // await getSelectedUtxoTxHex().then(res => {
+    //   // setSelectedUtxoTxHex_Array
+    //   appDispatch({ type: "setSelectedUtxoTxHex_Array", value: res })
+    // })
+    appDispatch({ type: "setSelectedUtxoTxHex_Array", value: selectedUtxoTxHex_Array })
     appDispatch({ type: "setSelectedUtxo_Array", value: selectedArray })
     appDispatch({ type: "setTotalUtxoValueSelected", value: totalUtxoValueSelected })
 
-    // Go to specify receiver page
-    setTxStatus(2)
+    // navigates back to dashboard where user then needs to select add output
+    setTxStatus(0)
   }
 
   function refreshTxBuilder() {
@@ -143,9 +148,10 @@ function BtcTxBuilder() {
     getUtxoData()
   }
 
-  // useEffect(() => {
-  //   getUtxoData()
-  // }, [])
+  useEffect(() => {
+    // getUtxoData()
+    appDispatch({ type: "setUtxoData_Array", value: utxoData_Array })
+  }, [])
 
   return (
     <>

@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState, useRef, Suspense } from "react"
 import StateContext from "../../StateContext"
 import DispatchContext from "../../DispatchContext"
+import * as uint8arraytools from "uint8array-tools"
 
 import { IconContext } from "react-icons"
 import { MdCheckCircle, MdError } from "react-icons/md"
@@ -17,8 +18,8 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
-  let rcvrAddress = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
-  let hash160 = "87d26e56b26e58354cabc60edc09c4c878d85c83"
+  let rcvrAddress = appState.bitcoin.txBuilder.outputs_Array[appState.bitcoin.txBuilder.outputs_Array.length - 1].validInputtedAddress
+  let hash160 = uint8arraytools.toHex(appState.bitcoin.txBuilder.outputs_Array[appState.bitcoin.txBuilder.outputs_Array.length - 1].validInputtedAddress_Decoded.hash)
 
   const [showHash160, setShowHash160] = useState(false)
   // function to deconstruct/decode rcvr address to reveal pub key hash
@@ -65,22 +66,23 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
     }, 4000)
   }
 
+  const [availableAmount, setAvailableAmount] = useState(0)
+
   // inputted amount state handling
   const [hasError, setHasError] = useState(false)
   const [validationErrorMessage, setValidationErrorMessage] = useState("")
   const [withinRange, setWithinRange] = useState(false)
   const [withinRangeAmount, setWithinRangeAmount] = useState(0)
-  const [minAmountTxFee, setMinAmountTxFee] = useState(1) // sat/vBytes
+  // defaults to halfHourFee on component mount
+  const [minAmountTxFeePerVbyteRate, setMinAmountTxFeePerVbyteRate] = useState(1) // sat/vBytes
   const [recommendFees, setRecommendedFees] = useState({
-    fastestFee: 0,
-    halfHourFee: 0,
-    hourFee: 0,
-    economyFee: 0,
-    minimumFee: 0
+    fastestFee: 1,
+    halfHourFee: 1,
+    hourFee: 1,
+    economyFee: 1,
+    minimumFee: 1
   })
-  let selectedUtxoAmount = 394872
-  let minAmountToSend = 5000
-  let avgTxSize_vBytes = 200
+  const [currentTxSize_vBytes, setCurrentTxSize_vBytes] = useState(0)
 
   // resets input field if fee rate updates
   useEffect(() => {
@@ -92,7 +94,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
     if (document.getElementById("input-grab")) {
       document.getElementById("input-grab").value = ""
     }
-  }, [minAmountTxFee])
+  }, [minAmountTxFeePerVbyteRate])
 
   // inputted amount validation
   function handleInputtedAmount(value) {
@@ -113,7 +115,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
 
       if (Number.isInteger(value_Number) > 0) {
         // check within range of min & max to send
-        if (value_Number > minAmountToSend && value_Number <= selectedUtxoAmount - minAmountTxFee * avgTxSize_vBytes) {
+        if (value_Number > appState.bitcoin.txBuilder.minAmountToSend && value_Number <= availableAmount - minAmountTxFeePerVbyteRate * currentTxSize_vBytes) {
           setWithinRange(true)
           setWithinRangeAmount(value_Number)
           setHasError(false)
@@ -136,15 +138,36 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
   async function getFeeEstimation() {
     try {
       let result = await appState.bitcoin.activeProvider?.bitcoin.fees.getFeesRecommended()
-      result && setMinAmountTxFee(result.halfHourFee)
+      result && setMinAmountTxFeePerVbyteRate(result.halfHourFee)
       setRecommendedFees(result)
     } catch (err) {
       console.error(err)
     }
   }
 
+  // calculates current estimated tx size in vbytes based on current inputs & outputs
+  function calculateCurrentTxSize_vBytes() {
+    let overheadSize_vBytes = appState.bitcoin.txBuilder.TXSIZE_VBYTES_CONSTANTS.OVERHEAD
+    let inputsSize_vBytes = appState.bitcoin.txBuilder.TXSIZE_VBYTES_CONSTANTS.INPUT * appState.bitcoin.txBuilder.selectedArray.length
+    let outputsSize_vBytes = appState.bitcoin.txBuilder.TXSIZE_VBYTES_CONSTANTS.OUTPUT * appState.bitcoin.txBuilder.outputs_Array.length
+
+    let totalSize_vBytes = overheadSize_vBytes + inputsSize_vBytes + outputsSize_vBytes
+    setCurrentTxSize_vBytes(totalSize_vBytes)
+  }
+
+  // determines how much available in UTXO amount if output is more than 1 / will initialize availableAmount state
+  function initAvailableAmount() {
+    if (appState.bitcoin.txBuilder.outputs_Array.length > 1) {
+      setAvailableAmount(appState.bitcoin.txBuilder.estimatedRemainingAmount)
+    } else {
+      setAvailableAmount(appState.bitcoin.txBuilder.totalUtxoValueSelected)
+    }
+  }
+
   useEffect(() => {
+    calculateCurrentTxSize_vBytes()
     getFeeEstimation()
+    initAvailableAmount()
   }, [])
 
   const [isModalDropDownOpen, setIsModalDropDownOpen] = useState(false)
@@ -176,10 +199,10 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
 
   function handleNext() {
     setSendAmountCheckObject({
-      available: selectedUtxoAmount,
+      available: availableAmount,
       send: withinRangeAmount,
-      fees: avgTxSize_vBytes * minAmountTxFee,
-      remaining: selectedUtxoAmount - (minAmountTxFee * avgTxSize_vBytes + withinRangeAmount)
+      fees: currentTxSize_vBytes * minAmountTxFeePerVbyteRate,
+      remaining: availableAmount - (minAmountTxFeePerVbyteRate * currentTxSize_vBytes + withinRangeAmount)
     })
 
     setIsModalDropDownOpen(!isModalDropDownOpen)
@@ -188,9 +211,17 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
   // navigates to txStatus 4 and sets appState for send, fee, and change amounts / called in ModalOverlaySendAmountCheck
   function navigateToScriptPubKey() {
     setIsModalDropDownOpen(!isModalDropDownOpen)
-    appDispatch({ type: "setSendAmount", value: withinRangeAmount })
-    appDispatch({ type: "setFeeAmount", value: avgTxSize_vBytes * minAmountTxFee })
-    appDispatch({ type: "setChangeAmount", value: selectedUtxoAmount - (minAmountTxFee * avgTxSize_vBytes + withinRangeAmount) })
+
+    let object = {
+      indexToModify: appState.bitcoin.txBuilder.outputs_Array.length - 1,
+      sendAmountValue: withinRangeAmount
+    }
+
+    appDispatch({ type: "setSendAmount", value: object })
+    appDispatch({ type: "setFeeAmount", value: currentTxSize_vBytes * minAmountTxFeePerVbyteRate })
+
+    // need to improve handling of remaining/change amount
+    appDispatch({ type: "setEstimatedRemainingAmount", value: availableAmount - (minAmountTxFeePerVbyteRate * currentTxSize_vBytes + withinRangeAmount) })
 
     // navigate to build scriptpubkey page
     setTimeout(() => setTxStatus(4), 700)
@@ -242,7 +273,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
                     <input onChange={e => handleInputtedAmount(e.target.value)} id="input-grab" className={"input-white " + (hasError ? "input--focus-red" : "") + (!hasError && withinRange ? "input--focus-green" : "")} type="text" required />
                     <span className="input-placeholder">Send Amount</span>
                     <div style={{ cursor: "default", bottom: "-17" }} className="input-validation">
-                      <span style={{ color: "gray" }}>Fee Rate</span> &#40;{minAmountTxFee} sat/vB&#41; <span style={{ color: "purple" }}>|</span> <span style={{ color: "gray" }}>TX Fees &#40;sats&#41;:</span> {!hasError && withinRange ? minAmountTxFee * avgTxSize_vBytes : 0} <span style={{ color: "purple" }}>|</span> <br /> <span style={{ color: "gray" }}>Remaining &#40;sats&#41;:</span> {!hasError && withinRange ? selectedUtxoAmount - (minAmountTxFee * avgTxSize_vBytes + withinRangeAmount) : ""}
+                      <span style={{ color: "gray" }}>Fee Rate</span> &#40;{minAmountTxFeePerVbyteRate} sat/vB&#41; <span style={{ color: "purple" }}>|</span> <span style={{ color: "gray" }}>TX Fees &#40;sats&#41;:</span> {!hasError && withinRange ? minAmountTxFeePerVbyteRate * currentTxSize_vBytes : 0} <span style={{ color: "purple" }}>|</span> <br /> <span style={{ color: "gray" }}>Remaining &#40;sats&#41;:</span> {!hasError && withinRange ? availableAmount - (minAmountTxFeePerVbyteRate * currentTxSize_vBytes + withinRangeAmount) : ""}
                     </div>
                     {hasError ? (
                       <div style={{ cursor: "default", bottom: "-35" }} className="input-validation input-validation--error">
@@ -272,7 +303,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
             {showHash160 ? (
               <ErrorBoundary fallback={<FeeDataDisplayError />}>
                 <Suspense fallback={<FeeDataDisplayLoading />}>
-                  <FeeDataDisplay setMinAmountTxFee={setMinAmountTxFee} />
+                  <FeeDataDisplay setMinAmountTxFeePerVbyteRate={setMinAmountTxFeePerVbyteRate} />
                 </Suspense>
               </ErrorBoundary>
             ) : (

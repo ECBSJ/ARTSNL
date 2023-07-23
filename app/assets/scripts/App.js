@@ -124,18 +124,22 @@ function App() {
         selectedArray: [],
         selectedUtxoTxHex_Array: [],
         totalUtxoValueSelected: 0,
-        rcvrAddressList: [
-          {
-            validInputtedAddress: "",
-            validInputtedAddress_Decoded: {},
-            sendAmount: 0
-          }
-        ],
-        validInputtedAddress: "",
-        validInputtedAddress_Decoded: {},
-        sendAmount: 0,
+        // output object interface
+        // {
+        //   validInputtedAddress: "",
+        //   validInputtedAddress_Decoded: {},
+        //   sendAmount: 0,
+        //   scriptPubKey: ""
+        // }
+        outputs_Array: [],
+        TXSIZE_VBYTES_CONSTANTS: {
+          OVERHEAD: 10,
+          INPUT: 148,
+          OUTPUT: 34
+        },
+        minAmountToSend: 5000, // sats denomination
         feeAmount: 0,
-        changeAmount: 0
+        estimatedRemainingAmount: 0
       }
     },
     ethereum: {
@@ -307,7 +311,7 @@ function App() {
         draft.bitcoin.txBuilder.selectedArray = action.value
         return
       case "setSelectedUtxoTxHex_Array":
-        draft.bitcoin.txBuilder.selectedUtxoTxHex_Array
+        draft.bitcoin.txBuilder.selectedUtxoTxHex_Array = action.value
         return
       case "setTotalUtxoValueSelected":
         draft.bitcoin.txBuilder.totalUtxoValueSelected = action.value
@@ -319,13 +323,19 @@ function App() {
         draft.bitcoin.txBuilder.validInputtedAddress_Decoded = action.value
         return
       case "setSendAmount":
-        draft.bitcoin.txBuilder.sendAmount = action.value
+        draft.bitcoin.txBuilder.outputs_Array[action.value.indexToModify].sendAmount = action.value.sendAmountValue
         return
       case "setFeeAmount":
         draft.bitcoin.txBuilder.feeAmount = action.value
         return
-      case "setChangeAmount":
-        draft.bitcoin.txBuilder.changeAmount = action.value
+      case "setEstimatedRemainingAmount":
+        draft.bitcoin.txBuilder.estimatedRemainingAmount = action.value
+        return
+      case "pushToOutputsArray":
+        draft.bitcoin.txBuilder.outputs_Array.push(action.value)
+        return
+      case "setScriptPubKey":
+        draft.bitcoin.txBuilder.outputs_Array[action.value.indexToModify].scriptPubKey = action.value.scriptPubKey
         return
     }
   }

@@ -14,7 +14,7 @@ function BtcTxScriptPubKey({ setTxStatus }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
-  let rawHash160 = "87d26e56b26e58354cabc60edc09c4c878d85c83"
+  let rawHash160 = uint8arraytools.toHex(appState.bitcoin.txBuilder.outputs_Array[appState.bitcoin.txBuilder.outputs_Array.length - 1].validInputtedAddress_Decoded.hash)
 
   // initial opCodes stack
   const [opCodesArray_scriptPubKey_incorrect, setOpCodesArray_scriptPubKey_incorrect] = useState([
@@ -179,19 +179,25 @@ function BtcTxScriptPubKey({ setTxStatus }) {
   // triggers modal drop down and displays scriptpubkey
   function handleConcatenate() {
     let network = appState.bitcoin.bitcoinJsNetwork
-    // let address = appState.bitcoin.txBuilder.validInputtedAddress
-    let address = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
+    let address = appState.bitcoin.txBuilder.outputs_Array[appState.bitcoin.txBuilder.outputs_Array.length - 1].validInputtedAddress
     let result = bitcoin.address.toOutputScript(address, network)
     setScriptPubKey(uint8arraytools.toHex(result))
 
     setIsModalDropDownOpen(!isModalDropDownOpen)
   }
 
-  // sets txStatus 5 / called in ModalDropDown on next button
+  // navigates back to dashboard / called in ModalDropDown on next button
   function navigateToSignInputs() {
     setIsModalDropDownOpen(!isModalDropDownOpen)
 
-    setTimeout(() => setTxStatus(5), 700)
+    let object = {
+      indexToModify: appState.bitcoin.txBuilder.outputs_Array.length - 1,
+      scriptPubKey: scriptPubKey
+    }
+
+    appDispatch({ type: "setScriptPubKey", value: object })
+
+    setTimeout(() => setTxStatus(0), 700)
   }
 
   return (

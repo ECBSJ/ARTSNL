@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext, memo } from "react"
 import Suspensify from "../Suspensify"
 import StateContext from "../../StateContext"
 
-function FeeDataDisplay({ setMinAmountTxFee }) {
+function FeeDataDisplay({ setMinAmountTxFeePerVbyteRate }) {
   const appState = useContext(StateContext)
 
   const [promise, setPromise] = useState()
@@ -26,7 +26,7 @@ function FeeDataDisplay({ setMinAmountTxFee }) {
 
   if (promise) {
     let result = promise.read()
-    result && setMinAmountTxFee(result.fastestFee)
+    result && setMinAmountTxFeePerVbyteRate(result.fastestFee)
   }
 
   return (
