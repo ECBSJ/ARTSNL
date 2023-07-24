@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { MdIndeterminateCheckBox, MdCheckBox } from "react-icons/md"
 
-function UtxoDisplayCard({ index, txid, vout, confirmed, block_height, block_hash, block_time, value, pushIndexToSelectedArray, selectedArray }) {
+function UtxoDisplayCard({ index, txid, vout, confirmed, block_height, block_hash, block_time, value, pushIndexToSelectedArray, selectedArray, isSigning }) {
   // green checkmark icon will appear on bottom right of card when isSelected is true
   const [isSelected, setIsSelected] = useState(false)
 
@@ -20,7 +20,7 @@ function UtxoDisplayCard({ index, txid, vout, confirmed, block_height, block_has
 
   return (
     <>
-      <div onClick={() => handleSelect()} className={"utxo__display-card " + (isSelected ? "utxo__display-card--selected" : "")}>
+      <div onClick={() => handleSelect()} className={"utxo__display-card " + (isSelected ? "utxo__display-card--selected" : "") + (isSigning ? "utxo__display-card--smaller" : "")}>
         <span>&#123;</span>
         <br />
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>txid&#58; &#34;{txid.slice(0, 12) + "..." + txid.slice(-12)}&#34;,</span>
@@ -42,7 +42,7 @@ function UtxoDisplayCard({ index, txid, vout, confirmed, block_height, block_has
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>value&#58; {value}</span>
         <br />
         <span>&#125;</span>
-        {isSelected ? <MdCheckBox style={{ position: "absolute", bottom: "0", right: "0", color: "lightGreen" }} className="icon icon--position-absolute" /> : <MdIndeterminateCheckBox style={{ position: "absolute", bottom: "0", right: "0", color: "white" }} className="icon icon--position-absolute" />}
+        {isSigning ? "" : <>{isSelected ? <MdCheckBox style={{ position: "absolute", bottom: "0", right: "0", color: "lightGreen" }} className="icon icon--position-absolute" /> : <MdIndeterminateCheckBox style={{ position: "absolute", bottom: "0", right: "0", color: "white" }} className="icon icon--position-absolute" />}</>}
       </div>
     </>
   )

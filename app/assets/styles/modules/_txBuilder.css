@@ -146,6 +146,10 @@
         column-gap: 28px;
         align-items: center;
         transition: all 300ms ease-out;
+
+        &--smaller {
+          height: 200px;
+        }
       }
     }
 
@@ -209,11 +213,10 @@
       &__container-bottom {
         flex: 2;
         width: 398px;
-        background-color: rgba(0, 255, 255, 0.335);
         padding: 4px;
         display: flex;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start;
       }
     }
   }
@@ -224,6 +227,23 @@
   position: relative;
   font-size: 0.7em;
   color: rgb(189, 189, 189);
+
+  &--smaller {
+    margin-left: 10px;
+    margin-right: 10px;
+    color: #646464;
+    border: 1px solid #4b4b4bad;
+    border-radius: 15px;
+    background-color: #8080801c;
+    min-height: 194px;
+    font-size: 0.6em;
+    padding-left: 35px;
+    padding-top: 13px;
+
+    &:hover {
+      background-color: #a8a8a827;
+    }
+  }
 
   &:hover {
     cursor: pointer;
