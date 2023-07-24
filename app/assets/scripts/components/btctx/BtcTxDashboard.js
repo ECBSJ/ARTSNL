@@ -1,6 +1,8 @@
 import React, { useEffect, useContext } from "react"
 import StateContext from "../../StateContext"
 import DispatchContext from "../../DispatchContext"
+
+import { Tooltip } from "react-tooltip"
 import { IconContext } from "react-icons"
 import { FaQuestionCircle } from "react-icons/fa"
 import { MdInput, MdOutput } from "react-icons/md"
@@ -28,7 +30,7 @@ function BtcTxDashboard({ setTxStatus }) {
               <div className="tx-builder__blueprint-dashboard__puts-container">
                 <div className="tx-builder__blueprint-dashboard__puts-container-row1">
                   <span style={{ cursor: "default" }} className="display-flex">
-                    <MdInput style={{ marginRight: "6px" }} /> Inputs &#91;{appState.bitcoin.txBuilder.selectedArray.length === 0 ? 0 : appState.bitcoin.txBuilder.selectedArray.length}&#93; <FaQuestionCircle style={{ width: "16px", height: "16px", marginLeft: "7px" }} className="icon" />
+                    <MdInput style={{ marginRight: "6px" }} /> Inputs &#91;{appState.bitcoin.txBuilder.selectedArray.length === 0 ? 0 : appState.bitcoin.txBuilder.selectedArray.length}&#93; <FaQuestionCircle id="Tooltip" data-tooltip-content={"Select any available UTXO as an input to your tx build."} style={{ width: "16px", height: "16px", marginLeft: "7px" }} className="icon" />
                   </span>
                 </div>
                 <div className="tx-builder__blueprint-dashboard__puts-container-row2">
@@ -60,7 +62,7 @@ function BtcTxDashboard({ setTxStatus }) {
               <div style={{ marginTop: "1px" }} className="tx-builder__blueprint-dashboard__puts-container">
                 <div className="tx-builder__blueprint-dashboard__puts-container-row1">
                   <span style={{ cursor: "default" }} className="display-flex">
-                    <MdOutput style={{ marginRight: "6px" }} /> Outputs &#91;{"0"}&#93; <FaQuestionCircle style={{ width: "16px", height: "16px", marginLeft: "7px" }} className="icon" />
+                    <MdOutput style={{ marginRight: "6px" }} /> Outputs &#91;{"0"}&#93; <FaQuestionCircle id="Tooltip" data-tooltip-content={"Specify amount you want to send out to a receiver address as an output."} style={{ width: "16px", height: "16px", marginLeft: "7px" }} className="icon" />
                   </span>
                 </div>
                 <div className="tx-builder__blueprint-dashboard__puts-container-row2">
@@ -125,6 +127,7 @@ function BtcTxDashboard({ setTxStatus }) {
           </div>
         </IconContext.Provider>
       </div>
+      <Tooltip anchorSelect="#Tooltip" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" />
     </>
   )
 }
