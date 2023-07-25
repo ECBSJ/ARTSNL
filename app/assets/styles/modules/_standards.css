@@ -19,3 +19,9 @@
 .display-none {
   display: none;
 }
+
+.font {
+  &--russo-one {
+    font-family: $title;
+  }
+}
