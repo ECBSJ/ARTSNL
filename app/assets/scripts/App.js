@@ -16,6 +16,7 @@ import * as crypto from "crypto"
 import { CSSTransition } from "react-transition-group"
 import { ethers } from "ethers"
 import * as ecc from "tiny-secp256k1"
+import ECPairFactory from "ecpair"
 
 // IMPORTING OF COMPONENTS
 import Main from "./components/Main"
@@ -121,7 +122,9 @@ function App() {
       testnetAddress: null,
       txBuilder: {
         utxoData_Array: [],
+        // selectedArray contains an array of selected indexes from utxoData_Array
         selectedArray: [],
+        // selectedUtxoTxHex_Array contains the tx hex's of the selected utxos. Both selectedArray & selectedUtxoTxHex_Array are in same order
         selectedUtxoTxHex_Array: [],
         totalUtxoValueSelected: 0,
         // output object interface
@@ -336,6 +339,61 @@ function App() {
         return
       case "setScriptPubKey":
         draft.bitcoin.txBuilder.outputs_Array[action.value.indexToModify].scriptPubKey = action.value.scriptPubKey
+        return
+      case "constructPsbtInputOutput":
+        const ECPair = ECPairFactory(ecc)
+        let keyPair = ECPair.fromPrivateKey(draft.keys.bufferPrivKey, draft.bitcoin.bitcoinJsNetwork)
+
+        const validator = (pubkey, msghash, signature) => ECPair.fromPublicKey(pubkey).verify(msghash, signature)
+
+        const psbt = new bitcoin.Psbt({ network: draft.bitcoin.bitcoinJsNetwork })
+
+        draft.bitcoin.txBuilder.selectedArray.forEach((selectedUtxoIndex, index) => {
+          psbt.addInput({
+            hash: draft.bitcoin.txBuilder.utxoData_Array[selectedUtxoIndex].txid,
+            index: draft.bitcoin.txBuilder.utxoData_Array[selectedUtxoIndex].vout,
+            nonWitnessUtxo: Buffer.from(draft.bitcoin.txBuilder.selectedUtxoTxHex_Array[index])
+          })
+        })
+
+        // handling return address output for remaining amount
+        if (draft.bitcoin.txBuilder.estimatedRemainingAmount > 0) {
+          let address
+
+          if (draft.isTestnet) {
+            address = draft.bitcoin.testnetAddress
+          } else {
+            address = draft.bitcoin.address
+          }
+
+          let amount
+
+          if (draft.bitcoin.txBuilder.estimatedRemainingAmount > draft.bitcoin.txBuilder.TXSIZE_VBYTES_CONSTANTS.OUTPUT) {
+            amount = draft.bitcoin.txBuilder.estimatedRemainingAmount - draft.bitcoin.txBuilder.TXSIZE_VBYTES_CONSTANTS.OUTPUT
+            draft.bitcoin.txBuilder.feeAmount += draft.bitcoin.txBuilder.TXSIZE_VBYTES_CONSTANTS.OUTPUT
+          } else {
+            amount = 1
+            draft.bitcoin.txBuilder.feeAmount += draft.bitcoin.txBuilder.estimatedRemainingAmount - 1
+          }
+
+          let object = {
+            validInputtedAddress: address,
+            validInputtedAddress_Decoded: bitcoin.address.fromBase58Check(address),
+            sendAmount: amount,
+            scriptPubKey: uint8arraytools.toHex(bitcoin.address.toOutputScript(address, draft.bitcoin.bitcoinJsNetwork))
+          }
+
+          draft.bitcoin.txBuilder.outputs_Array.push(object)
+        }
+
+        draft.bitcoin.txBuilder.outputs_Array.forEach((outputObject, index) => {
+          psbt.addOutput({
+            address: outputObject.validInputtedAddress,
+            value: outputObject.sendAmount
+          })
+        })
+
+        console.log(psbt)
         return
     }
   }
