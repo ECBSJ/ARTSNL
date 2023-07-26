@@ -28,7 +28,7 @@ function BtcTxSignInputs({ setTxStatus }) {
   let translateXConstant = -419
   let translateXAmount = translateXConstant * translateXMultiplier
   let translateXStyle = {
-    translate: translateXAmount.toString() + "px",
+    translate: translateXAmount.toString() + "px"
   }
 
   function handleSelect(e, index) {
@@ -50,6 +50,15 @@ function BtcTxSignInputs({ setTxStatus }) {
     }
   }
 
+  useEffect(() => {
+    appDispatch({ type: "constructPsbtInputOutput" })
+  }, [])
+
+  function navigateToReviewTx() {
+    appDispatch({ type: "finalizePsbt" })
+    setTxStatus(6)
+  }
+
   return (
     <>
       <div className="tx-builder__overlay">
@@ -61,7 +70,7 @@ function BtcTxSignInputs({ setTxStatus }) {
             <div className="tx-builder__blueprint-signing-section__container-top">
               {selectedUtxo.map((selectedUtxo, index) => {
                 return (
-                  <button key={index} onClick={(e) => handleSelect(e, index)} className={"put-capsule " + (translateXMultiplier === index ? "put-capsule--selected" : "")}>
+                  <button key={index} onClick={e => handleSelect(e, index)} className={"put-capsule " + (translateXMultiplier === index ? "put-capsule--selected" : "")}>
                     <BsFileEarmarkLock2Fill style={{ marginRight: "6px" }} />
                     <div style={{ textAlign: "left", fontSize: "0.9em" }}>
                       <span>UTXO: ...{utxoData_Array[selectedUtxo].txid.slice(-4)}</span>
@@ -91,7 +100,7 @@ function BtcTxSignInputs({ setTxStatus }) {
 
           <div className="tx-builder__overlay__outer">
             {selectedUtxo.length === isSigned_Array.length ? (
-              <button onClick={() => appDispatch({ type: "constructPsbtInputOutput" })} className="button-purple">
+              <button onClick={() => navigateToReviewTx()} className="button-purple">
                 Review & Broadcast
               </button>
             ) : (

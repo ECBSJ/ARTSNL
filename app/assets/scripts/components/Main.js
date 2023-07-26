@@ -49,18 +49,18 @@ function Main() {
   psbt.addInput({
     hash: "a296be122cc5c90bfc7e50f65b2c2e12d231a761d69ff05ec8a05b48f6f16b9a",
     index: 0,
-    nonWitnessUtxo: Buffer.from("02000000000101fc17bccc0117b0d0f1955d6ac84d1bf47399f77d6a8944f73c3ab0bb8c035a320100000000feffffff02a8160000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acf2d71300000000001976a914845b731431f519d2856ccc481087621eda16cc8a88ac0247304402206d0d4095dd5b45a84b01eadafce1ba87d6ebb2b51c43ace4982867a84991b83c02206bab4d2ae888deb8282149de576beadbced24b53e1285699f051dcfd0736d0f10121037955b1e146d3f87f4ebb897e6fbdd34ce2abe63641aea18aaa774c6a40d63b6639252500", "hex"),
+    nonWitnessUtxo: Buffer.from("02000000000101fc17bccc0117b0d0f1955d6ac84d1bf47399f77d6a8944f73c3ab0bb8c035a320100000000feffffff02a8160000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acf2d71300000000001976a914845b731431f519d2856ccc481087621eda16cc8a88ac0247304402206d0d4095dd5b45a84b01eadafce1ba87d6ebb2b51c43ace4982867a84991b83c02206bab4d2ae888deb8282149de576beadbced24b53e1285699f051dcfd0736d0f10121037955b1e146d3f87f4ebb897e6fbdd34ce2abe63641aea18aaa774c6a40d63b6639252500", "hex")
   })
 
   psbt.addInput({
     hash: "9153e5420b1092ff65d90a028df8840e0e3dfc8b9c8e1c1c0664e02f000c5def",
     index: 0,
-    nonWitnessUtxo: Buffer.from("02000000000101e46381154e9fcc1dec31a5edb6afd23063508c83b647c80b01433709440482740000000000feffffff0284350000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acfb1b1500000000001976a914428d17adc0c17119b9f5c5689b61cd094b00c7e088ac0247304402201ffb958b864bcf2ac92b6f6485c6bc0cf9e9a9d223ee913fdb88eaa9945a670402203c80ae2cb29696cdbb4ac25d8ffb92f7811636197900bb5633591870587c5b65012103f2ebb8d108f78594dd2829f9e283e1977f226165d985278a6aa8ecc91302e3c1d7252500", "hex"),
+    nonWitnessUtxo: Buffer.from("02000000000101e46381154e9fcc1dec31a5edb6afd23063508c83b647c80b01433709440482740000000000feffffff0284350000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acfb1b1500000000001976a914428d17adc0c17119b9f5c5689b61cd094b00c7e088ac0247304402201ffb958b864bcf2ac92b6f6485c6bc0cf9e9a9d223ee913fdb88eaa9945a670402203c80ae2cb29696cdbb4ac25d8ffb92f7811636197900bb5633591870587c5b65012103f2ebb8d108f78594dd2829f9e283e1977f226165d985278a6aa8ecc91302e3c1d7252500", "hex")
   })
 
   psbt.addOutput({
     address: "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w",
-    value: 19000,
+    value: 19000
   })
 
   console.log(psbt)
@@ -70,13 +70,13 @@ function Main() {
   // let partialSig_pubkey = psbt.data.inputs[0].partialSig[0].pubkey
   // psbt.signInput(1, testnetKeyPair)
   // psbt.validateSignaturesOfInput(1, validator)
-  // psbt.finalizeAllInputs()
+  psbt.finalizeAllInputs()
 
   // has finalScriptSig
   // console.log(psbt)
 
-  // const transactionHEX = psbt.extractTransaction().toHex()
-  // const raw = psbt.extractTransaction()
+  const transactionHEX = psbt.extractTransaction().toHex()
+  const raw = psbt.extractTransaction()
 
   // Main - Select UTXOs to use (carousel selection)
   // Main - Show selected UTXOs
@@ -259,14 +259,14 @@ function Main() {
 
     await wallet
       .encrypt(secret)
-      .then((res) => {
+      .then(res => {
         encryptedJSON = res
         setCookie("key", encryptedJSON, { "max-age": 36000 })
       })
       .catch(console.error)
 
     if (encryptedJSON) {
-      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then((res) => (decryptedWallet = res))
+      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then(res => (decryptedWallet = res))
     }
 
     console.log(secret)
@@ -278,7 +278,7 @@ function Main() {
     let keyStore = getCookie("key")
 
     if (typeof secret == "string" && typeof keyStore == "string") {
-      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then((res) => console.log(res))
+      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then(res => console.log(res))
     }
   }
 
@@ -286,7 +286,7 @@ function Main() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options,
+      ...options
     }
 
     if (options.expires instanceof Date) {
@@ -313,7 +313,7 @@ function Main() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1,
+      "max-age": -1
     })
   }
 

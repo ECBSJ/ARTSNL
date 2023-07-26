@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import { MdIndeterminateCheckBox, MdCheckBox } from "react-icons/md"
+import StateContext from "../../StateContext"
 
 function UtxoDisplayCard({ index, txid, vout, confirmed, block_height, block_hash, block_time, value, pushIndexToSelectedArray, selectedArray, isSigning, handleSigning, isSigned_Array }) {
+  const appState = useContext(StateContext)
+
   // green checkmark icon will appear on bottom right of card when isSelected is true
   const [isSelected, setIsSelected] = useState(false)
 
@@ -27,7 +30,7 @@ function UtxoDisplayCard({ index, txid, vout, confirmed, block_height, block_has
 
   return (
     <>
-      <div onClick={(e) => handleSelect(e, index)} className={"utxo__display-card " + (isSelected ? "utxo__display-card--selected" : "") + (isSigning ? "utxo__display-card--smaller" : "")}>
+      <div onClick={e => handleSelect(e, index)} className={"utxo__display-card " + (isSelected ? "utxo__display-card--selected" : "") + (isSigning ? "utxo__display-card--smaller" : "")}>
         {isSigned_Array?.includes(index) ? (
           <>
             <div className="utxo__display-card--signed-cover">
@@ -35,8 +38,8 @@ function UtxoDisplayCard({ index, txid, vout, confirmed, block_height, block_has
                 UTXO Verified & Signed!
               </span>
               <br />
-              <span>
-                ScriptSig: <br /> {"ScriptSig here."}
+              <span style={{ maxWidth: "255px", overflowWrap: "anywhere" }}>
+                <span style={{ color: "greenyellow" }}>ScriptSig:</span> <br /> {appState.bitcoin.txBuilder.selectedUtxoInputSig_Array[index]}
               </span>
             </div>
           </>
