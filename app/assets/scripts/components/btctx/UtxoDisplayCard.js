@@ -20,7 +20,7 @@ function UtxoDisplayCard({ index, txid, vout, confirmed, block_height, block_has
 
   // to sustain isSelected boolean when user switches back from <ConfirmSelectedUtxo /> to <UtxoCarousel />
   useEffect(() => {
-    if (selectedArray.includes(index)) {
+    if (selectedArray?.includes(index)) {
       setIsSelected(!isSelected)
     }
   }, [])
@@ -28,7 +28,7 @@ function UtxoDisplayCard({ index, txid, vout, confirmed, block_height, block_has
   return (
     <>
       <div onClick={(e) => handleSelect(e, index)} className={"utxo__display-card " + (isSelected ? "utxo__display-card--selected" : "") + (isSigning ? "utxo__display-card--smaller" : "")}>
-        {isSigned_Array.includes(index) ? (
+        {isSigned_Array?.includes(index) ? (
           <>
             <div className="utxo__display-card--signed-cover">
               <span style={{ fontSize: "1.3rem" }} className="font--russo-one">

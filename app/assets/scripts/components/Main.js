@@ -63,11 +63,11 @@ function Main() {
     value: 19000,
   })
 
+  console.log(psbt)
   // psbt.signInput(0, testnetKeyPair)
   // psbt.validateSignaturesOfInput(0, validator)
   // let partialSig_signature = psbt.data.inputs[0].partialSig[0].signature
   // let partialSig_pubkey = psbt.data.inputs[0].partialSig[0].pubkey
-
   // psbt.signInput(1, testnetKeyPair)
   // psbt.validateSignaturesOfInput(1, validator)
   // psbt.finalizeAllInputs()
