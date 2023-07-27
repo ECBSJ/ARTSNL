@@ -22,6 +22,7 @@ import BtcTxDeconstructRcvrAddress from "./btctx/BtcTxDeconstructRcvrAddress"
 import BtcTxScriptPubKey from "./btctx/BtcTxScriptPubKey"
 import BtcTxSignInputs from "./btctx/BtcTxSignInputs"
 import BtcTxReview from "./btctx/BtcTxReview"
+import BtcTxReceipt from "./btctx/BtcTxReceipt"
 
 function BtcTxBuilder() {
   const appState = useContext(StateContext)
@@ -36,7 +37,8 @@ function BtcTxBuilder() {
   // 3. Deconstruct address & specify send amount (<BtcTxDeconstructRcvrAddress />) / function navigateToScriptPubKey navigates to txStatus 4
   // 4. Build scriptpubkey (<BtcTxScriptPubKey />) / function navigateToSignInputs navigates back to dashboard
   // 5. Sign inputs (<BtcTxSignInputs />) / function navigateToReviewTx navigates to review tx
-  // 6. Review TX (<BtcTxReview />)
+  // 6. Review TX (<BtcTxReview />) / function handleBroadcast will broadcast tx and navigate to broadcast receipt page
+  // 7. Broadcast Receipt (<BtcTxReceipt />)
 
   // TESTING WALLETS
   const testnetPrivKey = "938zbGqYYvZvFaHNXMNDpQZ4hEQE89ugGEjrv9QCKWCL6H2c4ps"
@@ -52,7 +54,7 @@ function BtcTxBuilder() {
 
   let utxoData_Array = [
     { txid: "9153e5420b1092ff65d90a028df8840e0e3dfc8b9c8e1c1c0664e02f000c5def", vout: 0, status: { confirmed: true, block_height: 2434520, block_hash: "000000000000000f4632a88a45d61cd4e777040fc0203108661e7ebedcddc4bb", block_time: 1684648693 }, value: 13700 },
-    { txid: "580e274a262ef70c3bd77e7ae28e6a827ce305fc979c31a27abdbd3186ba863d", vout: 1, status: { confirmed: true, block_height: 2468165, block_hash: "000000000000003024d12c5b201b057c83bf4d02d87ef65a0fe4cd4efcca4f4a", block_time: 1690358686 }, value: 7518 }
+    { txid: "580e274a262ef70c3bd77e7ae28e6a827ce305fc979c31a27abdbd3186ba863d", vout: 1, status: { confirmed: true, block_height: 2468165, block_hash: "000000000000003024d12c5b201b057c83bf4d02d87ef65a0fe4cd4efcca4f4a", block_time: 1690358686 }, value: 7518 },
   ]
 
   let selectedUtxoTxHex_Array = ["02000000000101e46381154e9fcc1dec31a5edb6afd23063508c83b647c80b01433709440482740000000000feffffff0284350000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acfb1b1500000000001976a914428d17adc0c17119b9f5c5689b61cd094b00c7e088ac0247304402201ffb958b864bcf2ac92b6f6485c6bc0cf9e9a9d223ee913fdb88eaa9945a670402203c80ae2cb29696cdbb4ac25d8ffb92f7811636197900bb5633591870587c5b65012103f2ebb8d108f78594dd2829f9e283e1977f226165d985278a6aa8ecc91302e3c1d7252500", "02000000029a6bf1f6485ba0c85ef09fd661a731d2122e2c5bf6507efc0bc9c52c12be96a2000000008b483045022100e94714bcad9ca3d1b825a2f7c3c8d12132ca5b520d18616eed42dc61cbcb4d22022055e802889b3b4527a2f4230478c407952ef7eaf3f40d5ae85540cdc9dfef6aaa014104f6209daa9543327eb5b7b2ac0b63089af69abad5b14f4b6cfec5c18279848fa214933decd49c1ca1efe03af8f44b5584b1af8eae6a31a95921bba07e5bf78f90ffffffff02af1e7469378c64569ff0b53f8383526241ccc354182404bf61d2aafc1076be010000008a47304402205006e369ed8cd6be0ee2920fbaf08070872c3648fc57be888229205731197e3202201a725036a93b9683c768878ae84c91c06535d80edb59e7c632994ef98275234c014104f6209daa9543327eb5b7b2ac0b63089af69abad5b14f4b6cfec5c18279848fa214933decd49c1ca1efe03af8f44b5584b1af8eae6a31a95921bba07e5bf78f90ffffffff0270170000000000001976a914b58515a69527c806fd404d3d4aa490d56692310b88ac5e1d0000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388ac00000000"]
@@ -101,7 +103,7 @@ function BtcTxBuilder() {
   function calculateTotalUtxoValueSelected() {
     let totalValue = 0
 
-    selectedArray.forEach(selectedUtxoIndex => {
+    selectedArray.forEach((selectedUtxoIndex) => {
       totalValue += utxoData_Array[selectedUtxoIndex].value
     })
 
@@ -185,6 +187,10 @@ function BtcTxBuilder() {
 
       <CSSTransition in={txStatus === 6} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
         <BtcTxReview setTxStatus={setTxStatus} />
+      </CSSTransition>
+
+      <CSSTransition in={txStatus === 7} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
+        <BtcTxReceipt setTxStatus={setTxStatus} />
       </CSSTransition>
 
       {/* the below jsx is used as the header, footer, and backbone foundational layout for the above components */}

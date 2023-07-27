@@ -219,6 +219,63 @@
         align-items: flex-start;
       }
     }
+
+    &__review-overlay {
+      width: 80%;
+      height: 90%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+
+      &__column-gap {
+        display: flex;
+        justify-content: space-between;
+        column-gap: 5px;
+        align-items: center;
+        min-height: 55px;
+        margin: 2px 0 5px 0;
+      }
+
+      &__content {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        overflow-y: scroll;
+        overflow-wrap: anywhere;
+
+        &-no-ul-format {
+          width: 100%;
+          padding: 0;
+          list-style-type: none;
+          margin: 0;
+          margin-block: 0;
+          margin-inline: 0;
+          padding-inline: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: center;
+        }
+
+        &-row {
+          width: 100%;
+          margin-top: 4px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 0.75rem;
+
+          &-label {
+            color: #ff86ff;
+            font-size: 0.8em;
+          }
+        }
+      }
+    }
   }
 }
 
