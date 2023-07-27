@@ -39,7 +39,7 @@ function UtxoDisplayCard({ index, txid, vout, confirmed, block_height, block_has
               </span>
               <br />
               <span style={{ maxWidth: "255px", overflowWrap: "anywhere" }}>
-                <span style={{ color: "greenyellow" }}>ScriptSig:</span> <br /> {appState.bitcoin.txBuilder.selectedUtxoInputSig_Array[index]}
+                <span style={{ color: "greenyellow" }}>Signature:</span> <br /> {appState.bitcoin.txBuilder.selectedUtxoInputSig_Array[index]}
               </span>
             </div>
           </>
