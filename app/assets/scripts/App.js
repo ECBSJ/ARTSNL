@@ -471,14 +471,14 @@ function App() {
     dispatch({ type: "setBitcoinJsNetwork" })
   }, [state.isTestnet])
 
-  // useEffect(() => {
-  //   dispatch({ type: "setBitcoinProviders" })
-  //   dispatch({ type: "setEthereumProviders" })
-  // }, [])
+  useEffect(() => {
+    dispatch({ type: "setBitcoinProviders" })
+    dispatch({ type: "setEthereumProviders" })
+  }, [])
 
-  // useEffect(() => {
-  //   dispatch({ type: "setActiveProvider" })
-  // }, [state.isTestnet])
+  useEffect(() => {
+    dispatch({ type: "setActiveProvider" })
+  }, [state.isTestnet])
 
   return (
     <>
@@ -492,8 +492,9 @@ function App() {
                 </CSSTransition>
                 <Suspense fallback={<LazyLoadFallback />}>
                   <Routes>
+                    <Route path="/" element={<Main />} />
                     {/* <Route path="/" element={state.hasBrowserStorage ? <WalletMain /> : <Main />} /> */}
-                    <Route path="/" element={<BtcTxBuilder />} />
+                    {/* <Route path="/" element={<BtcTxBuilder />} /> */}
                     <Route path="/CreateKeys" element={<CreateKeys />} />
                     <Route path="/AddressSelection" element={<AddressSelection />} />
                     <Route path="/BitcoinAddress" element={<BitcoinAddress />} />

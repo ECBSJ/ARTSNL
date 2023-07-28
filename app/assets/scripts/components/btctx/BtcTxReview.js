@@ -142,7 +142,7 @@ function BtcTxReview({ setTxStatus }) {
                       })}
                       <li style={{ marginTop: "7px" }} className="tx-builder__blueprint__review-overlay__content-row">
                         <span className="tx-builder__blueprint__review-overlay__content-row-label">Fee</span>
-                        <span className="tx-builder__blueprint__review-overlay__content-row-value">{appState.bitcoin.txBuilder.sendAmount}</span>
+                        <span className="tx-builder__blueprint__review-overlay__content-row-value">{appState.bitcoin.txBuilder.feeAmount}</span>
                       </li>
                       <li className="tx-builder__blueprint__review-overlay__content-row">
                         <span className="tx-builder__blueprint__review-overlay__content-row-label">Network</span>

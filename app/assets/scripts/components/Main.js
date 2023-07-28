@@ -46,11 +46,11 @@ function Main() {
 
   const psbt = new bitcoin.Psbt({ network: Testnet })
 
-  psbt.addInput({
-    hash: "a296be122cc5c90bfc7e50f65b2c2e12d231a761d69ff05ec8a05b48f6f16b9a",
-    index: 0,
-    nonWitnessUtxo: Buffer.from("02000000000101fc17bccc0117b0d0f1955d6ac84d1bf47399f77d6a8944f73c3ab0bb8c035a320100000000feffffff02a8160000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acf2d71300000000001976a914845b731431f519d2856ccc481087621eda16cc8a88ac0247304402206d0d4095dd5b45a84b01eadafce1ba87d6ebb2b51c43ace4982867a84991b83c02206bab4d2ae888deb8282149de576beadbced24b53e1285699f051dcfd0736d0f10121037955b1e146d3f87f4ebb897e6fbdd34ce2abe63641aea18aaa774c6a40d63b6639252500", "hex"),
-  })
+  // psbt.addInput({
+  //   hash: "a296be122cc5c90bfc7e50f65b2c2e12d231a761d69ff05ec8a05b48f6f16b9a",
+  //   index: 0,
+  //   nonWitnessUtxo: Buffer.from("02000000000101fc17bccc0117b0d0f1955d6ac84d1bf47399f77d6a8944f73c3ab0bb8c035a320100000000feffffff02a8160000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acf2d71300000000001976a914845b731431f519d2856ccc481087621eda16cc8a88ac0247304402206d0d4095dd5b45a84b01eadafce1ba87d6ebb2b51c43ace4982867a84991b83c02206bab4d2ae888deb8282149de576beadbced24b53e1285699f051dcfd0736d0f10121037955b1e146d3f87f4ebb897e6fbdd34ce2abe63641aea18aaa774c6a40d63b6639252500", "hex"),
+  // })
 
   psbt.addInput({
     hash: "9153e5420b1092ff65d90a028df8840e0e3dfc8b9c8e1c1c0664e02f000c5def",
@@ -60,22 +60,40 @@ function Main() {
 
   psbt.addOutput({
     address: "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w",
-    value: 19000,
+    value: 13000,
   })
 
   psbt.signInput(0, testnetKeyPair)
   psbt.validateSignaturesOfInput(0, validator)
   // let partialSig_signature = psbt.data.inputs[0].partialSig[0].signature
   // let partialSig_pubkey = psbt.data.inputs[0].partialSig[0].pubkey
-  psbt.signInput(1, testnetKeyPair)
-  psbt.validateSignaturesOfInput(1, validator)
+  // psbt.signInput(1, testnetKeyPair)
+  // psbt.validateSignaturesOfInput(1, validator)
   psbt.finalizeAllInputs()
   // has finalScriptSig
   // console.log(psbt)
 
   const transactionHEX = psbt.extractTransaction().toHex()
   const raw = psbt.extractTransaction()
-  console.log(JSON.stringify(raw))
+  // console.log(raw)
+  // console.log(transactionHEX)
+
+  // let txHex = "0200000001ef5d0c002fe064061c1c8e9c8bfc3d0e0e84f88d020ad965ff92100b42e55391000000008b4830450221008f537113311f24726b5a1af04acdc61ab3fdf836235d2ae42da33876637e14a402206078947b5e58b3c7bcf2e09edc1b46e65ca20c4f04962d26b5b27342ea446779014104f6209daa9543327eb5b7b2ac0b63089af69abad5b14f4b6cfec5c18279848fa214933decd49c1ca1efe03af8f44b5584b1af8eae6a31a95921bba07e5bf78f90ffffffff01c8320000000000001976a914b58515a69527c806fd404d3d4aa490d56692310b88ac00000000"
+  let txHex = "020000abcjfaoijdifj0001ef5d0c002fe064061c1c8e9c8bfc3d0e0e84f88d020ad965ff92100b42e55391000000008b4830450221008f537113311f24726b5a1af04acdc61ab3fdf836235d2ae42da33876637e14a402206078947b5e58b3c7bcf2e09edc1b46e65ca20c4f04962d26b5b27342ea446779014104f6209daa9543327eb5b7b2ac0b63089af69abad5b14f4b6cfec5c18279848fa214933decd49c1ca1efe03af8f44b5584b1af8eae6a31a95921bba07e5bf78f90ffffffff01c8320000000000001976a914b58515a69527c806fd404d3d4aa490d56692310b88ac00000000"
+
+  async function broadcastTX() {
+    try {
+      console.log("broadcasting...")
+      let result = await appState.bitcoin.activeProvider?.bitcoin.transactions.postTx({ txHex })
+      result && console.log(result)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  useEffect(() => {
+    broadcastTX()
+  }, [])
 
   // Main - Select UTXOs to use (carousel selection)
   // Main - Show selected UTXOs
