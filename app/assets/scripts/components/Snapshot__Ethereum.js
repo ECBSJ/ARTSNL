@@ -29,6 +29,10 @@ function Snapshot__Ethereum({ hasErrors_Eth, setHasErrors_Eth, isFetching_Eth, s
     getEthereumAddressData()
   }, [])
 
+  function navigateToEthTxBuilder() {
+    null
+  }
+
   return (
     <>
       <div className="snapshot__overlay">
@@ -104,7 +108,7 @@ function Snapshot__Ethereum({ hasErrors_Eth, setHasErrors_Eth, isFetching_Eth, s
             {ethAddressBalance > 0 ? (
               <>
                 <div style={{ paddingBottom: "10px" }}>Start DIY TX</div>
-                <MdOutlineArrowCircleRight style={{ width: "80px", height: "80px" }} className="icon" />
+                <MdOutlineArrowCircleRight onClick={() => navigateToEthTxBuilder()} style={{ width: "80px", height: "80px" }} className="icon" />
                 <div style={{ width: "80%", fontSize: ".56rem", color: "gray", textAlign: "justify", paddingTop: "10px" }}>
                   <p>&#x2022;Before proceeding to the DIY transaction process, please have a valid EVM compatible receiving address ready.</p>
                   <p>&#x2022;You still can leave ETH in this wallet as the browser&#39;s secure storage will store your key pair encrypted.</p>
