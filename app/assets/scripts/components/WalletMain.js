@@ -194,6 +194,13 @@ function WalletMain() {
     }
   }
 
+  // detect an import key reset
+  useEffect(() => {
+    setIsAssetDisplayOpen(true)
+    setIsBitcoinWalletOpen(false)
+    setIsEthereumWalletOpen(false)
+  }, [appState.keys.bufferPrivKey])
+
   return (
     <>
       <div className="wallet-main__overlay">

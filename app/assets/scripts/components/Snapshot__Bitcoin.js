@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
+import { useNavigate } from "react-router-dom"
 import QRCode from "react-qr-code"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import { MdCopyAll, MdOutlineArrowCircleRight } from "react-icons/md"
@@ -11,6 +12,8 @@ import LazyLoadFallback from "./LazyLoadFallback"
 function Snapshot__Bitcoin({ hasErrors, setHasErrors, isFetching, setIsFetching, addressData_Object, setAddressData_Object, addressDataMempool_Object, setAddressDataMempool_Object, getBitcoinAddressData, txsDataHasErrors, setTxsDataHasErrors, isFetchingTxsData, setIsFetchingTxsData, txsData_Array, setTxsData_Array, lastConfirmedTxDate, setLastConfirmedTxDate, getBitcoinAddressTxsData }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
+
+  const navigate = useNavigate()
 
   const [openFunctionView, setOpenFunctionView] = useState(0)
 
@@ -28,6 +31,10 @@ function Snapshot__Bitcoin({ hasErrors, setHasErrors, isFetching, setIsFetching,
     getBitcoinAddressData()
     getBitcoinAddressTxsData()
   }, [])
+
+  function navigateToBtcTxBuilder() {
+    navigate("/BtcTxBuilder")
+  }
 
   return (
     <>
@@ -108,7 +115,7 @@ function Snapshot__Bitcoin({ hasErrors, setHasErrors, isFetching, setIsFetching,
             {addressData_Object.funded_txo_sum - addressData_Object.spent_txo_sum > 0 ? (
               <>
                 <div style={{ paddingBottom: "10px" }}>Start DIY TX</div>
-                <MdOutlineArrowCircleRight style={{ width: "80px", height: "80px" }} className="icon" />
+                <MdOutlineArrowCircleRight onClick={() => navigateToBtcTxBuilder()} style={{ width: "80px", height: "80px" }} className="icon" />
                 <div style={{ width: "80%", fontSize: ".56rem", color: "gray", textAlign: "justify", paddingTop: "10px" }}>
                   <p>&#x2022;Before proceeding to the DIY transaction process, please have a valid P2PKH receiving address ready.</p>
                   <p>&#x2022;You still can leave BTC in this wallet as the browser&#39;s secure storage will store your key pair encrypted.</p>

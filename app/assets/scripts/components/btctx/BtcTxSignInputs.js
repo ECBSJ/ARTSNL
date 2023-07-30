@@ -13,14 +13,6 @@ function BtcTxSignInputs({ setTxStatus }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
-  // let utxoData_Array = [
-  //   { txid: "a296be122cc5c90bfc7e50f65b2c2e12d231a761d69ff05ec8a05b48f6f16b9a", vout: 0, status: { confirmed: true, block_height: 2434362, block_hash: "000000000000000588988168cfb4f924fcd912f6a7c9d909fbd978067be31f01", block_time: 1684590437 }, value: 5800 },
-  //   { txid: "be7610fcaad261bf04241854c3cc41625283833fb5f09f56648c3769741eaf02", vout: 1, status: { confirmed: true, block_height: 2443296, block_hash: "0000000000000005a06960c65d7b9eeec50e358be78b64737ea920f90a3975ce", block_time: 1690082989 }, value: 8158 },
-  //   { txid: "9153e5420b1092ff65d90a028df8840e0e3dfc8b9c8e1c1c0664e02f000c5def", vout: 0, status: { confirmed: true, block_height: 2434520, block_hash: "000000000000000f4632a88a45d61cd4e777040fc0203108661e7ebedcddc4bb", block_time: 1684648693 }, value: 13700 }
-  // ]
-
-  // let selectedUtxo = [0, 1, 2]
-
   let utxoData_Array = appState.bitcoin.txBuilder.utxoData_Array
   let selectedUtxo = appState.bitcoin.txBuilder.selectedArray
 

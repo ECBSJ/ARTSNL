@@ -62,7 +62,7 @@ function BtcTxDashboard({ setTxStatus }) {
               <div style={{ marginTop: "1px" }} className="tx-builder__blueprint-dashboard__puts-container">
                 <div className="tx-builder__blueprint-dashboard__puts-container-row1">
                   <span style={{ cursor: "default" }} className="display-flex">
-                    <MdOutput style={{ marginRight: "6px" }} /> Outputs &#91;{"0"}&#93; <FaQuestionCircle id="Tooltip" data-tooltip-content={"Specify amount you want to send out to a receiver address as an output."} style={{ width: "16px", height: "16px", marginLeft: "7px" }} className="icon" />
+                    <MdOutput style={{ marginRight: "6px" }} /> Outputs &#91;{appState.bitcoin.txBuilder.outputs_Array.length}&#93; <FaQuestionCircle id="Tooltip" data-tooltip-content={"Specify amount you want to send out to a receiver address as an output."} style={{ width: "16px", height: "16px", marginLeft: "7px" }} className="icon" />
                   </span>
                 </div>
                 <div className="tx-builder__blueprint-dashboard__puts-container-row2">

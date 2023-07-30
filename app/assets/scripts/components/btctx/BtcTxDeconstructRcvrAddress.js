@@ -140,6 +140,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
       let result = await appState.bitcoin.activeProvider?.bitcoin.fees.getFeesRecommended()
       result && setMinAmountTxFeePerVbyteRate(result.halfHourFee)
       setRecommendedFees(result)
+      console.log(result)
     } catch (err) {
       console.error(err)
     }

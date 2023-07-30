@@ -55,12 +55,12 @@ function Main() {
   psbt.addInput({
     hash: "9153e5420b1092ff65d90a028df8840e0e3dfc8b9c8e1c1c0664e02f000c5def",
     index: 0,
-    nonWitnessUtxo: Buffer.from("02000000000101e46381154e9fcc1dec31a5edb6afd23063508c83b647c80b01433709440482740000000000feffffff0284350000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acfb1b1500000000001976a914428d17adc0c17119b9f5c5689b61cd094b00c7e088ac0247304402201ffb958b864bcf2ac92b6f6485c6bc0cf9e9a9d223ee913fdb88eaa9945a670402203c80ae2cb29696cdbb4ac25d8ffb92f7811636197900bb5633591870587c5b65012103f2ebb8d108f78594dd2829f9e283e1977f226165d985278a6aa8ecc91302e3c1d7252500", "hex"),
+    nonWitnessUtxo: Buffer.from("02000000000101e46381154e9fcc1dec31a5edb6afd23063508c83b647c80b01433709440482740000000000feffffff0284350000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acfb1b1500000000001976a914428d17adc0c17119b9f5c5689b61cd094b00c7e088ac0247304402201ffb958b864bcf2ac92b6f6485c6bc0cf9e9a9d223ee913fdb88eaa9945a670402203c80ae2cb29696cdbb4ac25d8ffb92f7811636197900bb5633591870587c5b65012103f2ebb8d108f78594dd2829f9e283e1977f226165d985278a6aa8ecc91302e3c1d7252500", "hex")
   })
 
   psbt.addOutput({
     address: "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w",
-    value: 13000,
+    value: 13000
   })
 
   psbt.signInput(0, testnetKeyPair)
@@ -77,23 +77,6 @@ function Main() {
   const raw = psbt.extractTransaction()
   // console.log(raw)
   // console.log(transactionHEX)
-
-  // let txHex = "0200000001ef5d0c002fe064061c1c8e9c8bfc3d0e0e84f88d020ad965ff92100b42e55391000000008b4830450221008f537113311f24726b5a1af04acdc61ab3fdf836235d2ae42da33876637e14a402206078947b5e58b3c7bcf2e09edc1b46e65ca20c4f04962d26b5b27342ea446779014104f6209daa9543327eb5b7b2ac0b63089af69abad5b14f4b6cfec5c18279848fa214933decd49c1ca1efe03af8f44b5584b1af8eae6a31a95921bba07e5bf78f90ffffffff01c8320000000000001976a914b58515a69527c806fd404d3d4aa490d56692310b88ac00000000"
-  let txHex = "020000abcjfaoijdifj0001ef5d0c002fe064061c1c8e9c8bfc3d0e0e84f88d020ad965ff92100b42e55391000000008b4830450221008f537113311f24726b5a1af04acdc61ab3fdf836235d2ae42da33876637e14a402206078947b5e58b3c7bcf2e09edc1b46e65ca20c4f04962d26b5b27342ea446779014104f6209daa9543327eb5b7b2ac0b63089af69abad5b14f4b6cfec5c18279848fa214933decd49c1ca1efe03af8f44b5584b1af8eae6a31a95921bba07e5bf78f90ffffffff01c8320000000000001976a914b58515a69527c806fd404d3d4aa490d56692310b88ac00000000"
-
-  async function broadcastTX() {
-    try {
-      console.log("broadcasting...")
-      let result = await appState.bitcoin.activeProvider?.bitcoin.transactions.postTx({ txHex })
-      result && console.log(result)
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  useEffect(() => {
-    broadcastTX()
-  }, [])
 
   // Main - Select UTXOs to use (carousel selection)
   // Main - Show selected UTXOs
@@ -182,9 +165,11 @@ function Main() {
   // }, [])
 
   // let privateKey = crypto.randomBytes(32)
+  // // for WIF testnet: 239
+  // let wifResult = wif.encode(128, privateKey, false)
   // let result = ecc.pointFromScalar(privateKey, false)
 
-  // btc pubkey to address
+  // // btc pubkey to address
   // let riped = bitcoin.crypto.hash160(result)
   // let prefix = Buffer.from("6F", "hex")
   // let prefix_riped = [prefix, riped]
@@ -276,14 +261,14 @@ function Main() {
 
     await wallet
       .encrypt(secret)
-      .then((res) => {
+      .then(res => {
         encryptedJSON = res
         setCookie("key", encryptedJSON, { "max-age": 36000 })
       })
       .catch(console.error)
 
     if (encryptedJSON) {
-      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then((res) => (decryptedWallet = res))
+      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then(res => (decryptedWallet = res))
     }
 
     console.log(secret)
@@ -295,7 +280,7 @@ function Main() {
     let keyStore = getCookie("key")
 
     if (typeof secret == "string" && typeof keyStore == "string") {
-      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then((res) => console.log(res))
+      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then(res => console.log(res))
     }
   }
 
@@ -303,7 +288,7 @@ function Main() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options,
+      ...options
     }
 
     if (options.expires instanceof Date) {
@@ -330,7 +315,7 @@ function Main() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1,
+      "max-age": -1
     })
   }
 

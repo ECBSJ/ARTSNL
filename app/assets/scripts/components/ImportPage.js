@@ -43,6 +43,7 @@ function ImportPage({ isImportOpen, setIsImportOpen }) {
       let inputtedKey = Buffer.from(inputImportKey, "hex")
       if (inputtedKey.byteLength == 32) {
         // Import Key
+        appDispatch({ type: "resetBtcTxBuilder" })
         appDispatch({ type: "resetWallet" })
         // Call appDispatch to import key to generate keypair & addresses
         appDispatch({ type: "importExternalKey", value: inputtedKey })
