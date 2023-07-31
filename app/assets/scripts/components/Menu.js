@@ -51,7 +51,7 @@ function Menu() {
             <div onClick={() => setIsImportOpen(!isImportOpen)} className="menu__dashboard-row-box">
               IMPORT
             </div>
-            <a className="menu__dashboard-row-box" href="https://github.com/ECBSJ/artisanal" target="_blank">
+            <a className="menu__dashboard-row-box" href="https://github.com/ECBSJ/ARTSNL" target="_blank">
               SOURCE
             </a>
           </div>
