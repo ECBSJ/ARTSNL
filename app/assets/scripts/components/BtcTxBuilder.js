@@ -99,7 +99,7 @@ function BtcTxBuilder() {
   function calculateTotalUtxoValueSelected() {
     let totalValue = 0
 
-    selectedArray.forEach(selectedUtxoIndex => {
+    selectedArray.forEach((selectedUtxoIndex) => {
       totalValue += utxoData_Array[selectedUtxoIndex].value
     })
 
@@ -129,7 +129,7 @@ function BtcTxBuilder() {
 
   // navigates backs to dashboard and sets global state variables for selectedUtxoTxHex_Array, selectedUtxo_Array, totalUtxoValueSelected / called in <BtcTxSelectUtxo />
   async function navigateToRcvrAddress() {
-    await getSelectedUtxoTxHex().then(res => {
+    await getSelectedUtxoTxHex().then((res) => {
       // setSelectedUtxoTxHex_Array
       appDispatch({ type: "setSelectedUtxoTxHex_Array", value: res })
     })
@@ -141,12 +141,17 @@ function BtcTxBuilder() {
   }
 
   function refreshTxBuilder() {
-    appDispatch({ type: "resetBtcTxBuilder" })
+    setTxStatus(0)
     setUtxoData_hasError(false)
     setTotalUtxoValueSelected(0)
     setSelectedArray([])
-    setTxStatus(0)
+    appDispatch({ type: "resetBtcTxBuilder" })
     getUtxoData()
+  }
+
+  function navigateToWalletHome() {
+    appDispatch({ type: "resetBtcTxBuilder" })
+    navigate("/WalletMain")
   }
 
   useEffect(() => {
@@ -215,7 +220,7 @@ function BtcTxBuilder() {
         <div className="interface__block-cell interface__block-cell__footer">
           <TbRefresh id="Tooltip" data-tooltip-content={"Refresh TX Builder"} onClick={() => refreshTxBuilder()} className="icon" />
           {appState.isTestnet ? <BsHddNetwork id="Tooltip" data-tooltip-content={"On Testnet"} className={"icon"} /> : <BsHddNetworkFill id="Tooltip" data-tooltip-content={"On Mainnet"} className={"icon"} />}
-          <div onClick={() => navigate("/WalletMain")} id="Tooltip" data-tooltip-content={"Home"} className="icon">
+          <div onClick={() => navigateToWalletHome()} id="Tooltip" data-tooltip-content={"Home"} className="icon">
             ARTSNL
           </div>
           <BsReception4 id="Tooltip" data-tooltip-content={appState.bitcoin.activeProvider && appState.ethereum.activeProvider ? "Network Status: Connected" : "Network Status: Disconnected"} className="icon" />

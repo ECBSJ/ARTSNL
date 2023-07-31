@@ -14,78 +14,78 @@ function BtcTxScriptPubKey({ setTxStatus }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
-  let rawHash160 = uint8arraytools.toHex(appState.bitcoin.txBuilder.outputs_Array[appState.bitcoin.txBuilder.outputs_Array.length - 1].validInputtedAddress_Decoded.hash)
+  let rawHash160 = uint8arraytools.toHex(appState.bitcoin.txBuilder.outputs_Array[appState.bitcoin.txBuilder.outputs_Array.length - 1]?.validInputtedAddress_Decoded.hash)
 
   // initial opCodes stack
   const [opCodesArray_scriptPubKey_incorrect, setOpCodesArray_scriptPubKey_incorrect] = useState([
     {
       opCodeName: "OP_EQUALVERIFY",
-      opCodeValue: "0x88"
+      opCodeValue: "0x88",
     },
     {
       opCodeName: "rawHash160",
-      opCodeValue: rawHash160
+      opCodeValue: rawHash160,
     },
     {
       opCodeName: "OP_CHECKSIG",
-      opCodeValue: "0xac"
+      opCodeValue: "0xac",
     },
     {
       opCodeName: "OP_DUP",
-      opCodeValue: "0x76"
+      opCodeValue: "0x76",
     },
     {
       opCodeName: "OP_HASH160",
-      opCodeValue: "0xa9"
-    }
+      opCodeValue: "0xa9",
+    },
   ])
 
   // refresher stack
   const defaultIncorrectStack = [
     {
       opCodeName: "OP_EQUALVERIFY",
-      opCodeValue: "0x88"
+      opCodeValue: "0x88",
     },
     {
       opCodeName: "rawHash160",
-      opCodeValue: rawHash160
+      opCodeValue: rawHash160,
     },
     {
       opCodeName: "OP_CHECKSIG",
-      opCodeValue: "0xac"
+      opCodeValue: "0xac",
     },
     {
       opCodeName: "OP_DUP",
-      opCodeValue: "0x76"
+      opCodeValue: "0x76",
     },
     {
       opCodeName: "OP_HASH160",
-      opCodeValue: "0xa9"
-    }
+      opCodeValue: "0xa9",
+    },
   ]
 
   // stack to compare opCodesStacked state with
   const opCodesArray_scriptPubKey_correct = [
     {
       opCodeName: "OP_CHECKSIG",
-      opCodeValue: "0xac"
+      opCodeValue: "0xac",
     },
     {
       opCodeName: "OP_EQUALVERIFY",
-      opCodeValue: "0x88"
+      opCodeValue: "0x88",
     },
     {
       opCodeName: "rawHash160",
-      opCodeValue: rawHash160
+      opCodeValue: rawHash160,
     },
     {
       opCodeName: "OP_HASH160",
-      opCodeValue: "0xa9"
+      opCodeValue: "0xa9",
     },
     {
       opCodeName: "OP_DUP",
-      opCodeValue: "0x76"
-    }
+      opCodeValue: "0x76",
+    },
   ]
 
   const [opCodesStacked, setOpCodesStacked] = useState([])
@@ -123,7 +123,7 @@ function BtcTxScriptPubKey({ setTxStatus }) {
     }
     let opCodeObject = e.dataTransfer.getData("opCodeObject")
 
-    let indexToSplice = opCodesArray_scriptPubKey_incorrect.findIndex(el => {
+    let indexToSplice = opCodesArray_scriptPubKey_incorrect.findIndex((el) => {
       return JSON.stringify(el) == opCodeObject
     })
     opCodesArray_scriptPubKey_incorrect.splice(indexToSplice, 1)
@@ -136,11 +136,11 @@ function BtcTxScriptPubKey({ setTxStatus }) {
     if (opCodesStacked.length === 5) {
       if (JSON.stringify(opCodesStacked) == JSON.stringify(opCodesArray_scriptPubKey_correct)) {
         // correct stack
-        document.querySelectorAll(".drop").forEach(el => el.classList.toggle("drop--correct"))
+        document.querySelectorAll(".drop").forEach((el) => el.classList.toggle("drop--correct"))
         setIsStackCorrect(true)
       } else {
         // incorrect stack
-        document.querySelectorAll(".drop").forEach(el => el.classList.toggle("drop--incorrect"))
+        document.querySelectorAll(".drop").forEach((el) => el.classList.toggle("drop--incorrect"))
       }
     }
 
@@ -159,7 +159,7 @@ function BtcTxScriptPubKey({ setTxStatus }) {
   const modalDropDownRef = useRef()
 
   useEffect(() => {
-    let handler = e => {
+    let handler = (e) => {
       if (isModalDropDownOpen) {
         if (modalDropDownRef.current.contains(e.target)) {
           setIsModalDropDownOpen(!isModalDropDownOpen)
@@ -192,7 +192,7 @@ function BtcTxScriptPubKey({ setTxStatus }) {
 
     let object = {
       indexToModify: appState.bitcoin.txBuilder.outputs_Array.length - 1,
-      scriptPubKey: scriptPubKey
+      scriptPubKey: scriptPubKey,
     }
 
     appDispatch({ type: "setScriptPubKey", value: object })
@@ -221,13 +221,13 @@ function BtcTxScriptPubKey({ setTxStatus }) {
               <div id="drag-target" style={{ position: "relative", flex: 1, width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "flex-end", alignItems: "center" }}>
                 <span style={{ position: "absolute", top: "2", left: "55", fontSize: ".5em", color: "#d1bbff", cursor: "default" }}>Script OpCodes</span>
                 {opCodesArray_scriptPubKey_incorrect.map((opCodeObject, index) => (
-                  <div className="drag" key={index} draggable onDragStart={e => handleOnDragStart(e, opCodeObject)} onDragEnd={e => handleOnDragEnd(e)}>
+                  <div className="drag" key={index} draggable onDragStart={(e) => handleOnDragStart(e, opCodeObject)} onDragEnd={(e) => handleOnDragEnd(e)}>
                     {opCodeObject.opCodeName}
                   </div>
                 ))}
               </div>
 
-              <div id="drop-target" style={{ zIndex: "102", position: "relative", flex: 1, width: "100%", height: "286px", overflowY: "scroll", display: "flex", flexDirection: "column-reverse", justifyContent: "flex-start", alignItems: "center", marginLeft: "7px", backgroundColor: "#2a2a3ad9", borderRadius: "6px" }} onDrop={e => handleOnDrop(e)} onDragOver={e => handleDragOver(e)} onDragEnter={e => handleDragEnter(e)} onDragLeave={e => handleDragLeave(e)}>
+              <div id="drop-target" style={{ zIndex: "102", position: "relative", flex: 1, width: "100%", height: "286px", overflowY: "scroll", display: "flex", flexDirection: "column-reverse", justifyContent: "flex-start", alignItems: "center", marginLeft: "7px", backgroundColor: "#2a2a3ad9", borderRadius: "6px" }} onDrop={(e) => handleOnDrop(e)} onDragOver={(e) => handleDragOver(e)} onDragEnter={(e) => handleDragEnter(e)} onDragLeave={(e) => handleDragLeave(e)}>
                 <span style={{ position: "absolute", top: "2", left: "55", fontSize: ".5em", color: "#d1bbff", cursor: "default" }}>Script Stack</span>
                 {opCodesStacked.map((opCodeObject, index) => (
                   <div className="drop" key={index}>

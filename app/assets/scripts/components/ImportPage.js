@@ -1,9 +1,13 @@
-import React, { useState, useContext } from "react"
-import { MdArrowBack, MdQrCodeScanner } from "react-icons/md"
+import React, { useState, useContext, useEffect } from "react"
+import { MdArrowBack, MdQrCodeScanner, MdContentPasteGo } from "react-icons/md"
 import QRreaderPopup from "./QRreaderPopup"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 import { useNavigate } from "react-router-dom"
+
+import * as wif from "wif"
+import * as uint8arraytools from "uint8array-tools"
+import * as bip38 from "bip38"
 
 function ImportPage({ isImportOpen, setIsImportOpen }) {
   const navigate = useNavigate()
@@ -12,53 +16,87 @@ function ImportPage({ isImportOpen, setIsImportOpen }) {
   const appDispatch = useContext(DispatchContext)
 
   const [importKeyFormat, setImportKeyFormat] = useState(1)
-
   const [inputImportKey, setInputImportKey] = useState()
 
   const [openQRreader, setOpenQRreader] = useState(false)
   const [scannedValue, setScannedValue] = useState()
 
+  const [errorMessage, setErrorMessage] = useState("")
+
   function toggleFormat() {
     if (importKeyFormat == 3) {
       setImportKeyFormat(1)
     } else {
-      setImportKeyFormat(prev => prev + 1)
+      setImportKeyFormat((prev) => prev + 1)
     }
 
     document.getElementById("toggle-format").classList.toggle("menu__dashboard-row-box--dark")
     document.getElementById("toggle-format").classList.toggle("menu__dashboard-row-box--light")
   }
 
-  function handleImport() {
+  function handlePaste() {
+    if (importKeyFormat == 1 || importKeyFormat == 2) {
+      navigator.clipboard
+        .readText()
+        .then((res) => {
+          document.getElementById("key-input-grab").value = res
+          setInputImportKey(res)
+        })
+        .catch(console.error)
+    }
+
     if (importKeyFormat == 3) {
+      null
+    }
+  }
+
+  function handleImportCheck() {
+    if (importKeyFormat == 3) {
+      // handle import of BIP38
       null
     }
 
     if (importKeyFormat == 2) {
-      null
+      // handle import of WIF
+      // for WIF testnet: 239
+      // let wifResult = wif.encode(128, privateKey, false)
+      // let wifResult = wif.decode("somekey")
+      try {
+        let result = wif.decode(inputImportKey)
+        let resultBuffer = Buffer.from(result.privateKey)
+        handleImportReady(resultBuffer)
+      } catch (err) {
+        console.error(err)
+        setErrorMessage("Invalid WIF Key")
+      }
     }
 
     if (importKeyFormat == 1) {
+      // handle import of hex
       // Verify hex string is 32 bytes Buffer
       let inputtedKey = Buffer.from(inputImportKey, "hex")
       if (inputtedKey.byteLength == 32) {
         // Import Key
-        appDispatch({ type: "resetBtcTxBuilder" })
-        appDispatch({ type: "resetWallet" })
-        // Call appDispatch to import key to generate keypair & addresses
-        appDispatch({ type: "importExternalKey", value: inputtedKey })
-        // Store in local browser storage
-        appDispatch({ type: "setLocalStorage" })
-        appDispatch({ type: "setHasBrowserStorage" })
-        console.log("ARTSNL wallet has been reset. Imported external private key successful.")
-        setIsImportOpen(!isImportOpen)
-        appDispatch({ type: "toggleMenu" })
-        navigate("/")
+        handleImportReady(inputtedKey)
       } else {
         // throw error
-        null
+        setErrorMessage("Invalid hexadecimal key")
       }
     }
+  }
+
+  function handleImportReady(bufferKey) {
+    appDispatch({ type: "resetBtcTxBuilder" })
+    appDispatch({ type: "resetWallet" })
+    // Call appDispatch to import key to generate keypair & addresses
+    appDispatch({ type: "importExternalKey", value: bufferKey })
+    // Store in local browser storage
+    appDispatch({ type: "setLocalStorage" })
+    appDispatch({ type: "setHasBrowserStorage" })
+    console.log("ARTSNL wallet has been reset. Imported external private key successful.")
+    setIsImportOpen(!isImportOpen)
+    appDispatch({ type: "toggleMenu" })
+    navigate("/")
   }
 
   return (
@@ -85,18 +123,19 @@ function ImportPage({ isImportOpen, setIsImportOpen }) {
             {importKeyFormat == 3 ? (
               <>
                 <MdQrCodeScanner onClick={() => setOpenQRreader(!openQRreader)} className="icon icon--position-absolute icon--higher-z-index" style={{ right: "10px", top: "6px" }} />
-                <input className="input--position-off code-font gray-font" value={scannedValue ? scannedValue : undefined} type="text" placeholder="encrypted key" required />
-                <input className="input--position-off code-font gray-font" type="text" placeholder="passphrase" required />
+                <input id="epk-input-grab" className="input--position-off code-font gray-font" value={scannedValue ? scannedValue : undefined} onFocus={() => setScannedValue()} type="text" placeholder="encrypted key" required />
+                <input id="passphrase-input-grab" className="input--position-off code-font gray-font" type="text" placeholder="passphrase" required />
               </>
             ) : (
               <>
-                <input onChange={e => setInputImportKey(e.target.value)} className="input--position-off code-font gray-font" value={scannedValue ? scannedValue : undefined} type="text" placeholder={importKeyFormat == 2 ? "WIF" : "HEX"} required />
+                <input id="key-input-grab" onChange={(e) => setInputImportKey(e.target.value)} className="input--position-off code-font gray-font" value={scannedValue ? scannedValue : undefined} onFocus={() => setScannedValue()} type="text" placeholder={importKeyFormat == 2 ? "WIF" : "HEX"} required />
+                <MdContentPasteGo onClick={() => handlePaste()} style={{ right: "63px" }} className="icon icon--position-absolute" />
                 <MdQrCodeScanner onClick={() => setOpenQRreader(!openQRreader)} className="icon icon--position-absolute" style={{ right: "10px" }} />
               </>
             )}
           </div>
           <div className="menu__dashboard-row">
-            <div onClick={() => handleImport()} className="menu__dashboard-row-box">
+            <div onClick={() => handleImportCheck()} className="menu__dashboard-row-box">
               IMPORT
             </div>
           </div>

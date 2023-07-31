@@ -18,8 +18,8 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
-  let rcvrAddress = appState.bitcoin.txBuilder.outputs_Array[appState.bitcoin.txBuilder.outputs_Array.length - 1].validInputtedAddress
-  let hash160 = uint8arraytools.toHex(appState.bitcoin.txBuilder.outputs_Array[appState.bitcoin.txBuilder.outputs_Array.length - 1].validInputtedAddress_Decoded.hash)
+  let rcvrAddress = appState.bitcoin.txBuilder.outputs_Array[appState.bitcoin.txBuilder.outputs_Array.length - 1]?.validInputtedAddress
+  let hash160 = uint8arraytools.toHex(appState.bitcoin.txBuilder.outputs_Array[appState.bitcoin.txBuilder.outputs_Array.length - 1]?.validInputtedAddress_Decoded.hash)
 
   const [showHash160, setShowHash160] = useState(false)
   // function to deconstruct/decode rcvr address to reveal pub key hash
@@ -51,7 +51,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
       document.querySelector("#hash160").innerText = "Completed Deconstruction!"
       document.querySelector("#hash160").classList.add("orange-capsule__progress-4")
       document.querySelector("#hash160").disabled = true
-      document.querySelectorAll(".appear-grab").forEach(el => {
+      document.querySelectorAll(".appear-grab").forEach((el) => {
         el.classList.toggle("interface__block-cell--appear-2")
       })
       setShowHash160(true)
@@ -60,7 +60,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
     setTimeout(() => {
       document.querySelector("#hash160").classList.remove("orange-capsule__progress-4")
       document.querySelector("#hash160").classList.add("orange-capsule__progress-done")
-      document.querySelectorAll(".appear-grab").forEach(el => {
+      document.querySelectorAll(".appear-grab").forEach((el) => {
         el.classList.toggle("interface__block-cell--appear")
       })
     }, 4000)
@@ -80,7 +80,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
     halfHourFee: 1,
     hourFee: 1,
     economyFee: 1,
-    minimumFee: 1
+    minimumFee: 1,
   })
   const [currentTxSize_vBytes, setCurrentTxSize_vBytes] = useState(0)
 
@@ -175,7 +175,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
   const modalDropDownRef = useRef()
 
   useEffect(() => {
-    let handler = e => {
+    let handler = (e) => {
       if (isModalDropDownOpen) {
         if (modalDropDownRef.current.contains(e.target)) {
           setIsModalDropDownOpen(!isModalDropDownOpen)
@@ -195,7 +195,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
     available: 0,
     send: 0,
     fees: 0,
-    remaining: 0
+    remaining: 0,
   })
 
   function handleNext() {
@@ -203,7 +203,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
       available: availableAmount,
       send: withinRangeAmount,
       fees: currentTxSize_vBytes * minAmountTxFeePerVbyteRate,
-      remaining: availableAmount - (minAmountTxFeePerVbyteRate * currentTxSize_vBytes + withinRangeAmount)
+      remaining: availableAmount - (minAmountTxFeePerVbyteRate * currentTxSize_vBytes + withinRangeAmount),
     })
 
     setIsModalDropDownOpen(!isModalDropDownOpen)
@@ -215,7 +215,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
 
     let object = {
       indexToModify: appState.bitcoin.txBuilder.outputs_Array.length - 1,
-      sendAmountValue: withinRangeAmount
+      sendAmountValue: withinRangeAmount,
     }
 
     appDispatch({ type: "setSendAmount", value: object })
@@ -271,7 +271,7 @@ function BtcTxDeconstructRcvrAddress({ setTxStatus }) {
                 <>
                   <p style={{ fontSize: ".7em", borderTop: "1px solid gray", paddingTop: "10px", color: "gray" }}>Input amount &#40;sats&#41; you want to send &#40;lock&#41; to the public key hash above. Any remaining amount &#40;ex. fees&#41; will be sent back to your wallet.</p>
                   <div className="input-container">
-                    <input onChange={e => handleInputtedAmount(e.target.value)} id="input-grab" className={"input-white " + (hasError ? "input--focus-red" : "") + (!hasError && withinRange ? "input--focus-green" : "")} type="text" required />
+                    <input onChange={(e) => handleInputtedAmount(e.target.value)} id="input-grab" className={"input-white " + (hasError ? "input--focus-red" : "") + (!hasError && withinRange ? "input--focus-green" : "")} type="text" required />
                     <span className="input-placeholder">Send Amount</span>
                     <div style={{ cursor: "default", bottom: "-17" }} className="input-validation">
                       <span style={{ color: "gray" }}>Fee Rate</span> &#40;{minAmountTxFeePerVbyteRate} sat/vB&#41; <span style={{ color: "purple" }}>|</span> <span style={{ color: "gray" }}>TX Fees &#40;sats&#41;:</span> {!hasError && withinRange ? minAmountTxFeePerVbyteRate * currentTxSize_vBytes : 0} <span style={{ color: "purple" }}>|</span> <br /> <span style={{ color: "gray" }}>Remaining &#40;sats&#41;:</span> {!hasError && withinRange ? availableAmount - (minAmountTxFeePerVbyteRate * currentTxSize_vBytes + withinRangeAmount) : ""}
