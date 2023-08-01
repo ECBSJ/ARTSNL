@@ -99,6 +99,12 @@ function ImportPage({ isImportOpen, setIsImportOpen }) {
     navigate("/")
   }
 
+  useEffect(() => {
+    let encryptedKey = "6PRVWUbkzzsbcVac2qwfssoUJAN1Xhrg6bNk8J7Nzm5H7kxEbn2Nh2ZoGg"
+    let decryptedKey = bip38.decrypt(encryptedKey, "TestingOneTwoThree")
+    console.log(decryptedKey)
+  }, [])
+
   return (
     <>
       {openQRreader ? <QRreaderPopup setInputValue={setInputImportKey} setScannedValue={setScannedValue} openQRreader={openQRreader} setOpenQRreader={setOpenQRreader} /> : ""}
