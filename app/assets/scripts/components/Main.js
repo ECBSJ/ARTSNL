@@ -23,28 +23,22 @@ import * as bip38 from "bip38"
 import { FaBitcoin, FaEthereum } from "react-icons/fa"
 import { BsHddNetworkFill, BsHddNetwork, BsReception1, BsReception4 } from "react-icons/bs"
 
-// import * as dotenv from "dotenv"
-// dotenv.config()
-
 function Main() {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
   const [page, setPage] = useState(1)
 
-  const ECPair = ECPairFactory(ecc)
-  const Mainnet = bitcoin.networks.bitcoin
-  let Testnet = bitcoin.networks.testnet
+  // const ECPair = ECPairFactory(ecc)
+  // const Mainnet = bitcoin.networks.bitcoin
+  // let Testnet = bitcoin.networks.testnet
 
-  const testnetPrivKey = "938zbGqYYvZvFaHNXMNDpQZ4hEQE89ugGEjrv9QCKWCL6H2c4ps"
-  const testnetAdd = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
+  // let testnetKeyPair = ECPair.fromWIF(testnetPrivKey, Testnet)
+  // const p2pkhObject = bitcoin.payments.p2pkh({ pubkey: testnetKeyPair.publicKey, network: Testnet })
 
-  let testnetKeyPair = ECPair.fromWIF(testnetPrivKey, Testnet)
-  const p2pkhObject = bitcoin.payments.p2pkh({ pubkey: testnetKeyPair.publicKey, network: Testnet })
+  // const validator = (pubkey, msghash, signature) => ECPair.fromPublicKey(pubkey).verify(msghash, signature)
 
-  const validator = (pubkey, msghash, signature) => ECPair.fromPublicKey(pubkey).verify(msghash, signature)
-
-  const psbt = new bitcoin.Psbt({ network: Testnet })
+  // const psbt = new bitcoin.Psbt({ network: Testnet })
 
   // psbt.addInput({
   //   hash: "a296be122cc5c90bfc7e50f65b2c2e12d231a761d69ff05ec8a05b48f6f16b9a",
@@ -52,47 +46,31 @@ function Main() {
   //   nonWitnessUtxo: Buffer.from("02000000000101fc17bccc0117b0d0f1955d6ac84d1bf47399f77d6a8944f73c3ab0bb8c035a320100000000feffffff02a8160000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acf2d71300000000001976a914845b731431f519d2856ccc481087621eda16cc8a88ac0247304402206d0d4095dd5b45a84b01eadafce1ba87d6ebb2b51c43ace4982867a84991b83c02206bab4d2ae888deb8282149de576beadbced24b53e1285699f051dcfd0736d0f10121037955b1e146d3f87f4ebb897e6fbdd34ce2abe63641aea18aaa774c6a40d63b6639252500", "hex"),
   // })
 
-  psbt.addInput({
-    hash: "9153e5420b1092ff65d90a028df8840e0e3dfc8b9c8e1c1c0664e02f000c5def",
-    index: 0,
-    nonWitnessUtxo: Buffer.from("02000000000101e46381154e9fcc1dec31a5edb6afd23063508c83b647c80b01433709440482740000000000feffffff0284350000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acfb1b1500000000001976a914428d17adc0c17119b9f5c5689b61cd094b00c7e088ac0247304402201ffb958b864bcf2ac92b6f6485c6bc0cf9e9a9d223ee913fdb88eaa9945a670402203c80ae2cb29696cdbb4ac25d8ffb92f7811636197900bb5633591870587c5b65012103f2ebb8d108f78594dd2829f9e283e1977f226165d985278a6aa8ecc91302e3c1d7252500", "hex")
-  })
+  // psbt.addInput({
+  //   hash: "9153e5420b1092ff65d90a028df8840e0e3dfc8b9c8e1c1c0664e02f000c5def",
+  //   index: 0,
+  //   nonWitnessUtxo: Buffer.from("02000000000101e46381154e9fcc1dec31a5edb6afd23063508c83b647c80b01433709440482740000000000feffffff0284350000000000001976a914727c2e0ba76f7cea7b41ab920eec10117a35370388acfb1b1500000000001976a914428d17adc0c17119b9f5c5689b61cd094b00c7e088ac0247304402201ffb958b864bcf2ac92b6f6485c6bc0cf9e9a9d223ee913fdb88eaa9945a670402203c80ae2cb29696cdbb4ac25d8ffb92f7811636197900bb5633591870587c5b65012103f2ebb8d108f78594dd2829f9e283e1977f226165d985278a6aa8ecc91302e3c1d7252500", "hex")
+  // })
 
-  psbt.addOutput({
-    address: "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w",
-    value: 13000
-  })
+  // psbt.addOutput({
+  //   address: "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w",
+  //   value: 13000
+  // })
 
-  psbt.signInput(0, testnetKeyPair)
-  psbt.validateSignaturesOfInput(0, validator)
+  // psbt.signInput(0, testnetKeyPair)
+  // psbt.validateSignaturesOfInput(0, validator)
   // let partialSig_signature = psbt.data.inputs[0].partialSig[0].signature
   // let partialSig_pubkey = psbt.data.inputs[0].partialSig[0].pubkey
   // psbt.signInput(1, testnetKeyPair)
   // psbt.validateSignaturesOfInput(1, validator)
-  psbt.finalizeAllInputs()
+  // psbt.finalizeAllInputs()
   // has finalScriptSig
   // console.log(psbt)
 
-  const transactionHEX = psbt.extractTransaction().toHex()
-  const raw = psbt.extractTransaction()
+  // const transactionHEX = psbt.extractTransaction().toHex()
+  // const raw = psbt.extractTransaction()
   // console.log(raw)
   // console.log(transactionHEX)
-
-  // Main - Select UTXOs to use (carousel selection)
-  // Main - Show selected UTXOs
-  // Main - Prompt user to start ScriptSig formation for each input
-  // Overlay - ScriptSig formation for each input (an overlay to appear)
-  // Main - After ScriptSig completion, determine if user will send all out (if not a return output is needed)
-  // Input receiving address
-  // Determine if return address output needed
-  // Deconstruct receiving address
-  // Extract hash160
-  // Form ScriptPubKey for output
-  // Overlay - First output formation
-  // Overlay - locktime option
-  // Main - Summary and review of completed fields
-  // Main - Display of Transaction hex
-  // Main - Broadcast
 
   // let static_eth_privKey = "3fdde77e8b442bc89dc890adf8fd72b4314e99ea7a205b9dd302114c9aefc493"
   // let static_eth_pubKey = "0488a0dfca9af0d817962b25d1aa92d64e1645c94d452f6e75f61adc3f78d61b623637901afdf2efcb0bbf5badd82c2e559f22fe2f824438515614137443cb62ea"
@@ -225,32 +203,6 @@ function Main() {
   // useEffect(() => {
   //   handleObjectUpdate()
   // }, [])
-
-  // function handleCopyPopup() {
-  //   document.querySelector(".icon-copy").classList.toggle("icon")
-  //   document.querySelector(".icon-copy").classList.toggle("icon-copy--active")
-
-  //   setTimeout(() => {
-  //     document.querySelector(".icon-copy").classList.toggle("icon")
-  //     document.querySelector(".icon-copy").classList.toggle("icon-copy--active")
-  //   }, 1000)
-  // }
-
-  // function handleCopyPopup_2() {
-  //   document.querySelector(".icon-copy-2").classList.toggle("icon")
-  //   document.querySelector(".icon-copy-2").classList.toggle("icon-copy--active")
-
-  //   setTimeout(() => {
-  //     document.querySelector(".icon-copy-2").classList.toggle("icon")
-  //     document.querySelector(".icon-copy-2").classList.toggle("icon-copy--active")
-  //   }, 1000)
-  // }
-
-  // let static_privKey = "5e6cca2c25d67950acee3324d41ebef7d886b6762eaadb92210a3604a6188110"
-  // let static_pubKey = "0465034a033e228fc298f4be365cdc4555b9ef4a7a53ae9f72a88383a4712095c2cad1d12366842198e6fd4a884bd5f899c3c41f0c105aed2e470b7d0993aa2a27"
-  // let static_hash160 = "c47bef1873ec058afeccf205d36e16ba6d336bf0"
-  // let static_checksum = "fef7d72e"
-  // let static_address = "1JuuugYPD2DjVj99pN5vKkQbbWhVng7nwX"
 
   async function handleStoredKeysBrowserStorage() {
     let wallet = new ethers.Wallet(static_eth_privKey)
@@ -448,14 +400,6 @@ function Main() {
   //     document.removeEventListener("mousedown", handler)
   //   }
   // })
-
-  const [isTestnet, setIsTestnet] = useState(false)
-
-  const static_privKey = "3fdde77e8b442bc89dc890adf8fd72b4314e99ea7a205b9dd302114c9aefc493"
-  const static_publicKey = "0488a0dfca9af0d817962b25d1aa92d64e1645c94d452f6e75f61adc3f78d61b623637901afdf2efcb0bbf5badd82c2e559f22fe2f824438515614137443cb62ea"
-  const static_btc_address = "19G4UV3YDkTYj4G3XSYeUkzp4Ew6voQFiR"
-  const static_btc_testnet_address = "mon1mY8X2mtoWAjfF1X2JgD8vEXotDVsiY"
-  const static_eth_address = "0x9189561aed3229361a1aca088323a3ab0750c5d6"
 
   return (
     <>

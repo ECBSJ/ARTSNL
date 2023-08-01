@@ -40,20 +40,6 @@ function BtcTxBuilder() {
   // 6. Review TX (<BtcTxReview />) / function handleBroadcast will broadcast tx and navigate to broadcast receipt page
   // 7. Broadcast Receipt (<BtcTxReceipt />) function handleReturnToWalletHome will return to <WalletMain />
 
-  // TESTING WALLETS
-  const testnetPrivKey = "938zbGqYYvZvFaHNXMNDpQZ4hEQE89ugGEjrv9QCKWCL6H2c4ps"
-  const testnetPrivKeyHex = "cc878581cdc53c1384b1983b86359cd962b334bed262b793aeace7c488bdf92b"
-  const testnetPubKeyHex = "04f6209daa9543327eb5b7b2ac0b63089af69abad5b14f4b6cfec5c18279848fa214933decd49c1ca1efe03af8f44b5584b1af8eae6a31a95921bba07e5bf78f90"
-  const testnetAdd = "mqxJ66EMdF1nKmyr3yPxbx7tRAd1L4dPrW"
-
-  const testnetPrivKey_2 = "93MPV1RsWMvfLCpGZcnPG1U8EA3QDqdNxkCVJwmeTGrjEHFZ5v6"
-  const testnetPrivKey_2_hex = "e8ac4c477cb59802e839230cd4a28c712666757d7716df22a18842fe19ed5e7b"
-  const testnetAdd_2 = "mx4k2ersuW9k3uc4ybNEEB1TsQ1qJkMZ4w"
-
-  const testnetPrivKey_3 = "925qMppGV5NAzRRjtj3KmVHNEvDAktuC6QJBcueioiMWk8dtNk7"
-  const testnetPrivKey_3_hex = "41a8f5f6bdefe444eb160ab133cf9739a36662950d1cc9c07976d9597fa1ef07"
-  const testnetAdd_3 = "mnhXvVZ2LM5dRAN1RJ58rdReuoCVAYUptB"
-
   const [utxoData_hasError, setUtxoData_hasError] = useState(false)
   let utxoData_Array = appState.bitcoin.txBuilder.utxoData_Array
 
@@ -99,7 +85,7 @@ function BtcTxBuilder() {
   function calculateTotalUtxoValueSelected() {
     let totalValue = 0
 
-    selectedArray.forEach((selectedUtxoIndex) => {
+    selectedArray.forEach(selectedUtxoIndex => {
       totalValue += utxoData_Array[selectedUtxoIndex].value
     })
 
@@ -129,7 +115,7 @@ function BtcTxBuilder() {
 
   // navigates backs to dashboard and sets global state variables for selectedUtxoTxHex_Array, selectedUtxo_Array, totalUtxoValueSelected / called in <BtcTxSelectUtxo />
   async function navigateToRcvrAddress() {
-    await getSelectedUtxoTxHex().then((res) => {
+    await getSelectedUtxoTxHex().then(res => {
       // setSelectedUtxoTxHex_Array
       appDispatch({ type: "setSelectedUtxoTxHex_Array", value: res })
     })
