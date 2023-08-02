@@ -21,3 +21,31 @@
     box-shadow: 0 0 2px 2px white;
   }
 }
+
+.container__overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &-enter {
+    transform: translateX(400px);
+  }
+
+  &-enter-active {
+    transform: translateX(0);
+    transition: all 300ms ease-in-out;
+  }
+
+  &-exit {
+    transform: translateX(0);
+  }
+
+  &-exit-active {
+    transform: translateX(-400px);
+    transition: all 300ms ease-in-out;
+  }
+}

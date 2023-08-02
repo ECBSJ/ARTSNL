@@ -1,3 +1,14 @@
 .special-effect {
   display: none;
 }
+
+.circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgb(106, 106, 106);
+
+  &--selected {
+    background-color: white;
+  }
+}

@@ -27,7 +27,8 @@ function Main() {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(0)
+  const pages = [1, 2, 3, 4, 5, 6]
 
   // const ECPair = ECPairFactory(ecc)
   // const Mainnet = bitcoin.networks.bitcoin
@@ -213,14 +214,14 @@ function Main() {
 
     await wallet
       .encrypt(secret)
-      .then(res => {
+      .then((res) => {
         encryptedJSON = res
         setCookie("key", encryptedJSON, { "max-age": 36000 })
       })
       .catch(console.error)
 
     if (encryptedJSON) {
-      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then(res => (decryptedWallet = res))
+      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then((res) => (decryptedWallet = res))
     }
 
     console.log(secret)
@@ -232,7 +233,7 @@ function Main() {
     let keyStore = getCookie("key")
 
     if (typeof secret == "string" && typeof keyStore == "string") {
-      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then(res => console.log(res))
+      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then((res) => console.log(res))
     }
   }
 
@@ -240,7 +241,7 @@ function Main() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options
+      ...options,
     }
 
     if (options.expires instanceof Date) {
@@ -267,7 +268,7 @@ function Main() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1
+      "max-age": -1,
     })
   }
 
@@ -401,25 +402,99 @@ function Main() {
   //   }
   // })
 
+  function nextPage() {
+    setPage((prev) => prev + 1)
+  }
+
   return (
     <>
-      {page == 2 ? (
-        <>
+      <CSSTransition in={page === 0} timeout={300} classNames="container__overlay" unmountOnExit>
+        <div className="container__overlay">
+          <div style={{ fontSize: "3rem" }}>ARTSNL</div>
+          <div onClick={() => setPage(1)}>
+            <MdNavigateNext className="icon" />
+          </div>
+        </div>
+      </CSSTransition>
+
+      <CSSTransition in={page === 1} timeout={300} classNames="container__overlay" unmountOnExit>
+        <div className="container__overlay">
+          <h1 style={{ textAlign: "center", width: "65%" }} className={"font--russo-one"}>
+            The World&#39;s Worst Wallet UX
+          </h1>
+          <p style={{ textAlign: "justify", width: "60%", fontSize: ".8em" }}>Sure, the wallet UX maybe a bit more hands on and slower, yet artisanal, but you&#39;ll learn the nuts & bolts of certain processes we all commonly take for granted.</p>
+        </div>
+      </CSSTransition>
+
+      <CSSTransition in={page === 2} timeout={300} classNames="container__overlay" unmountOnExit>
+        <div className="container__overlay">
+          <h1 style={{ textAlign: "center", width: "65%" }} className={"font--russo-one"}>
+            Build Your <br /> Own Keys
+          </h1>
+          <p style={{ textAlign: "justify", width: "60%", fontSize: ".8em" }}>Although it&#39;s never advised to be your own entropy, but in this wallet you can create your own entropy. Don&#39;t rely on other 3rd party tools to do it for you. All 256 bits are yours to create.</p>
+        </div>
+      </CSSTransition>
+
+      <CSSTransition in={page === 3} timeout={300} classNames="container__overlay" unmountOnExit>
+        <div className="container__overlay">
+          <h1 style={{ textAlign: "center", width: "65%" }} className={"font--russo-one"}>
+            Build Your <br /> Own TX
+          </h1>
+          <p style={{ textAlign: "justify", width: "60%", fontSize: ".8em" }}>Have you ever wondered how a transaction is processed underneath the surface of an app UI? Get more hands on with structuring, signing, and broadcasting your very own transaction.</p>
+        </div>
+      </CSSTransition>
+
+      <CSSTransition in={page === 4} timeout={300} classNames="container__overlay" unmountOnExit>
+        <div className="container__overlay">
+          <h1 style={{ textAlign: "center", width: "65%" }} className={"font--russo-one"}>
+            Multi-Chain <br /> Friendly
+          </h1>
+          <p style={{ textAlign: "justify", width: "60%", fontSize: ".8em" }}>The testnet & mainnet of both Bitcoin and Ethereum are supported.</p>
+        </div>
+      </CSSTransition>
+
+      <CSSTransition in={page === 5} timeout={300} classNames="container__overlay" unmountOnExit>
+        <div className="container__overlay">
+          <h1 style={{ textAlign: "center", width: "65%" }} className={"font--russo-one"}>
+            #NYKNYC
+          </h1>
+          <p style={{ textAlign: "justify", width: "60%", fontSize: ".8em" }}>In crypto, you are your own bank. Noone else has access to your keys. You can always export & import keys to and from this app.</p>
+        </div>
+      </CSSTransition>
+
+      <CSSTransition in={page === 6} timeout={300} classNames="container__overlay" unmountOnExit>
+        <div className="container__overlay">
           <div style={{ textAlign: "center", fontSize: "2rem" }}>
             Your Keys. <br /> Your TX. <br /> DIY'ed, by you.
           </div>
           <Link to="/CreateKeys">
             <MdNavigateNext className="icon" />
           </Link>
-        </>
+        </div>
+      </CSSTransition>
+
+      {page === 0 ? (
+        ""
       ) : (
         <>
-          <div style={{ fontSize: "3rem" }}>ARTSNL</div>
-          <div onClick={() => setPage(2)}>
-            <MdNavigateNext className="icon" />
-          </div>
+          {page === pages[pages.length - 1] ? "" : <MdNavigateNext onClick={() => nextPage()} style={{ position: "absolute", zIndex: "1", right: "19px" }} className="icon" />}
 
-          {/* <div className="tx-builder__overlay">
+          <span style={{ position: "absolute", zIndex: "1", bottom: "50px", color: "mediumpurple" }}>ARTSNL</span>
+          <div style={{ position: "absolute", zIndex: "1", bottom: "26px", minWidth: "164px", height: "auto", justifyContent: "space-between" }} className="display-flex">
+            {pages.map((thisPage, index) => {
+              return <span key={index} className={"circle " + (page === thisPage ? "circle--selected" : "")}></span>
+            })}
+          </div>
+        </>
+      )}
+    </>
+  )
+}
+
+export default Main
+
+{
+  /* <div className="tx-builder__overlay">
             <IconContext.Provider value={{ size: "300px" }}>
               <div className="tx-builder__overlay__outer">Step 1: Select UTXOs</div>
               <div className="tx-builder__blueprint">
@@ -460,11 +535,5 @@ function Main() {
               <BsReception4 className="icon" />
               <MdLibraryBooks className="icon" />
             </div>
-          </div> */}
-        </>
-      )}
-    </>
-  )
+          </div> */
 }
-
-export default Main
