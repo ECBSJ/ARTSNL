@@ -29,7 +29,7 @@ function WalletMain_AssetDisplay({ isAssetDisplayOpen, setIsAssetDisplayOpen, is
             {appState.bitcoin.address ? (
               <div className="wallet-main__asset-display--label">
                 <div style={{ fontSize: ".4em" }}>{appState.isTestnet ? appState.bitcoin.testnetAddress : appState.bitcoin.address}</div>
-                <div style={{ fontFamily: "Russo One", fontSize: "2rem" }}>{appState.isTestnet ? "tBTC" : "BTC"}</div>
+                <div style={{ fontFamily: "Russo One", fontSize: "3rem", color: "#ffcb6a" }}>{appState.isTestnet ? "tBTC" : "BTC"}</div>
                 <div style={{ fontSize: ".6em" }}>{appState.isTestnet ? "testnet" : "mainnet"}</div>
               </div>
             ) : (
@@ -53,7 +53,7 @@ function WalletMain_AssetDisplay({ isAssetDisplayOpen, setIsAssetDisplayOpen, is
             {appState.ethereum.address ? (
               <div className="wallet-main__asset-display--label">
                 <div style={{ fontSize: ".4em" }}>{appState.ethereum.address}</div>
-                <div style={{ fontFamily: "Russo One", fontSize: "2rem" }}>{appState.isTestnet ? "gETH" : "ETH"}</div>
+                <div style={{ fontFamily: "Russo One", fontSize: "3rem", color: "lightblue" }}>{appState.isTestnet ? "gETH" : "ETH"}</div>
                 <div style={{ fontSize: ".6em" }}>{appState.isTestnet ? "goerli" : "mainnet"}</div>
               </div>
             ) : (

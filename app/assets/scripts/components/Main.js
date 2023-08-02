@@ -214,14 +214,14 @@ function Main() {
 
     await wallet
       .encrypt(secret)
-      .then((res) => {
+      .then(res => {
         encryptedJSON = res
         setCookie("key", encryptedJSON, { "max-age": 36000 })
       })
       .catch(console.error)
 
     if (encryptedJSON) {
-      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then((res) => (decryptedWallet = res))
+      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then(res => (decryptedWallet = res))
     }
 
     console.log(secret)
@@ -233,7 +233,7 @@ function Main() {
     let keyStore = getCookie("key")
 
     if (typeof secret == "string" && typeof keyStore == "string") {
-      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then((res) => console.log(res))
+      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then(res => console.log(res))
     }
   }
 
@@ -241,7 +241,7 @@ function Main() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options,
+      ...options
     }
 
     if (options.expires instanceof Date) {
@@ -268,7 +268,7 @@ function Main() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1,
+      "max-age": -1
     })
   }
 
@@ -403,14 +403,17 @@ function Main() {
   // })
 
   function nextPage() {
-    setPage((prev) => prev + 1)
+    setPage(prev => prev + 1)
   }
 
   return (
     <>
       <CSSTransition in={page === 0} timeout={300} classNames="container__overlay" unmountOnExit>
         <div className="container__overlay">
-          <div style={{ fontSize: "3rem" }}>ARTSNL</div>
+          <div style={{ fontSize: "2.5rem" }} className="display-flex">
+            <img style={{ width: "34px", marginRight: "12px", transform: "translateY(3px)" }} src="https://i.imgur.com/5fv5p7q.png" alt="artsnl-logo" />
+            ARTSNL
+          </div>
           <div onClick={() => setPage(1)}>
             <MdNavigateNext className="icon" />
           </div>

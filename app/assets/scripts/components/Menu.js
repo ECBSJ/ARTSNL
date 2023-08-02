@@ -24,7 +24,10 @@ function Menu() {
     <>
       <div className="menu__cover">
         <MdClose onClick={() => appDispatch({ type: "toggleMenu" })} className="icon icon__menu-close" />
-        <div className="menu__label">ARTSNL MENU</div>
+        <div className="menu__label">
+          <img style={{ width: "20px", marginRight: "6px" }} src="https://i.imgur.com/5fv5p7q.png" alt="artsnl-logo" />
+          ARTSNL MENU
+        </div>
         <div className="menu__dashboard">
           <div className="menu__dashboard-row">
             <div className="menu__dashboard-row-box">ABOUT</div>
