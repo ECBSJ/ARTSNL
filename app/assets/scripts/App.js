@@ -35,7 +35,7 @@ function App() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options
+      ...options,
     }
 
     if (options.expires instanceof Date) {
@@ -62,7 +62,7 @@ function App() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1
+      "max-age": -1,
     })
   }
 
@@ -107,10 +107,10 @@ function App() {
   // immerReducer config
   const initialState = {
     hasBrowserStorage: false,
-    isTestnet: false,
+    isTestnet: true,
     keys: {
       bufferPrivKey: null,
-      bufferPubKey: null
+      bufferPubKey: null,
     },
     bitcoin: {
       bitcoinJsNetwork: null,
@@ -139,21 +139,21 @@ function App() {
         TXSIZE_VBYTES_CONSTANTS: {
           OVERHEAD: 10,
           INPUT: 181,
-          OUTPUT: 34
+          OUTPUT: 34,
         },
         minAmountToSend: 5000, // sats denomination
         feeAmount: 0,
         estimatedRemainingAmount: 0,
-        psbt: null
-      }
+        psbt: null,
+      },
     },
     ethereum: {
       mainnetProvider: null,
       testnetProvider: null,
       activeProvider: null,
-      address: null
+      address: null,
     },
-    isMenuOpen: false
+    isMenuOpen: false,
   }
 
   function ourReducer(draft, action) {
@@ -187,7 +187,7 @@ function App() {
       case "setLocalStorage":
         let keyPairObject = {
           priv: uint8arraytools.toHex(draft.keys.bufferPrivKey),
-          pub: uint8arraytools.toHex(draft.keys.bufferPubKey)
+          pub: uint8arraytools.toHex(draft.keys.bufferPubKey),
         }
 
         let tobeEncrypted = JSON.stringify(keyPairObject)
@@ -228,20 +228,20 @@ function App() {
         return
       case "setBitcoinProviders":
         let mempoolProvider = mempoolJS({
-          hostname: "mempool.space"
+          hostname: "mempool.space",
         })
 
         let mempoolTestnetProvider = mempoolJS({
           hostname: "mempool.space",
-          network: "testnet"
+          network: "testnet",
         })
 
         draft.bitcoin.mainnetProvider = mempoolProvider
         draft.bitcoin.testnetProvider = mempoolTestnetProvider
         return
       case "setEthereumProviders":
-        let infuraProvider = new ethers.InfuraProvider(1, "19e6398ef2ee4861bfa95987d08fbc50")
-        let infuraTestnetProvider = new ethers.InfuraProvider(5, "19e6398ef2ee4861bfa95987d08fbc50")
+        let infuraProvider = new ethers.InfuraProvider(1, process.env.INFURA)
+        let infuraTestnetProvider = new ethers.InfuraProvider(5, process.env.INFURA)
 
         draft.ethereum.mainnetProvider = infuraProvider
         draft.ethereum.testnetProvider = infuraTestnetProvider
@@ -346,7 +346,7 @@ function App() {
         const ECPair = ECPairFactory(ecc)
         let keyPair = ECPair.fromPrivateKey(draft.keys.bufferPrivKey, {
           compressed: false,
-          network: draft.bitcoin.bitcoinJsNetwork
+          network: draft.bitcoin.bitcoinJsNetwork,
         })
 
         const validator = (pubkey, msghash, signature) => ECPair.fromPublicKey(pubkey).verify(msghash, signature)
@@ -357,7 +357,7 @@ function App() {
           psbt.addInput({
             hash: draft.bitcoin.txBuilder.utxoData_Array[selectedUtxoIndex].txid,
             index: draft.bitcoin.txBuilder.utxoData_Array[selectedUtxoIndex].vout,
-            nonWitnessUtxo: Buffer.from(draft.bitcoin.txBuilder.selectedUtxoTxHex_Array[index], "hex")
+            nonWitnessUtxo: Buffer.from(draft.bitcoin.txBuilder.selectedUtxoTxHex_Array[index], "hex"),
           })
         })
 
@@ -385,7 +385,7 @@ function App() {
             validInputtedAddress: address,
             validInputtedAddress_Decoded: bitcoin.address.fromBase58Check(address),
             sendAmount: amount,
-            scriptPubKey: uint8arraytools.toHex(bitcoin.address.toOutputScript(address, draft.bitcoin.bitcoinJsNetwork))
+            scriptPubKey: uint8arraytools.toHex(bitcoin.address.toOutputScript(address, draft.bitcoin.bitcoinJsNetwork)),
           }
 
           draft.bitcoin.txBuilder.outputs_Array.push(object)
@@ -394,7 +394,7 @@ function App() {
         draft.bitcoin.txBuilder.outputs_Array.forEach((outputObject, index) => {
           psbt.addOutput({
             address: outputObject.validInputtedAddress,
-            value: outputObject.sendAmount
+            value: outputObject.sendAmount,
           })
         })
 
@@ -423,12 +423,12 @@ function App() {
           TXSIZE_VBYTES_CONSTANTS: {
             OVERHEAD: 10,
             INPUT: 181,
-            OUTPUT: 34
+            OUTPUT: 34,
           },
           minAmountToSend: 5000,
           feeAmount: 0,
           estimatedRemainingAmount: 0,
-          psbt: null
+          psbt: null,
         }
         return
     }
