@@ -10,7 +10,7 @@ import ECPairFactory from "ecpair"
 import * as ecc from "tiny-secp256k1"
 import * as uint8arraytools from "uint8array-tools"
 import * as base58 from "bs58"
-import { ethers, formatEther, parseEther, Transaction, Wallet } from "ethers"
+import { ethers, formatEther, parseEther, Signature, Transaction, Wallet } from "ethers"
 import { MdNavigateNext, MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
 import { IconContext } from "react-icons"
@@ -39,38 +39,32 @@ function Main() {
     if (appState.ethereum.activeProvider) {
       let myWallet = new Wallet(static_eth_privKey, appState.ethereum.activeProvider)
 
+      let feeResult = await appState.ethereum.activeProvider.getFeeData()
+
       let tx = new Transaction()
       tx.chainId = 5
       tx.data = "0x"
+      // tx.from = "0x9189561aed3229361a1aca088323a3ab0750c5d6"
       tx.gasLimit = 21000
-      tx.maxFeePerGas = null
-      tx.maxPriorityFeePerGas = null
-      tx.nonce = 3
+      tx.maxFeePerGas = feeResult.maxFeePerGas
+      tx.maxPriorityFeePerGas = feeResult.maxPriorityFeePerGas
+      tx.nonce = 4
       tx.to = "0x2b776aa3C2389D6a3B7b11cd99Fdb94190bAF75b"
       tx.type = 2
-      tx.value = parseEther("0.0009")
-      tx.signature = null
-
-      // let txPopulated = await myWallet.populateTransaction(tx)
+      tx.value = parseEther("0.1")
+      let txPreImageHash = ethers.keccak256(tx.unsignedSerialized)
+      let signedResult = myWallet.signingKey.sign(txPreImageHash)
+      tx.signature = signedResult
+      console.log(tx)
       // let newTx1 = Transaction.from(txPopulated)
+
       // let txPreImage = newTx1.unsignedSerialized
       // let txPreImageHash = ethers.keccak256(txPreImage)
-      // console.log(txPreImageHash)
-      // let signedPreImageHash = myWallet.signMessage(txPreImageHash)
-      // let txSigned = await myWallet.signTransaction(txPopulated)
+      // let signedHash = myWallet.signingKey.sign(txPreImageHash)
+
       // let newTx = Transaction.from(txSigned)
-      // let txBroadcast = await myWallet.sendTransaction(newTx)
-
-      let unsignedSerialized = "0x02ee0503843b9aca00843b9aca34825208942b776aa3c2389d6a3b7b11cd99fdb94190baf75b8703328b944c400080c0"
-      let unsignedHash = "0x2cbb3104eafa3c86226cfd8811a97c6f9177e07fd28694adc5310be286dd8430"
-      // need to find method to sign unsignedHash into r,s
-      let signedHash = await myWallet.signMessage(unsignedHash)
-
-      let signature = {
-        r: "0x21a84216cb7a0d9063b9faf326db13a3e53229825663507fefac7bf8db66f37f",
-        s: "0x2185af9a5bfa81b11eb338212dfbf9b63087fa2bb726bf7f8589ca770184ed9b"
-      }
-      let rawTxHex = "0x02f8710503843b9aca00843b9aca34825208942b776aa3c2389d6a3b7b11cd99fdb94190baf75b8703328b944c400080c001a021a84216cb7a0d9063b9faf326db13a3e53229825663507fefac7bf8db66f37fa02185af9a5bfa81b11eb338212dfbf9b63087fa2bb726bf7f8589ca770184ed9b"
+      let txBroadcast = await myWallet.sendTransaction(tx)
+      // check: 0x4fa09f9bf07399229224e2054dca1a56f7ae8e4a06f93b964479f59f280d439d
     }
   }
 
@@ -253,14 +247,14 @@ function Main() {
 
     await wallet
       .encrypt(secret)
-      .then(res => {
+      .then((res) => {
         encryptedJSON = res
         setCookie("key", encryptedJSON, { "max-age": 36000 })
       })
       .catch(console.error)
 
     if (encryptedJSON) {
-      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then(res => (decryptedWallet = res))
+      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then((res) => (decryptedWallet = res))
     }
 
     console.log(secret)
@@ -272,7 +266,7 @@ function Main() {
     let keyStore = getCookie("key")
 
     if (typeof secret == "string" && typeof keyStore == "string") {
-      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then(res => console.log(res))
+      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then((res) => console.log(res))
     }
   }
 
@@ -280,7 +274,7 @@ function Main() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options
+      ...options,
     }
 
     if (options.expires instanceof Date) {
@@ -307,7 +301,7 @@ function Main() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1
+      "max-age": -1,
     })
   }
 
@@ -442,7 +436,7 @@ function Main() {
   // })
 
   function nextPage() {
-    setPage(prev => prev + 1)
+    setPage((prev) => prev + 1)
   }
 
   return (
