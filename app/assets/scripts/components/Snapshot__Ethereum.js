@@ -8,10 +8,13 @@ import DispatchContext from "../DispatchContext"
 import LazyLoadFallback from "./LazyLoadFallback"
 import { VscBracketError } from "react-icons/vsc"
 import { ethers } from "ethers"
+import { useNavigate } from "react-router-dom"
 
 function Snapshot__Ethereum({ hasErrors_Eth, setHasErrors_Eth, isFetching_Eth, setIsFetching_Eth, ethAddressBalance, setEthAddressBalance, ethAddressTxCount, setEthAddressTxCount, getEthereumAddressData }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
+
+  const navigate = useNavigate()
 
   const [openFunctionView, setOpenFunctionView] = useState(0)
 
@@ -30,7 +33,7 @@ function Snapshot__Ethereum({ hasErrors_Eth, setHasErrors_Eth, isFetching_Eth, s
   }, [])
 
   function navigateToEthTxBuilder() {
-    null
+    navigate("/EthTxBuilder")
   }
 
   return (

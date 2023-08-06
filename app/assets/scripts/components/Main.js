@@ -10,7 +10,7 @@ import ECPairFactory from "ecpair"
 import * as ecc from "tiny-secp256k1"
 import * as uint8arraytools from "uint8array-tools"
 import * as base58 from "bs58"
-import { ethers, formatEther, parseEther, Signature, Transaction, Wallet } from "ethers"
+import { decodeRlp, encodeRlp, ethers, formatEther, parseEther, Signature, Transaction, Wallet } from "ethers"
 import { MdNavigateNext, MdMenu, MdLibraryBooks, MdCopyAll } from "react-icons/md"
 import { TbRefresh } from "react-icons/tb"
 import { IconContext } from "react-icons"
@@ -29,44 +29,6 @@ function Main() {
 
   const [page, setPage] = useState(0)
   const pages = [1, 2, 3, 4, 5, 6]
-
-  let static_eth_privKey = "3fdde77e8b442bc89dc890adf8fd72b4314e99ea7a205b9dd302114c9aefc493"
-  let static_eth_pubKey = "0488a0dfca9af0d817962b25d1aa92d64e1645c94d452f6e75f61adc3f78d61b623637901afdf2efcb0bbf5badd82c2e559f22fe2f824438515614137443cb62ea"
-  let static_eth_keccak = "53d393a6cfa8d868fd33bafc9189561aed3229361a1aca088323a3ab0750c5d6"
-  let static_eth_add = "0x9189561aed3229361a1aca088323a3ab0750c5d6"
-
-  async function testEthers() {
-    if (appState.ethereum.activeProvider) {
-      let myWallet = new Wallet(static_eth_privKey, appState.ethereum.activeProvider)
-
-      let feeResult = await appState.ethereum.activeProvider.getFeeData()
-
-      let tx = new Transaction()
-      tx.chainId = 5
-      tx.data = "0x"
-      // tx.from = "0x9189561aed3229361a1aca088323a3ab0750c5d6"
-      tx.gasLimit = 21000
-      tx.maxFeePerGas = feeResult.maxFeePerGas
-      tx.maxPriorityFeePerGas = feeResult.maxPriorityFeePerGas
-      tx.nonce = 4
-      tx.to = "0x2b776aa3C2389D6a3B7b11cd99Fdb94190bAF75b"
-      tx.type = 2
-      tx.value = parseEther("0.1")
-      let txPreImageHash = ethers.keccak256(tx.unsignedSerialized)
-      let signedResult = myWallet.signingKey.sign(txPreImageHash)
-      tx.signature = signedResult
-      console.log(tx)
-      // let newTx1 = Transaction.from(txPopulated)
-
-      // let txPreImage = newTx1.unsignedSerialized
-      // let txPreImageHash = ethers.keccak256(txPreImage)
-      // let signedHash = myWallet.signingKey.sign(txPreImageHash)
-
-      // let newTx = Transaction.from(txSigned)
-      let txBroadcast = await myWallet.sendTransaction(tx)
-      // check: 0x4fa09f9bf07399229224e2054dca1a56f7ae8e4a06f93b964479f59f280d439d
-    }
-  }
 
   // const ECPair = ECPairFactory(ecc)
   // const Mainnet = bitcoin.networks.bitcoin
@@ -192,7 +154,6 @@ function Main() {
   // let address = base58.encode(combinedBuff)
 
   // eth pubkey to address
-  // let provider = new ethers.InfuraProvider(1, "19e6398ef2ee4861bfa95987d08fbc50")
   // let prepareETHpubKey = result.slice(1, 65)
   // let keccakPubKey = ethers.keccak256(prepareETHpubKey)
   // let removed_0x = keccakPubKey.slice(2)
@@ -247,14 +208,14 @@ function Main() {
 
     await wallet
       .encrypt(secret)
-      .then((res) => {
+      .then(res => {
         encryptedJSON = res
         setCookie("key", encryptedJSON, { "max-age": 36000 })
       })
       .catch(console.error)
 
     if (encryptedJSON) {
-      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then((res) => (decryptedWallet = res))
+      await ethers.Wallet.fromEncryptedJson(encryptedJSON, secret).then(res => (decryptedWallet = res))
     }
 
     console.log(secret)
@@ -266,7 +227,7 @@ function Main() {
     let keyStore = getCookie("key")
 
     if (typeof secret == "string" && typeof keyStore == "string") {
-      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then((res) => console.log(res))
+      await ethers.Wallet.fromEncryptedJson(keyStore, secret).then(res => console.log(res))
     }
   }
 
@@ -274,7 +235,7 @@ function Main() {
     options = {
       path: "/",
       // add other defaults here if necessary
-      ...options,
+      ...options
     }
 
     if (options.expires instanceof Date) {
@@ -301,7 +262,7 @@ function Main() {
 
   function deleteCookie(name) {
     setCookie(name, "", {
-      "max-age": -1,
+      "max-age": -1
     })
   }
 
@@ -436,7 +397,7 @@ function Main() {
   // })
 
   function nextPage() {
-    setPage((prev) => prev + 1)
+    setPage(prev => prev + 1)
   }
 
   return (
