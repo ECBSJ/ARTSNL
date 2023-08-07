@@ -112,3 +112,19 @@ input:valid ~ span {
     }
   }
 }
+
+.eth-txBuilder-input {
+  position: relative;
+  border-radius: initial;
+  padding: 0 0 0 12px;
+  border: none;
+  height: 100%;
+  background: none;
+  caret-color: #d57bff;
+  color: #5f2a78;
+
+  &:focus {
+    background-color: #bd00ff;
+    color: white;
+  }
+}

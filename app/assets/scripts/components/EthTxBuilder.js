@@ -28,19 +28,19 @@ function EthTxBuilder() {
 
       // type is bigint wei
       let currentBalance = await appState.ethereum.activeProvider.getBalance(myWallet.address)
-
+      console.log(currentBalance)
       let currentBlock = await appState.ethereum.activeProvider.getBlockNumber()
       console.log(currentBlock)
 
       // feeResult in bigint wei
-      let feeResult = await appState.ethereum.activeProvider.getFeeData()
-      console.log(feeResult)
-      let staticGasLimit = 21000n
-      let totalFee = staticGasLimit * feeResult.maxFeePerGas
-      let fullAvailableToSend = currentBalance - totalFee
+      // let feeResult = await appState.ethereum.activeProvider.getFeeData()
+      // console.log(feeResult)
+      // let staticGasLimit = 21000n
+      // let totalFee = staticGasLimit * feeResult.maxFeePerGas
+      // let fullAvailableToSend = currentBalance - totalFee
 
-      let stringData = ""
-      let stringDataBufferHex = "0x" + Buffer.from(stringData).toString("hex")
+      // let stringData = ""
+      // let stringDataBufferHex = "0x" + Buffer.from(stringData).toString("hex")
 
       // let tx = new Transaction()
       // tx.chainId = 5
@@ -66,6 +66,19 @@ function EthTxBuilder() {
     }
   }
 
+  const [fetchBalanceHasError, setFetchBalanceHasError] = useState(false)
+
+  async function fetchCurrentBalance() {
+    try {
+      setFetchBalanceHasError(false)
+      let result = await appState.ethereum.activeProvider?.getBalance(appState.ethereum.address)
+      appDispatch({ type: "setCurrentBalance", value: result })
+    } catch (err) {
+      console.error(err)
+      setFetchBalanceHasError(true)
+    }
+  }
+
   function refreshTxBuilder() {
     null
   }
@@ -74,11 +87,16 @@ function EthTxBuilder() {
     navigate("/WalletMain")
   }
 
-  useEffect(() => {
-    // init Wallet class
-    // init Transaction class
-    // fetch address balance
-  }, [])
+  // useEffect(() => {
+  //   if (appState.ethereum.activeProvider) {
+  //     // init Wallet class
+  //     appDispatch({ type: "initWalletClass" })
+  //     // init Transaction class
+  //     appDispatch({ type: "initTxDataStruct" })
+  //     // fetch address balance
+  //     fetchCurrentBalance()
+  //   }
+  // }, [])
 
   return (
     <>
