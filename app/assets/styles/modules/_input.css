@@ -121,7 +121,7 @@ input:valid ~ span {
   height: 100%;
   background: none;
   caret-color: #d57bff;
-  color: #5f2a78;
+  color: #8746a6;
 
   &:focus {
     background-color: #bd00ff;

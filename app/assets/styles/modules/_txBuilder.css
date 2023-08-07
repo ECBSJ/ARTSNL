@@ -111,6 +111,7 @@
         &-top {
           flex: 1;
           width: 100%;
+          position: relative;
           padding-left: 12px;
           display: flex;
           justify-content: flex-start;
