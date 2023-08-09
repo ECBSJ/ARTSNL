@@ -7,6 +7,8 @@ import { IconContext } from "react-icons"
 import { FaQuestionCircle } from "react-icons/fa"
 import { MdCheckCircle, MdError, MdContentPasteGo, MdQrCodeScanner, MdManageSearch } from "react-icons/md"
 
+import LazyLoadFallback from "../LazyLoadFallback"
+
 import { formatEther, formatUnits } from "ethers"
 
 function EthTxSetGasFee({ setTxStatus }) {
@@ -69,13 +71,18 @@ function EthTxSetGasFee({ setTxStatus }) {
   }
 
   function handleInputNonceValidation(value) {
-    if (value >= staticNonce) {
-      // set valid nonce
-      setInputtedValidNonce(value)
+    if (!value.trim()) {
+      setInputtedValidNonce(null)
       setNonceErrorMessage("")
     } else {
-      setInputtedValidNonce(null)
-      setNonceErrorMessage("Nonce needs to be larger than previous nonce.")
+      if (value >= staticNonce) {
+        // set valid nonce
+        setInputtedValidNonce(parseInt(value))
+        setNonceErrorMessage("")
+      } else {
+        setInputtedValidNonce(null)
+        setNonceErrorMessage("Nonce needs to be larger than previous nonce.")
+      }
     }
   }
 
@@ -139,7 +146,7 @@ function EthTxSetGasFee({ setTxStatus }) {
                   )}
                 </div>
                 <div className="tx-builder__blueprint-dashboard__input-field-bottom">
-                  <input autoFocus onChange={(e) => handleInputNonceValidation(e.target.value)} className="eth-txBuilder-input" value={Number.isInteger(nonce) ? nonce : undefined} onFocus={() => setNonce(null)} type="number" />
+                  <input autoFocus onChange={e => handleInputNonceValidation(e.target.value)} className="eth-txBuilder-input" value={Number.isInteger(nonce) ? nonce : undefined} onFocus={() => setNonce(null)} type="number" />
                 </div>
               </div>
             </div>
@@ -152,7 +159,7 @@ function EthTxSetGasFee({ setTxStatus }) {
           </div>
 
           <div className="tx-builder__overlay__outer">
-            {inputtedValidNonce ? (
+            {inputtedValidNonce || inputtedValidNonce === 0 ? (
               <>
                 <button onClick={() => handleNext()} className="button-purple">
                   Input Send Amount
