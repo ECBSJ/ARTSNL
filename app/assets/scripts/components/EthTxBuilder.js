@@ -88,16 +88,16 @@ function EthTxBuilder() {
     navigate("/WalletMain")
   }
 
-  // useEffect(() => {
-  //   if (appState.ethereum.activeProvider) {
-  //     // init Wallet class
-  //     appDispatch({ type: "initWalletClass" })
-  //     // init Transaction class
-  //     appDispatch({ type: "initTxDataStruct" })
-  //     // fetch address balance
-  //     fetchCurrentBalance()
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (appState.ethereum.activeProvider) {
+      // init Wallet class
+      appDispatch({ type: "initWalletClass" })
+      // init Transaction class
+      appDispatch({ type: "initTxDataStruct" })
+      // fetch address balance
+      fetchCurrentBalance()
+    }
+  }, [])
 
   return (
     <>

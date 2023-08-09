@@ -6,7 +6,7 @@ import { Tooltip } from "react-tooltip"
 import { IconContext } from "react-icons"
 import { FaQuestionCircle } from "react-icons/fa"
 import { MdCheckCircle, MdError, MdContentPasteGo, MdQrCodeScanner } from "react-icons/md"
-import { isAddress, ethers } from "ethers"
+import { isAddress, formatEther } from "ethers"
 
 import QRreaderPopup from "../QRreaderPopup"
 
@@ -152,7 +152,7 @@ function EthTxStructureType({ setTxStatus }) {
   function handlePaste() {
     navigator.clipboard
       .readText()
-      .then(res => {
+      .then((res) => {
         document.getElementById("to-input-grab").value = res
         handleToInput(res)
       })
@@ -203,7 +203,7 @@ function EthTxStructureType({ setTxStatus }) {
                   )}
                 </div>
                 <div className="tx-builder__blueprint-dashboard__input-field-bottom">
-                  <input ref={chainIdInputRef} onChange={e => handleChainIdInput(e.target.value)} className="eth-txBuilder-input" type="number" />
+                  <input ref={chainIdInputRef} onChange={(e) => handleChainIdInput(e.target.value)} className="eth-txBuilder-input" type="number" />
                 </div>
               </div>
               <div className="tx-builder__blueprint-dashboard__input-field">
@@ -221,7 +221,7 @@ function EthTxStructureType({ setTxStatus }) {
                   )}
                 </div>
                 <div className="tx-builder__blueprint-dashboard__input-field-bottom">
-                  <input onChange={e => handleTypeInput(e.target.value)} className="eth-txBuilder-input" type="number" />
+                  <input onChange={(e) => handleTypeInput(e.target.value)} className="eth-txBuilder-input" type="number" />
                 </div>
               </div>
               <div className="tx-builder__blueprint-dashboard__input-field">
@@ -249,7 +249,7 @@ function EthTxStructureType({ setTxStatus }) {
                   )}
                 </div>
                 <div className="tx-builder__blueprint-dashboard__input-field-bottom">
-                  <input id="to-input-grab" onChange={e => handleToInput(e.target.value)} className="eth-txBuilder-input" value={scannedValue ? scannedValue : undefined} onFocus={() => setScannedValue()} type="text" />
+                  <input id="to-input-grab" onChange={(e) => handleToInput(e.target.value)} className="eth-txBuilder-input" value={scannedValue ? scannedValue : undefined} onFocus={() => setScannedValue()} type="text" />
                 </div>
               </div>
               <div className="tx-builder__blueprint-dashboard__input-field">
@@ -284,12 +284,16 @@ function EthTxStructureType({ setTxStatus }) {
                   )}
                 </div>
                 <div className="tx-builder__blueprint-dashboard__input-field-bottom">
-                  <input id="data-input-grab" onChange={e => handleDataInput(e.target.value)} className="eth-txBuilder-input" placeholder="optional" type="text" />
+                  <input id="data-input-grab" onChange={(e) => handleDataInput(e.target.value)} className="eth-txBuilder-input" placeholder="optional" type="text" />
                 </div>
               </div>
             </div>
-            <p style={{ position: "absolute", bottom: "10px", left: "28px", fontSize: "0.6em" }}>Current Balance:</p>
-            <p style={{ position: "absolute", bottom: "-4px", left: "28px", fontSize: "0.6em" }}>Estimated Available:</p>
+            <p style={{ position: "absolute", bottom: "10px", left: "28px", fontSize: "0.6em" }}>
+              <span style={{ color: "gray" }}>Current Balance:</span> {formatEther(appState.ethereum.currentBalance)}
+            </p>
+            <p style={{ position: "absolute", bottom: "-4px", left: "28px", fontSize: "0.6em" }}>
+              <span style={{ color: "gray" }}>Estimated Available:</span> {formatEther(appState.ethereum.currentBalance)}
+            </p>
           </div>
 
           <div className="tx-builder__overlay__outer">

@@ -123,6 +123,7 @@
         &-bottom {
           flex: 1.5;
           width: 100%;
+          position: relative;
           display: flex;
           justify-content: flex-start;
           align-items: center;
