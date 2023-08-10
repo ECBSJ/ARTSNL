@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom"
 // ETH TX BUILDER COMPONENTS
 import EthTxStructureType from "./ethtx/EthTxStructureType"
 import EthTxSetGasFee from "./ethtx/EthTxSetGasFee"
+import EthTxSendAmount from "./ethtx/EthTxSendAmount"
 
 function EthTxBuilder() {
   const appState = useContext(StateContext)
@@ -107,6 +108,10 @@ function EthTxBuilder() {
 
       <CSSTransition in={txStatus === 1} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
         <EthTxSetGasFee setTxStatus={setTxStatus} />
+      </CSSTransition>
+
+      <CSSTransition in={txStatus === 2} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
+        <EthTxSendAmount setTxStatus={setTxStatus} />
       </CSSTransition>
 
       {/* the below jsx is used as the header, footer, and backbone foundational layout for the above components */}

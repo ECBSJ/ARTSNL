@@ -17,29 +17,37 @@ function EthTxSetGasFee({ setTxStatus }) {
 
   const [fetchGasFeeError, setFetchGasFeeError] = useState(false)
   const [gasLimit, setGasLimit] = useState()
+  const [fetchGasLimitProgress, setFetchGasLimitProgress] = useState("loading")
   const [maxFeePerGas, setMaxFeePerGas] = useState()
   const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState()
+  const [fetchFeeDataProgress, setFetchFeeDataProgress] = useState("")
 
   async function fetchGasLimit() {
     try {
+      setFetchGasLimitProgress("loading")
       let result = await appState.ethereum.txBuilder.wallet?.estimateGas(appState.ethereum.txBuilder.txDataStruct)
       result && appDispatch({ type: "setGasLimit", value: result })
       setGasLimit(result)
+      setFetchGasLimitProgress("success")
     } catch (err) {
       console.error(err)
+      setFetchGasLimitProgress("error")
     }
   }
 
   async function fetchFeeData() {
     // feeResult in bigint wei
     try {
+      setFetchFeeDataProgress("loading")
       let result = await appState.ethereum.activeProvider.getFeeData()
       appDispatch({ type: "setMaxFeePerGas", value: result?.maxFeePerGas })
       appDispatch({ type: "setMaxPriorityFeePerGas", value: result?.maxPriorityFeePerGas })
       setMaxFeePerGas(result?.maxFeePerGas)
       setMaxPriorityFeePerGas(result?.maxPriorityFeePerGas)
+      setFetchFeeDataProgress("success")
     } catch (err) {
       console.error(err)
+      setFetchFeeDataProgress("error")
     }
   }
 
@@ -104,30 +112,59 @@ function EthTxSetGasFee({ setTxStatus }) {
                 <div className="tx-builder__blueprint-dashboard__input-field-top">
                   <span>tx.gasLimit</span>
                   <FaQuestionCircle id="Tooltip" data-tooltip-content="The gas limit refers to the maximum amount of gas you are willing to consume on a transaction." className="icon" />
+                  <MdManageSearch onClick={() => fetchGasLimit()} id="Tooltip" data-tooltip-content="Recalculate gasLimit" className="icon" />
                 </div>
                 <div className="tx-builder__blueprint-dashboard__input-field-bottom">
-                  <input className="eth-txBuilder-input" value={gasLimit ? Number(gasLimit) : ""} readOnly type="number" />
-                  <span style={{ position: "absolute", right: "4px", bottom: "4px", cursor: "default", color: "#8746a6" }}>gas units</span>
+                  {fetchGasLimitProgress == "loading" ? (
+                    <LazyLoadFallback />
+                  ) : fetchGasLimitProgress == "error" ? (
+                    <>
+                      <span style={{ color: "red", marginLeft: "14px", fontFamily: "monospace" }}>Error estimating gas limit</span>
+                    </>
+                  ) : (
+                    <>
+                      <input className="eth-txBuilder-input" value={gasLimit ? Number(gasLimit) : ""} readOnly type="number" />
+                      <span style={{ position: "absolute", right: "4px", bottom: "4px", cursor: "default", color: "#8746a6" }}>gas units</span>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="tx-builder__blueprint-dashboard__input-field">
                 <div className="tx-builder__blueprint-dashboard__input-field-top">
                   <span>tx.maxFeePerGas</span>
                   <FaQuestionCircle id="Tooltip" data-tooltip-content="Users can specify a maximum limit they are willing to pay for their transaction to be executed." className="icon" />
+                  <MdManageSearch onClick={() => fetchFeeData()} id="Tooltip" data-tooltip-content="Recalculate maxFeePerGas" className="icon" />
                 </div>
                 <div className="tx-builder__blueprint-dashboard__input-field-bottom">
-                  <input className="eth-txBuilder-input" value={maxFeePerGas ? formatUnits(maxFeePerGas, "gwei") : ""} readOnly type="number" />
-                  <span style={{ position: "absolute", right: "4px", bottom: "4px", cursor: "default", color: "#8746a6" }}>gwei</span>
+                  {fetchFeeDataProgress == "loading" ? (
+                    <LazyLoadFallback />
+                  ) : fetchFeeDataProgress == "error" ? (
+                    <span style={{ color: "red", marginLeft: "14px", fontFamily: "monospace" }}>Error fetching network fee data</span>
+                  ) : (
+                    <>
+                      <input className="eth-txBuilder-input" value={maxFeePerGas ? formatUnits(maxFeePerGas, "gwei") : ""} readOnly type="number" />
+                      <span style={{ position: "absolute", right: "4px", bottom: "4px", cursor: "default", color: "#8746a6" }}>gwei</span>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="tx-builder__blueprint-dashboard__input-field">
                 <div className="tx-builder__blueprint-dashboard__input-field-top">
                   <span>tx.maxPriorityFeePerGas</span>
                   <FaQuestionCircle id="Tooltip" data-tooltip-content="The priority fee (tip) incentivizes validators to include a transaction in the block." className="icon" />
+                  <MdManageSearch onClick={() => fetchFeeData()} id="Tooltip" data-tooltip-content="Recalculate maxPriorityFeePerGas" className="icon" />
                 </div>
                 <div className="tx-builder__blueprint-dashboard__input-field-bottom">
-                  <input className="eth-txBuilder-input" value={maxPriorityFeePerGas ? formatUnits(maxPriorityFeePerGas, "gwei") : ""} readOnly type="number" />
-                  <span style={{ position: "absolute", right: "4px", bottom: "4px", cursor: "default", color: "#8746a6" }}>gwei</span>
+                  {fetchFeeDataProgress == "loading" ? (
+                    <LazyLoadFallback />
+                  ) : fetchFeeDataProgress == "error" ? (
+                    <span style={{ color: "red", marginLeft: "14px", fontFamily: "monospace" }}>Error fetching network fee data</span>
+                  ) : (
+                    <>
+                      <input className="eth-txBuilder-input" value={maxPriorityFeePerGas ? formatUnits(maxPriorityFeePerGas, "gwei") : ""} readOnly type="number" />
+                      <span style={{ position: "absolute", right: "4px", bottom: "4px", cursor: "default", color: "#8746a6" }}>gwei</span>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="tx-builder__blueprint-dashboard__input-field">
@@ -146,7 +183,7 @@ function EthTxSetGasFee({ setTxStatus }) {
                   )}
                 </div>
                 <div className="tx-builder__blueprint-dashboard__input-field-bottom">
-                  <input autoFocus onChange={e => handleInputNonceValidation(e.target.value)} className="eth-txBuilder-input" value={Number.isInteger(nonce) ? nonce : undefined} onFocus={() => setNonce(null)} type="number" />
+                  <input autoFocus onChange={(e) => handleInputNonceValidation(e.target.value)} className="eth-txBuilder-input" value={Number.isInteger(nonce) ? nonce : undefined} onFocus={() => setNonce(null)} type="number" />
                 </div>
               </div>
             </div>
