@@ -6,17 +6,19 @@ import { Tooltip } from "react-tooltip"
 import { IconContext } from "react-icons"
 import { FaQuestionCircle } from "react-icons/fa"
 import { MdCheckCircle, MdError, MdContentPasteGo, MdQrCodeScanner } from "react-icons/md"
-import { isAddress, formatEther } from "ethers"
+import { isAddress, formatEther, parseEther } from "ethers"
 
 function EthTxSendAmount({ setTxStatus }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
-  const [totalFee, setTotalFee] = useState()
+  // both totalFee & maxAmnt in bigint wei
+  const [totalFee, setTotalFee] = useState(0n)
   const [maxAmnt, setMaxAmnt] = useState()
 
   function handleMaxAmnt(e) {
-    e.currentTarget.classList.toggle("box-selected")
+    // e.currentTarget.classList.toggle("box-selected")
+    document.querySelector(".data-type-selector-container--box").classList.toggle("box-selected")
 
     // diff value in bigint wei
     let diff = appState.ethereum.currentBalance - totalFee
@@ -25,7 +27,8 @@ function EthTxSendAmount({ setTxStatus }) {
     inputSendAmntValidation(formatEther(diff))
 
     setTimeout(() => {
-      e.currentTarget.classList.toggle("box-selected")
+      // e.currentTarget.classList.toggle("box-selected")
+      document.querySelector(".data-type-selector-container--box").classList.toggle("box-selected")
     }, 1000)
   }
 
@@ -43,17 +46,23 @@ function EthTxSendAmount({ setTxStatus }) {
     let maxLimit = formatEther(appState.ethereum.currentBalance - totalFee)
     let minLimit = formatEther(0)
 
-    if (value > minLimit && value <= maxLimit) {
-      // value within range is valid
+    if (!value.trim()) {
       setInputSendAmntError(false)
-      setInputtedValidSendAmnt(value)
-    } else {
-      setInputSendAmntError(true)
       setInputtedValidSendAmnt(null)
+    } else {
+      if (value > minLimit && value <= maxLimit) {
+        // value within range is valid
+        setInputSendAmntError(false)
+        setInputtedValidSendAmnt(value)
+      } else {
+        setInputSendAmntError(true)
+        setInputtedValidSendAmnt(null)
+      }
     }
   }
 
   function handleNext() {
+    appDispatch({ type: "setValue", value: parseEther(inputtedValidSendAmnt) })
     setTxStatus(3)
   }
 
@@ -78,7 +87,7 @@ function EthTxSendAmount({ setTxStatus }) {
 
                   {inputSendAmntError ? (
                     <span style={{ right: "5px", top: "8px", justifyContent: "flex-end", color: "red", columnGap: "3px", fontSize: ".8em" }} className="position-absolute display-flex">
-                      "Value out of valid range"
+                      Value out of valid range
                       <MdError className="icon--error" />
                     </span>
                   ) : (
@@ -95,8 +104,7 @@ function EthTxSendAmount({ setTxStatus }) {
                   )}
                 </div>
                 <div className="tx-builder__blueprint-dashboard__input-field-bottom">
-                  <input autoFocus onChange={(e) => inputSendAmntValidation(e.target.value)} className="eth-txBuilder-input" value={maxAmnt ? maxAmnt : undefined} onFocus={() => setMaxAmnt()} type="number" />
-                  <span style={{ position: "absolute", right: "4px", bottom: "4px", cursor: "default", color: "#8746a6" }}>ether</span>
+                  <input autoFocus onChange={(e) => inputSendAmntValidation(e.target.value)} className="eth-txBuilder-input" value={maxAmnt ? formatEther(maxAmnt) : undefined} onFocus={() => setMaxAmnt()} type="number" />
                 </div>
               </div>
               <div style={{ visibility: "hidden" }} className="tx-builder__blueprint-dashboard__input-field"></div>
@@ -110,11 +118,19 @@ function EthTxSendAmount({ setTxStatus }) {
               <span style={{ color: "gray" }}>Total Est. Fees:</span> {formatEther(totalFee)}
             </p>
             <p style={{ position: "absolute", bottom: "-4px", left: "28px", fontSize: "0.6em" }}>
-              <span style={{ color: "gray" }}>Available To Send:</span> {formatEther(appState.ethereum.currentBalance) - formatEther(totalFee) - inputtedValidSendAmnt}
+              <span style={{ color: "gray" }}>Available To Send:</span> {Number(formatEther(appState.ethereum.currentBalance)) - (Number(formatEther(totalFee)) + Number(inputtedValidSendAmnt))}
             </p>
           </div>
 
-          <div className="tx-builder__overlay__outer">{!inputSendAmntError && inputtedValidSendAmnt ? <button onClick={() => handleNext()}>Sign</button> : ""}</div>
+          <div className="tx-builder__overlay__outer">
+            {!inputSendAmntError && inputtedValidSendAmnt ? (
+              <button onClick={() => handleNext()} className="button-purple">
+                Sign
+              </button>
+            ) : (
+              ""
+            )}
+          </div>
         </IconContext.Provider>
       </div>
       <Tooltip anchorSelect="#Tooltip" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word", zIndex: "101" }} variant="info" />

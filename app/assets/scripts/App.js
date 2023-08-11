@@ -471,6 +471,9 @@ function App() {
       case "setNonce":
         draft.ethereum.txBuilder.txDataStruct.nonce = action.value
         return
+      case "setValue":
+        draft.ethereum.txBuilder.txDataStruct.value = action.value
+        return
     }
   }
 
