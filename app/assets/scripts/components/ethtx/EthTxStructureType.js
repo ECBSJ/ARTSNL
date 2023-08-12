@@ -9,7 +9,6 @@ import { MdCheckCircle, MdError, MdContentPasteGo, MdQrCodeScanner } from "react
 import { isAddress, formatEther } from "ethers"
 
 import QRreaderPopup from "../QRreaderPopup"
-import LazyLoadFallback from "../LazyLoadFallback"
 
 function EthTxStructureType({ setTxStatus }) {
   const appState = useContext(StateContext)

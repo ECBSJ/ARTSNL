@@ -101,6 +101,7 @@
       &__input-field {
         flex: 1;
         width: 100%;
+        min-height: 75px;
         display: flex;
         flex-direction: column;
         justify-content: center;

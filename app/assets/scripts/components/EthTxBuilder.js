@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react"
 import StateContext from "../StateContext"
 import DispatchContext from "../DispatchContext"
 
-import { decodeRlp, encodeRlp, ethers, formatEther, parseEther, Signature, Transaction, Wallet } from "ethers"
+import { ethers, formatEther, parseEther, Transaction, Wallet } from "ethers"
 
 // REACT NPM TOOLS
 import { MdMenu, MdLibraryBooks } from "react-icons/md"
@@ -16,14 +16,17 @@ import { useNavigate } from "react-router-dom"
 import EthTxStructureType from "./ethtx/EthTxStructureType"
 import EthTxSetGasFee from "./ethtx/EthTxSetGasFee"
 import EthTxSendAmount from "./ethtx/EthTxSendAmount"
+import EthTxPreSig from "./ethtx/EthTxPreSig"
 import EthTxSignature from "./ethtx/EthTxSignature"
+import EthTxReview from "./ethtx/EthTxReview"
+import EthTxReceipt from "./ethtx/EthTxReceipt"
 
 function EthTxBuilder() {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
   const navigate = useNavigate()
 
-  const [txStatus, setTxStatus] = useState(3)
+  const [txStatus, setTxStatus] = useState(0)
 
   async function testEthers() {
     if (appState.ethereum.activeProvider) {
@@ -54,10 +57,9 @@ function EthTxBuilder() {
       tx.type = 2
       tx.value = parseEther("0.06")
       let txPreImageHash = ethers.keccak256(tx.unsignedSerialized)
-      // let signedResult = myWallet.signingKey.sign(txPreImageHash)
-      // tx.signature = signedResult
-      // console.log(tx)
-
+      let signedResult = myWallet.signingKey.sign(txPreImageHash)
+      tx.signature = signedResult
+      console.log(tx)
       // gasLimit (type is bigint) estimation requires the chainId, data, to, type
       // let estimation = await myWallet.estimateGas(tx)
 
@@ -80,21 +82,29 @@ function EthTxBuilder() {
   }
 
   function refreshTxBuilder() {
-    null
+    appDispatch({ type: "resetEthTxBuilder" })
+    setTxStatus(0)
+    setFetchBalanceHasError(false)
+    init()
   }
 
   function navigateToWalletHome() {
+    appDispatch({ type: "resetEthTxBuilder" })
     navigate("/WalletMain")
+  }
+
+  function init() {
+    // init Wallet class
+    appDispatch({ type: "initWalletClass" })
+    // init Transaction class
+    appDispatch({ type: "initTxDataStruct" })
+    // fetch address balance
+    fetchCurrentBalance()
   }
 
   useEffect(() => {
     if (appState.ethereum.activeProvider) {
-      // init Wallet class
-      appDispatch({ type: "initWalletClass" })
-      // init Transaction class
-      appDispatch({ type: "initTxDataStruct" })
-      // fetch address balance
-      fetchCurrentBalance()
+      init()
     }
   }, [])
 
@@ -113,7 +123,19 @@ function EthTxBuilder() {
       </CSSTransition>
 
       <CSSTransition in={txStatus === 3} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
+        <EthTxPreSig setTxStatus={setTxStatus} />
+      </CSSTransition>
+
+      <CSSTransition in={txStatus === 4} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
         <EthTxSignature setTxStatus={setTxStatus} />
+      </CSSTransition>
+
+      <CSSTransition in={txStatus === 5} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
+        <EthTxReview setTxStatus={setTxStatus} />
+      </CSSTransition>
+
+      <CSSTransition in={txStatus === 6} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
+        <EthTxReceipt setTxStatus={setTxStatus} />
       </CSSTransition>
 
       {/* the below jsx is used as the header, footer, and backbone foundational layout for the above components */}
@@ -151,7 +173,7 @@ function EthTxBuilder() {
           <MdLibraryBooks className="icon" />
         </div>
       </div>
-      <Tooltip anchorSelect="#Tooltip" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" />
+      <Tooltip anchorSelect="#Tooltip" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word", zIndex: "101" }} variant="info" />
     </>
   )
 }

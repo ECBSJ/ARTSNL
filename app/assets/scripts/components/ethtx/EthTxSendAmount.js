@@ -17,7 +17,6 @@ function EthTxSendAmount({ setTxStatus }) {
   const [maxAmnt, setMaxAmnt] = useState()
 
   function handleMaxAmnt(e) {
-    // e.currentTarget.classList.toggle("box-selected")
     document.querySelector(".data-type-selector-container--box").classList.toggle("box-selected")
 
     // diff value in bigint wei
@@ -27,7 +26,6 @@ function EthTxSendAmount({ setTxStatus }) {
     inputSendAmntValidation(formatEther(diff))
 
     setTimeout(() => {
-      // e.currentTarget.classList.toggle("box-selected")
       document.querySelector(".data-type-selector-container--box").classList.toggle("box-selected")
     }, 1000)
   }
@@ -80,7 +78,7 @@ function EthTxSendAmount({ setTxStatus }) {
                   <span>tx.value</span>
                   <FaQuestionCircle id="Tooltip" data-tooltip-content="Input the amount of ether you want to send" className="icon" />
                   <div className="data-type-selector-container display-flex">
-                    <span style={{ color: "white" }} onClick={(e) => handleMaxAmnt(e)} className={"data-type-selector-container--box"}>
+                    <span style={{ color: "white" }} onClick={e => handleMaxAmnt(e)} className={"data-type-selector-container--box"}>
                       MAX AMNT
                     </span>
                   </div>
@@ -104,7 +102,7 @@ function EthTxSendAmount({ setTxStatus }) {
                   )}
                 </div>
                 <div className="tx-builder__blueprint-dashboard__input-field-bottom">
-                  <input autoFocus onChange={(e) => inputSendAmntValidation(e.target.value)} className="eth-txBuilder-input" value={maxAmnt ? formatEther(maxAmnt) : undefined} onFocus={() => setMaxAmnt()} type="number" />
+                  <input autoFocus onChange={e => inputSendAmntValidation(e.target.value)} className="eth-txBuilder-input" value={maxAmnt ? formatEther(maxAmnt) : undefined} onFocus={() => setMaxAmnt()} type="number" />
                 </div>
               </div>
               <div style={{ visibility: "hidden" }} className="tx-builder__blueprint-dashboard__input-field"></div>
@@ -118,14 +116,14 @@ function EthTxSendAmount({ setTxStatus }) {
               <span style={{ color: "gray" }}>Total Est. Fees:</span> {formatEther(totalFee)}
             </p>
             <p style={{ position: "absolute", bottom: "-4px", left: "28px", fontSize: "0.6em" }}>
-              <span style={{ color: "gray" }}>Available To Send:</span> {Number(formatEther(appState.ethereum.currentBalance)) - (Number(formatEther(totalFee)) + Number(inputtedValidSendAmnt))}
+              <span style={{ color: "gray" }}>Available To Send:</span> {inputtedValidSendAmnt === null ? formatEther(appState.ethereum.currentBalance - totalFee) : formatEther(appState.ethereum.currentBalance - (totalFee + parseEther(inputtedValidSendAmnt)))}
             </p>
           </div>
 
           <div className="tx-builder__overlay__outer">
             {!inputSendAmntError && inputtedValidSendAmnt ? (
               <button onClick={() => handleNext()} className="button-purple">
-                Sign
+                Prepare Signing
               </button>
             ) : (
               ""
