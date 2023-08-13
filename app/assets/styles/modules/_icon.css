@@ -57,6 +57,15 @@
     top: 20px;
     right: 20px;
   }
+
+  &-home {
+    width: 30px;
+    cursor: pointer;
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
 }
 
 .copied-popup {

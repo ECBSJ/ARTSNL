@@ -557,6 +557,11 @@ function App() {
       <StateContext.Provider value={state}>
         <DispatchContext.Provider value={dispatch}>
           <IconContext.Provider value={{ size: "3rem" }}>
+            <div className="app-header">
+              <a href="https://github.com/ECBSJ/ARTSNL" target="_blank">
+                <img className="icon-home" src="https://i.imgur.com/5fv5p7q.png" alt="artsnl-logo" />
+              </a>
+            </div>
             <div className="container">
               <BrowserRouter>
                 <CSSTransition in={state.isMenuOpen} timeout={300} classNames="menu__cover" unmountOnExit>

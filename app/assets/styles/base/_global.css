@@ -24,7 +24,19 @@ body {
   color: white;
   font-family: $text;
   background-color: black;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.app-header {
+  display: none;
+
+  @mixin atMedium {
+    display: block;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+  }
 }
