@@ -26,7 +26,11 @@ function EthTxStructureType({ setTxStatus }) {
       if (value == chainId) {
         setChainIdInputError("")
       } else {
-        setChainIdInputError("The Goerli chainId is 5")
+        if (appState.isTestnet) {
+          setChainIdInputError("The Goerli chainId is 5")
+        } else {
+          setChainIdInputError("The Mainnet chainId is 1")
+        }
       }
     }
   }

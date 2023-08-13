@@ -108,7 +108,7 @@ function App() {
   // immerReducer config
   const initialState = {
     hasBrowserStorage: false,
-    isTestnet: true,
+    isTestnet: false,
     keys: {
       bufferPrivKey: null,
       bufferPubKey: null
@@ -152,7 +152,7 @@ function App() {
       mainnetProvider: null,
       testnetProvider: null,
       activeProvider: null,
-      address: process.env.TESTNET_PAIR1_ETH_ADDRESS,
+      address: null,
       // currentBalance type is bigint wei
       currentBalance: 0,
       txBuilder: {
@@ -439,7 +439,7 @@ function App() {
         }
         return
       case "initWalletClass":
-        draft.ethereum.txBuilder.wallet = new Wallet(process.env.TESTNET_PAIR1_PRIVKEY_HEX, draft.ethereum.activeProvider)
+        draft.ethereum.txBuilder.wallet = new Wallet(draft.keys.bufferPrivKey.toString("hex"), draft.ethereum.activeProvider)
         return
       case "initTxDataStruct":
         draft.ethereum.txBuilder.txDataStruct = new Transaction()
@@ -539,12 +539,12 @@ function App() {
     }
   }, [])
 
-  // useEffect(() => {
-  //   dispatch({ type: "setBitcoinJsNetwork" })
-  // }, [state.isTestnet])
+  useEffect(() => {
+    dispatch({ type: "setBitcoinJsNetwork" })
+  }, [state.isTestnet])
 
   useEffect(() => {
-    // dispatch({ type: "setBitcoinProviders" })
+    dispatch({ type: "setBitcoinProviders" })
     dispatch({ type: "setEthereumProviders" })
   }, [])
 
@@ -564,9 +564,7 @@ function App() {
                 </CSSTransition>
                 <Suspense fallback={<LazyLoadFallback />}>
                   <Routes>
-                    {/* <Route path="/" element={<Main />} /> */}
-                    {/* <Route path="/" element={state.hasBrowserStorage ? <WalletMain /> : <Main />} /> */}
-                    <Route path="/" element={<EthTxBuilder />} />
+                    <Route path="/" element={state.hasBrowserStorage ? <WalletMain /> : <Main />} />
                     <Route path="/CreateKeys" element={<CreateKeys />} />
                     <Route path="/AddressSelection" element={<AddressSelection />} />
                     <Route path="/BitcoinAddress" element={<BitcoinAddress />} />

@@ -5,8 +5,8 @@ import DispatchContext from "../../DispatchContext"
 import { Tooltip } from "react-tooltip"
 import { IconContext } from "react-icons"
 import { FaQuestionCircle } from "react-icons/fa"
-import { MdCheckCircle, MdError, MdContentPasteGo, MdQrCodeScanner } from "react-icons/md"
-import { isAddress, formatEther, parseEther } from "ethers"
+import { MdCheckCircle, MdError } from "react-icons/md"
+import { formatEther, parseEther } from "ethers"
 
 function EthTxSendAmount({ setTxStatus }) {
   const appState = useContext(StateContext)

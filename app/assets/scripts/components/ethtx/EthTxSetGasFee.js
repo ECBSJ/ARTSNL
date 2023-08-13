@@ -5,7 +5,7 @@ import DispatchContext from "../../DispatchContext"
 import { Tooltip } from "react-tooltip"
 import { IconContext } from "react-icons"
 import { FaQuestionCircle } from "react-icons/fa"
-import { MdCheckCircle, MdError, MdContentPasteGo, MdQrCodeScanner, MdManageSearch } from "react-icons/md"
+import { MdError, MdManageSearch } from "react-icons/md"
 
 import LazyLoadFallback from "../LazyLoadFallback"
 
@@ -15,7 +15,6 @@ function EthTxSetGasFee({ setTxStatus }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
-  const [fetchGasFeeError, setFetchGasFeeError] = useState(false)
   const [gasLimit, setGasLimit] = useState()
   const [fetchGasLimitProgress, setFetchGasLimitProgress] = useState("loading")
   const [maxFeePerGas, setMaxFeePerGas] = useState()
@@ -183,7 +182,7 @@ function EthTxSetGasFee({ setTxStatus }) {
                   )}
                 </div>
                 <div className="tx-builder__blueprint-dashboard__input-field-bottom">
-                  <input autoFocus onChange={(e) => handleInputNonceValidation(e.target.value)} className="eth-txBuilder-input" value={Number.isInteger(nonce) ? nonce : undefined} onFocus={() => setNonce(null)} type="number" />
+                  <input autoFocus onChange={e => handleInputNonceValidation(e.target.value)} className="eth-txBuilder-input" value={Number.isInteger(nonce) ? nonce : undefined} onFocus={() => setNonce(null)} type="number" />
                 </div>
               </div>
             </div>

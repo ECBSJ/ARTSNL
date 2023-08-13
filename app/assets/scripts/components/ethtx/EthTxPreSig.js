@@ -6,15 +6,15 @@ import { Tooltip } from "react-tooltip"
 import { IconContext } from "react-icons"
 import { FaQuestionCircle } from "react-icons/fa"
 import { CopyToClipboard } from "react-copy-to-clipboard"
-import { MdCheckCircle, MdError, MdContentPasteGo, MdQrCodeScanner, MdCopyAll } from "react-icons/md"
-import { isAddress, formatEther, parseEther, keccak256 } from "ethers"
+import { MdCopyAll } from "react-icons/md"
+import { formatEther, keccak256 } from "ethers"
 import LazyLoadFallback from "../LazyLoadFallback"
 
 function EthTxPreSig({ setTxStatus }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
-  let unsignedSerialized = appState.ethereum.txBuilder.txDataStruct.unsignedSerialized
+  let unsignedSerialized = appState.ethereum.txBuilder.txDataStruct?.unsignedSerialized
 
   const [preImageHashDigest, setPreImageHashDigest] = useState(null)
   const [displayDigest, setDisplayDigest] = useState(false)
