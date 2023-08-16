@@ -25,16 +25,16 @@ Every ARTSNL crypto wallet is a one-of-a-kind creation, self-constructed using b
 - Serveless
 - Client side
 - **Bitcoin support**:
-  ⋅⋅⋅* P2PKH⋅⋅
-  ⋅⋅⋅* Pay to multiple⋅⋅
-  ⋅⋅⋅\* PSBT transaction structuring⋅⋅
+  - P2PKH
+  - Pay to multiple
+  - PSBT transaction structuring
 - **Ethereum support**:
-  ⋅⋅⋅* Type 2 transactions⋅⋅
-  ⋅⋅⋅* Arbitrary data property⋅⋅
+  - Type 2 transactions
+  - Arbitrary data property
 - **Import external key**:
-  ⋅⋅⋅* Raw hexadecimal⋅⋅
-  ⋅⋅⋅* WIF⋅⋅
-  ⋅⋅⋅\* BIP38⋅⋅
+  - Raw hexadecimal
+  - WIF
+  - BIP38
 - Self-creation of entropy (use prudently)
 - Bitcoin mainnet and testnet support
 - Ethereum mainnet and Goerli testnet support
