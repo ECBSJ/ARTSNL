@@ -150,7 +150,6 @@ Reach out to the dev team at our [Discord](https://discord.gg/t2z36UvaTc)
 ## STAY UPDATED
 
 - [Main Website](https://artsnl.xyz)
-- [Discord](https://discord.gg/f6phA93DT)
 - [Twitter](https://twitter.com/ARTSNL)
 - [Blog](https://mirror.xyz/artsnl.eth)
 - [Knowledge](https://artsnl.gitbook.io/artsnl-knowledge-space/)
