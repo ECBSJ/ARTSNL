@@ -145,12 +145,13 @@ $ npm install
 $ npm run dev
 ```
 
-Reach out to the dev team at our [Discord](https://discord.gg/f6phA93DT)
+Reach out to the dev team at our [Discord](https://discord.gg/t2z36UvaTc)
 
 ## STAY UPDATED
 
-- Main website is under development
+- [Main Website](https://artsnl.xyz)
 - [Discord](https://discord.gg/f6phA93DT)
 - [Twitter](https://twitter.com/ARTSNL)
-- Blog on mirror.xyz is under development
-- Knowledge docs on Gitbook is under development
+- [Blog](https://mirror.xyz/artsnl.eth)
+- [Knowledge](https://artsnl.gitbook.io/artsnl-knowledge-space/)
+- [Chat](https://discord.gg/t2z36UvaTc)
