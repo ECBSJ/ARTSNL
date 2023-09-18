@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react"
 import QRCode from "react-qr-code"
 import { CopyToClipboard } from "react-copy-to-clipboard"
-import { MdCopyAll, MdOutlineArrowCircleRight, MdLibraryBooks, MdMenu } from "react-icons/md"
+import { MdCopyAll, MdOutlineArrowCircleRight, MdLibraryBooks, MdMenu, MdContentPasteGo } from "react-icons/md"
 import { BsHddNetworkFill, BsHddNetwork, BsReception1, BsReception4 } from "react-icons/bs"
 import { TbWalletOff, TbRefresh } from "react-icons/tb"
 import { VscBracketError } from "react-icons/vsc"
@@ -32,6 +32,71 @@ function Erc20Overview() {
     }, 1000)
   }
 
+  function handlePaste() {
+    navigator.clipboard
+      .readText()
+      .then(res => {
+        document.getElementById("contract-address-input").value = res
+      })
+      .catch(console.error)
+  }
+
+  // async function handleClick(e) {
+  //   try {
+  //     let response = await fetch(`https://api-goerli.etherscan.io/api?module=account&action=tokenbalance&contractaddress=${contractAddress}&address=${accountAddress}&tag=latest&apikey=${etherscanApiKey}`)
+  //     let response = await fetch(`https://api-goerli.etherscan.io/api?module=contract&action=getabi&address=${contractAddress_Testnet}&apikey=${etherscanApiKey}`)
+  //     let data = await response.json()
+  //     setAbi(JSON.parse(data.result))
+
+  //     let result = new Contract(contractAddress_Testnet, JSON.parse(data.result), wallet)
+
+  //     console.log(result)
+  //     setContract(result)
+  //   } catch (err) {
+  //     console.error(err)
+  //   }
+  // }
+
+  // async function handleWrite(e) {
+  //   try {
+  //     // METHOD 1
+  //     // let txResponse = await contract.transfer.send(otherAccountAddress, parseEther("1"))
+  //     // let txReceipt = await txResponse.wait()
+  //     // console.log(txReceipt)
+
+  //     // METHOD 2
+  //     let txResponse = await contract.transfer.populateTransaction(otherAccountAddress, parseEther("1"))
+  //     let staticGasLimit = await contract.transfer.estimateGas(otherAccountAddress, parseEther("1"))
+  //     let nonce = await wallet.getNonce()
+  //     let feeResult = await provider.getFeeData()
+
+  //     let tx = new Transaction()
+  //     tx.chainId = 5
+  //     tx.data = txResponse.data
+  //     tx.gasLimit = staticGasLimit
+  //     tx.maxFeePerGas = feeResult.maxFeePerGas
+  //     tx.maxPriorityFeePerGas = feeResult.maxPriorityFeePerGas
+  //     tx.nonce = nonce
+  //     tx.to = txResponse.to
+  //     tx.type = 2
+  //     tx.value = 0n
+
+  //     let txPreImageHash = keccak256(tx.unsignedSerialized)
+  //     let signedResult = wallet.signingKey.sign(txPreImageHash)
+  //     tx.signature = signedResult
+
+  //     let txBroadcast = await wallet.sendTransaction(tx)
+  //     console.log(txBroadcast)
+
+  //     // RETRIEVING TOKEN INFO
+  //     // let result = await contract.symbol()
+  //     // let result = await contract.name()
+  //     // let result1 = await contract.balanceOf(accountAddress)
+  //   } catch (err) {
+  //     console.error(err)
+  //   }
+  // }
+
   return (
     <>
       <div className="wallet-main__overlay">
@@ -53,7 +118,7 @@ function Erc20Overview() {
                 </>
               ) : (
                 <>
-                  <div style={{ minHeight: "55.5px" }} className="snapshot__function-content__row">
+                  <div style={{ minHeight: "55.5px", maxHeight: "55.5px" }} className="snapshot__function-content__row">
                     <div style={{ fontSize: ".8rem", color: "gray" }}>HOUR</div>
                     <div></div>
                   </div>
@@ -65,19 +130,13 @@ function Erc20Overview() {
             <div onClick={() => setOpenFunctionView(1)} className={"snapshot__function-titlebar snapshot__function-titlebar--blue " + (openFunctionView == 1 ? "snapshot__function-titlebar--blue--active" : "")}>
               IMPORT
             </div>
-            <div className={"snapshot__function-content " + (openFunctionView == 1 ? "snapshot__function-content--display" : "snapshot__function-content--hide")}>
-              <div>Deposit {appState.isTestnet ? "gETH" : "ETH"} Here</div>
-              <div style={{ fontSize: ".5rem", color: "gray", width: "80%", textAlign: "justify" }}>Fund your ethereum wallet by depositing funds to the QR code below. Or copy & paste the address string shown below the QR code.</div>
-              <div style={{ padding: "15px 0 15px 0" }}>
-                <QRCode bgColor="#4f9bff" fgColor="#131a2a" style={{ height: "150px", width: "150px" }} value={appState.ethereum.address} />
+            <div style={{ justifyContent: "flex-start" }} className={"snapshot__function-content " + (openFunctionView == 1 ? "snapshot__function-content--display" : "snapshot__function-content--hide")}>
+              <div style={{ margin: "20px 0px 7px 0px" }}>Import {appState.isTestnet ? "Goerli" : "Mainnet"} ERC20</div>
+              <div style={{ fontSize: ".5rem", color: "gray", width: "80%", textAlign: "justify" }}>To import an ERC20 token that you already own, input the contract address pertaining to the ERC20 token in the field below. Contract address must be from a verified smart contract on Etherscan.</div>
+              <div style={{ marginTop: "10px" }} className="input-container">
+                <MdContentPasteGo onClick={() => handlePaste()} style={{ zIndex: "1", right: "15px", transform: "scaleX(-1)" }} className="icon icon--position-absolute" />
+                <input id="contract-address-input" className="input-purple" type="text" />
               </div>
-              <div style={{ fontSize: ".54rem", paddingBottom: "3px" }} className="display-flex">
-                <CopyToClipboard text={appState.ethereum.address} onCopy={() => handleCopyPopup()}>
-                  <MdCopyAll style={{ width: "20px", height: "20px" }} className="icon icon-copy" />
-                </CopyToClipboard>
-                {appState.ethereum.address}
-              </div>
-              <div style={{ fontSize: ".5rem", color: "red", width: "80%", textAlign: "justify" }}>This ETH address is an EVM compatible address. Always confirm the receiving address before broadcasting transaction. Sending ETH to the wrong address will result in loss of funds.</div>
             </div>
           </div>
           <div className="snapshot__function-wrapper">
@@ -105,9 +164,9 @@ function Erc20Overview() {
               Your <span style={{ color: "white" }}>TOKENIZED</span> journey starts here.
             </div>
             <div style={{ display: "inline-block" }} className="purple-font">
-              🏠ERC20
+              🧭ERC20
             </div>{" "}
-            Portfolio
+            Wallet
           </div>
 
           <MdMenu onClick={() => appDispatch({ type: "toggleMenu" })} className="icon" />
