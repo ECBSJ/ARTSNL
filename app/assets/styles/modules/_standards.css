@@ -25,3 +25,9 @@
     font-family: $title;
   }
 }
+
+.overflow {
+  &--scroll {
+    overflow: scroll;
+  }
+}

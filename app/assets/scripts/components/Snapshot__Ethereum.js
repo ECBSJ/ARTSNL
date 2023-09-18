@@ -36,6 +36,11 @@ function Snapshot__Ethereum({ hasErrors_Eth, setHasErrors_Eth, isFetching_Eth, s
     navigate("/EthTxBuilder")
   }
 
+  function navigateToViewErc20Page(e) {
+    // navigate to overview of erc20s owned
+    navigate("/Erc20Overview")
+  }
+
   return (
     <>
       <div className="snapshot__overlay">
@@ -65,8 +70,9 @@ function Snapshot__Ethereum({ hasErrors_Eth, setHasErrors_Eth, isFetching_Eth, s
                   <div>{ethAddressTxCount == null ? 0 : ethAddressTxCount}</div>
                 </div>
                 <div className="snapshot__function-content__row">
-                  <div style={{ fontSize: ".8rem", color: "gray" }}></div>
-                  <div></div>
+                  <button onClick={(e) => navigateToViewErc20Page(e)} className="font--russo-one" style={{ fontSize: "1rem", backgroundColor: "#B01AF7", border: "none", borderRadius: "9px" }}>
+                    View ERC20s
+                  </button>
                 </div>
                 <div className="snapshot__function-content__row">
                   <div style={{ fontSize: ".8rem", color: "gray" }}></div>
