@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext } from "react"
 import QRCode from "react-qr-code"
 import { CopyToClipboard } from "react-copy-to-clipboard"
-import { MdCopyAll, MdOutlineArrowCircleRight, MdLibraryBooks, MdMenu, MdContentPasteGo } from "react-icons/md"
+import { MdError, MdCheckCircle, MdLibraryBooks, MdMenu, MdContentPasteGo, MdSearch } from "react-icons/md"
 import { BsHddNetworkFill, BsHddNetwork, BsReception1, BsReception4 } from "react-icons/bs"
 import { TbWalletOff, TbRefresh } from "react-icons/tb"
 import { VscBracketError } from "react-icons/vsc"
-import { ethers } from "ethers"
+import { isAddress, Contract, formatEther } from "ethers"
 import { useNavigate } from "react-router-dom"
 import StateContext from "../../StateContext"
 import DispatchContext from "../../DispatchContext"
@@ -35,27 +35,109 @@ function Erc20Overview() {
   function handlePaste() {
     navigator.clipboard
       .readText()
-      .then(res => {
+      .then((res) => {
         document.getElementById("contract-address-input").value = res
+        handleInputContractAddress(res)
       })
       .catch(console.error)
   }
 
-  // async function handleClick(e) {
-  //   try {
-  //     let response = await fetch(`https://api-goerli.etherscan.io/api?module=account&action=tokenbalance&contractaddress=${contractAddress}&address=${accountAddress}&tag=latest&apikey=${etherscanApiKey}`)
-  //     let response = await fetch(`https://api-goerli.etherscan.io/api?module=contract&action=getabi&address=${contractAddress_Testnet}&apikey=${etherscanApiKey}`)
-  //     let data = await response.json()
-  //     setAbi(JSON.parse(data.result))
+  const [inputContractAddressError, setInputContractAddressError] = useState("")
+  const [isContractAddressValid, setIsContractAddressValid] = useState(false)
+  const [validContractAddress, setValidContractAddress] = useState("")
 
-  //     let result = new Contract(contractAddress_Testnet, JSON.parse(data.result), wallet)
+  function handleInputContractAddress(value) {
+    if (!value.trim()) {
+      setInputContractAddressError("")
+      setIsContractAddressValid(false)
+      setValidContractAddress("")
+    } else {
+      if (value.startsWith("0x")) {
+        if (value.length == 42) {
+          try {
+            if (isAddress(value)) {
+              // valid ethereum address
+              setInputContractAddressError("")
+              setIsContractAddressValid(true)
+              setValidContractAddress(value)
+            } else {
+              setInputContractAddressError("Invalid address. Try another.")
+              setValidContractAddress("")
+            }
+          } catch (err) {
+            console.error(err)
+            setInputContractAddressError("Invalid address. Try another.")
+            setValidContractAddress("")
+          }
+        } else {
+          setIsContractAddressValid(false)
+          setInputContractAddressError("Invalid contract address length")
+          setValidContractAddress("")
+        }
+      } else {
+        setIsContractAddressValid(false)
+        setInputContractAddressError("Invalid contract address")
+        setValidContractAddress("")
+      }
+    }
+  }
 
-  //     console.log(result)
-  //     setContract(result)
-  //   } catch (err) {
-  //     console.error(err)
-  //   }
-  // }
+  const [tokenSearchError, setTokenSearchError] = useState(false)
+  const [isSearchingToken, setIsSearchingToken] = useState(false)
+  const [hasTokenSearchResult, setHasTokenSearchResult] = useState(false)
+
+  async function handleTokenSearch() {
+    try {
+      setTokenSearchError(false)
+      setIsSearchingToken(true)
+      setHasTokenSearchResult(false)
+
+      // fetch ABI
+      let response = await fetch(`https://api${appState.isTestnet ? "-goerli" : ""}.etherscan.io/api?module=contract&action=getabi&address=${validContractAddress}&apikey=${process.env.ETHERSCAN_API_KEY_TOKEN}`)
+      let data = await response.json()
+
+      // init Contract Instance
+      let contractInstance = new Contract(validContractAddress, JSON.parse(data.result), appState.ethereum.txBuilder.wallet)
+
+      // fetch token info
+      contractInstance && getTokenInfo(contractInstance)
+    } catch (err) {
+      console.error(err)
+      setTokenSearchError(true)
+      setIsSearchingToken(false)
+    }
+  }
+
+  const [tokenInfo, setTokenInfo] = useState({
+    symbol: "",
+    name: "",
+    balanceOf: "",
+  })
+
+  async function getTokenInfo(contractInstance) {
+    try {
+      let symbol = await contractInstance.symbol()
+      let name = await contractInstance.name()
+      // typeof balanceOf: bigint
+      let balanceOf = await contractInstance.balanceOf(appState.ethereum.address)
+
+      if (symbol && name && balanceOf) {
+        setTokenInfo({
+          symbol: symbol,
+          name: name,
+          balanceOf: formatEther(balanceOf),
+        })
+
+        setIsSearchingToken(false)
+        setTokenSearchError(false)
+        setHasTokenSearchResult(true)
+      }
+    } catch (err) {
+      console.error(err)
+      setIsSearchingToken(false)
+      setTokenSearchError(true)
+    }
+  }
 
   // async function handleWrite(e) {
   //   try {
@@ -97,6 +179,10 @@ function Erc20Overview() {
   //   }
   // }
 
+  useEffect(() => {
+    appDispatch({ type: "initWalletClass" })
+  }, [])
+
   return (
     <>
       <div className="wallet-main__overlay">
@@ -135,7 +221,39 @@ function Erc20Overview() {
               <div style={{ fontSize: ".5rem", color: "gray", width: "80%", textAlign: "justify" }}>To import an ERC20 token that you already own, input the contract address pertaining to the ERC20 token in the field below. Contract address must be from a verified smart contract on Etherscan.</div>
               <div style={{ marginTop: "10px" }} className="input-container">
                 <MdContentPasteGo onClick={() => handlePaste()} style={{ zIndex: "1", right: "15px", transform: "scaleX(-1)" }} className="icon icon--position-absolute" />
-                <input id="contract-address-input" className="input-purple" type="text" />
+                {isContractAddressValid && validContractAddress ? <MdSearch onClick={() => handleTokenSearch()} style={{ zIndex: "1", right: "60px", transform: "scaleX(-1)" }} className="icon icon--position-absolute" /> : ""}
+                <input onChange={(e) => handleInputContractAddress(e.target.value)} id="contract-address-input" className="input-purple" type="text" />
+                <div className="input-validation">Input Contract Address</div>
+                {inputContractAddressError ? (
+                  <div className="input-validation input-validation--error">
+                    <MdError style={{ width: "12px", height: "12px" }} className="icon--error" />
+                    &nbsp;{inputContractAddressError}
+                  </div>
+                ) : (
+                  ""
+                )}
+                {isContractAddressValid && validContractAddress ? (
+                  <div className="input-validation input-validation--success">
+                    <MdCheckCircle style={{ width: "14px", height: "14px" }} className="icon--checked" /> {"Accepted contract address format."}
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+              <div id="token-search-results-container">
+                {isSearchingToken ? (
+                  <LazyLoadFallback />
+                ) : tokenSearchError ? (
+                  <>
+                    <div>Error searching for contract address. Confirm you are inputting the correct contract address.</div>
+                  </>
+                ) : hasTokenSearchResult ? (
+                  <>
+                    <div>SEARCH RESULTS</div>
+                  </>
+                ) : (
+                  ""
+                )}
               </div>
             </div>
           </div>
