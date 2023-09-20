@@ -159,7 +159,14 @@ function App() {
       txBuilder: {
         wallet: null,
         txDataStruct: {}
-      }
+      },
+      // erc20 array structure: list of objects
+      // {
+      //   symbol: "",
+      //   name: "",
+      //   contractAddress: "",
+      // }
+      erc20_owned_Array: null
     },
     isMenuOpen: false
   }
@@ -484,6 +491,9 @@ function App() {
           wallet: null,
           txDataStruct: {}
         }
+        return
+      case "setErc20OwnedArray":
+        draft.ethereum.erc20_owned_Array = action.value
         return
     }
   }

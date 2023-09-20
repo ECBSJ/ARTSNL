@@ -18,8 +18,6 @@ function Erc20Overview() {
 
   const navigate = useNavigate()
 
-  const [isFetching_Erc20, setIsFetching_Erc20] = useState(false)
-  const [hasErrors_Erc20, setHasErrors_Erc20] = useState(false)
   const [openFunctionView, setOpenFunctionView] = useState(0)
 
   function handleCopyPopup() {
@@ -32,10 +30,19 @@ function Erc20Overview() {
     }, 1000)
   }
 
+  const [isFetching_Erc20, setIsFetching_Erc20] = useState(true)
+  const [hasErrors_Erc20, setHasErrors_Erc20] = useState(false)
+
+  async function handleDisplayErc20Owned() {
+    // fetch token ABI
+    // init contract instance
+    // fetch token balance
+  }
+
   function handlePaste() {
     navigator.clipboard
       .readText()
-      .then((res) => {
+      .then(res => {
         document.getElementById("contract-address-input").value = res
         handleInputContractAddress(res)
       })
@@ -51,6 +58,7 @@ function Erc20Overview() {
       setInputContractAddressError("")
       setIsContractAddressValid(false)
       setValidContractAddress("")
+      setIsSearchingToken(false)
     } else {
       if (value.startsWith("0x")) {
         if (value.length == 42) {
@@ -111,7 +119,7 @@ function Erc20Overview() {
   const [tokenInfo, setTokenInfo] = useState({
     symbol: "",
     name: "",
-    balanceOf: "",
+    balanceOf: ""
   })
 
   async function getTokenInfo(contractInstance) {
@@ -121,11 +129,11 @@ function Erc20Overview() {
       // typeof balanceOf: bigint
       let balanceOf = await contractInstance.balanceOf(appState.ethereum.address)
 
-      if (symbol && name && balanceOf) {
+      if (symbol && name && typeof balanceOf == "bigint") {
         setTokenInfo({
           symbol: symbol,
           name: name,
-          balanceOf: formatEther(balanceOf),
+          balanceOf: balanceOf == 0n ? 0 : formatEther(balanceOf)
         })
 
         setIsSearchingToken(false)
@@ -137,6 +145,13 @@ function Erc20Overview() {
       setIsSearchingToken(false)
       setTokenSearchError(true)
     }
+  }
+
+  function handleAddToken(e) {
+    // add to local storage array
+    // add to appState
+    // display added status on button
+    // display on Your ERC20s list
   }
 
   // async function handleWrite(e) {
@@ -178,6 +193,25 @@ function Erc20Overview() {
   //     console.error(err)
   //   }
   // }
+
+  useEffect(() => {
+    if (appState.ethereum.erc20_owned_Array) {
+      handleDisplayErc20Owned()
+    }
+  }, [appState.ethereum.erc20_owned_Array])
+
+  useEffect(() => {
+    // retrieve erc20 list from local storage
+    let hasErc20 = localStorage.getItem("hasErc20")
+
+    if (hasErc20 === true) {
+      let erc20_List = localStorage.getItem("erc20_List")
+      let array = JSON.parse(erc20_List)
+
+      // set to appState
+      appDispatch({ type: "setErc20OwnedArray", value: array })
+    }
+  }, [])
 
   useEffect(() => {
     appDispatch({ type: "initWalletClass" })
@@ -228,7 +262,7 @@ function Erc20Overview() {
               <div style={{ marginTop: "10px" }} className="input-container">
                 <MdContentPasteGo onClick={() => handlePaste()} style={{ zIndex: "1", right: "15px", transform: "scaleX(-1)" }} className="icon icon--position-absolute" />
                 {isContractAddressValid && validContractAddress ? <MdSearch onClick={() => handleTokenSearch()} style={{ zIndex: "1", right: "60px", transform: "scaleX(-1)" }} className="icon icon--position-absolute" /> : ""}
-                <input onChange={(e) => handleInputContractAddress(e.target.value)} id="contract-address-input" className="input-purple" type="text" />
+                <input onChange={e => handleInputContractAddress(e.target.value)} id="contract-address-input" className="input-purple" type="text" />
                 <div className="input-validation">Input Contract Address</div>
                 {inputContractAddressError ? (
                   <div className="input-validation input-validation--error">
@@ -266,7 +300,7 @@ function Erc20Overview() {
                       <span>
                         ${tokenInfo.symbol} <MdVerified style={{ color: "lightgreen", width: "23px", height: "23px" }} />
                       </span>
-                      <button style={{ height: "30px", width: "140px", borderRadius: "7px", fontSize: ".7rem", backgroundColor: "#DB00FF", border: "none" }} className="display-flex">
+                      <button onClick={e => handleAddToken(e)} style={{ height: "30px", width: "140px", borderRadius: "7px", fontSize: ".7rem", backgroundColor: "#DB00FF", border: "none" }} className="display-flex">
                         <MdAddCircle style={{ width: "20px", height: "20px", color: "white", marginRight: "3px" }} /> Add ERC20
                       </button>
                     </div>
