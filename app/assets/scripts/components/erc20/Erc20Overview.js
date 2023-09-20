@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react"
 import QRCode from "react-qr-code"
 import { CopyToClipboard } from "react-copy-to-clipboard"
-import { MdError, MdCheckCircle, MdLibraryBooks, MdMenu, MdContentPasteGo, MdSearch } from "react-icons/md"
+import { MdError, MdCheckCircle, MdLibraryBooks, MdMenu, MdContentPasteGo, MdSearch, MdVerified, MdAddCircle } from "react-icons/md"
 import { BsHddNetworkFill, BsHddNetwork, BsReception1, BsReception4 } from "react-icons/bs"
 import { TbWalletOff, TbRefresh } from "react-icons/tb"
 import { VscBracketError } from "react-icons/vsc"
@@ -183,6 +183,12 @@ function Erc20Overview() {
     appDispatch({ type: "initWalletClass" })
   }, [])
 
+  useEffect(() => {
+    if (isContractAddressValid) {
+      handleTokenSearch()
+    }
+  }, [isContractAddressValid])
+
   return (
     <>
       <div className="wallet-main__overlay">
@@ -240,16 +246,33 @@ function Erc20Overview() {
                   ""
                 )}
               </div>
-              <div id="token-search-results-container">
+              <div style={{ width: "100%", height: "120px", translate: "0px 30px", padding: "17px 23px 0px 36px" }} id="token-search-results-container">
                 {isSearchingToken ? (
                   <LazyLoadFallback />
                 ) : tokenSearchError ? (
                   <>
-                    <div>Error searching for contract address. Confirm you are inputting the correct contract address.</div>
+                    <div style={{ fontSize: ".6rem", color: "red" }}>
+                      <MdError style={{ width: "12px", height: "12px", marginRight: "3px" }} className="icon--error" />
+                      Error searching for contract address. Confirm you are inputting the correct contract address.
+                    </div>
                   </>
                 ) : hasTokenSearchResult ? (
                   <>
-                    <div>SEARCH RESULTS</div>
+                    <div style={{ fontSize: ".4rem", color: "lightgray" }}>SEARCH RESULTS</div>
+                    <div style={{ fontSize: "1.1rem", color: "white" }} className="font--russo-one">
+                      {tokenInfo.name}
+                    </div>
+                    <div style={{ fontSize: "1.8rem", color: "#DB00FF" }} className="font--russo-one display-flex display-flex--space-between">
+                      <span>
+                        ${tokenInfo.symbol} <MdVerified style={{ color: "lightgreen", width: "23px", height: "23px" }} />
+                      </span>
+                      <button style={{ height: "30px", width: "140px", borderRadius: "7px", fontSize: ".7rem", backgroundColor: "#DB00FF", border: "none" }} className="display-flex">
+                        <MdAddCircle style={{ width: "20px", height: "20px", color: "white", marginRight: "3px" }} /> Add ERC20
+                      </button>
+                    </div>
+                    <div style={{ fontSize: ".6rem", color: "lightgray" }}>
+                      Tokens Owned: <span style={{ color: "white" }}>{tokenInfo.balanceOf}</span>
+                    </div>
                   </>
                 ) : (
                   ""
