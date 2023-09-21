@@ -33,16 +33,60 @@ function Erc20Overview() {
   const [isFetching_Erc20, setIsFetching_Erc20] = useState(true)
   const [hasErrors_Erc20, setHasErrors_Erc20] = useState(false)
 
+  // getter to populate and return an expanded list from the browser's erc20_List. This new list will be used to interact & display within app.
   async function handleDisplayErc20Owned() {
-    // fetch token ABI
-    // init contract instance
-    // fetch token balance
+    try {
+      let array = appState.ethereum.erc20_owned_Array.map(async function (value, index) {
+        try {
+          // value object struct from appState:
+          // {
+          //   symbol: "",
+          //   name: "",
+          //   contractAddress: "",
+          // }
+
+          // fetch token ABI
+          let response = await fetch(`https://api${appState.isTestnet ? "-goerli" : ""}.etherscan.io/api?module=contract&action=getabi&address=${value.contractAddress}&apikey=${process.env.ETHERSCAN_API_KEY_TOKEN}`)
+          let data = await response.json()
+
+          // init contract instance
+          let contractInstance = new Contract(value.contractAddress, JSON.parse(data?.result), appState.ethereum.txBuilder.wallet)
+
+          // fetch token balance
+          // typeof balanceOf: bigint
+          let balanceOf = await contractInstance.balanceOf(appState.ethereum.address)
+
+          return {
+            symbol: value.symbol,
+            name: value.name,
+            contractAddress: value.contractAddress,
+            contractInstance: "contractInstance",
+            balanceOf: formatEther(balanceOf),
+          }
+        } catch (err) {
+          console.error(err)
+          setIsFetching_Erc20(false)
+          setHasErrors_Erc20(true)
+        }
+      })
+
+      let completedArray = await Promise.all(array)
+
+      appDispatch({ type: "setErc20DisplayOwnedArray", value: completedArray })
+
+      setIsFetching_Erc20(false)
+      setHasErrors_Erc20(false)
+    } catch (err) {
+      console.error(err)
+      setIsFetching_Erc20(false)
+      setHasErrors_Erc20(true)
+    }
   }
 
   function handlePaste() {
     navigator.clipboard
       .readText()
-      .then(res => {
+      .then((res) => {
         document.getElementById("contract-address-input").value = res
         handleInputContractAddress(res)
       })
@@ -119,7 +163,7 @@ function Erc20Overview() {
   const [tokenInfo, setTokenInfo] = useState({
     symbol: "",
     name: "",
-    balanceOf: ""
+    balanceOf: "",
   })
 
   async function getTokenInfo(contractInstance) {
@@ -133,7 +177,7 @@ function Erc20Overview() {
         setTokenInfo({
           symbol: symbol,
           name: name,
-          balanceOf: balanceOf == 0n ? 0 : formatEther(balanceOf)
+          balanceOf: balanceOf == 0n ? 0 : formatEther(balanceOf),
         })
 
         setIsSearchingToken(false)
@@ -195,27 +239,31 @@ function Erc20Overview() {
   // }
 
   useEffect(() => {
-    if (appState.ethereum.erc20_owned_Array) {
-      handleDisplayErc20Owned()
-    }
-  }, [appState.ethereum.erc20_owned_Array])
+    appDispatch({ type: "initWalletClass" })
+  }, [])
 
   useEffect(() => {
     // retrieve erc20 list from local storage
     let hasErc20 = localStorage.getItem("hasErc20")
 
-    if (hasErc20 === true) {
+    if (hasErc20 === "true") {
       let erc20_List = localStorage.getItem("erc20_List")
       let array = JSON.parse(erc20_List)
 
       // set to appState
       appDispatch({ type: "setErc20OwnedArray", value: array })
+    } else {
+      setIsFetching_Erc20(false)
+      setHasErrors_Erc20(false)
     }
   }, [])
 
   useEffect(() => {
-    appDispatch({ type: "initWalletClass" })
-  }, [])
+    // asserts if browser has erc20_List and Wallet is init
+    if (appState.ethereum.erc20_owned_Array && appState.ethereum.txBuilder.wallet) {
+      handleDisplayErc20Owned()
+    }
+  }, [appState.ethereum.erc20_owned_Array, appState.ethereum.txBuilder.wallet])
 
   useEffect(() => {
     if (isContractAddressValid) {
@@ -236,18 +284,31 @@ function Erc20Overview() {
                 <LazyLoadFallback />
               ) : hasErrors_Erc20 ? (
                 <>
-                  <VscBracketError className="icon icon--error" />
+                  <VscBracketError style={{ marginTop: "50px" }} className="icon icon--error" />
                   <div style={{ width: "80%", fontSize: ".56rem", color: "gray", textAlign: "justify", paddingTop: "10px" }}>
                     <p>&#x2022;Unable to retrieve ERC20 tokens information from API.</p>
-                    <p>&#x2022;Please check your internet connection and then click on the bottom left refresh icon.</p>
+                    <p>&#x2022;Please check console for error reason or click on the bottom left refresh icon.</p>
                   </div>
                 </>
               ) : (
                 <>
-                  <div style={{ minHeight: "55.5px", maxHeight: "55.5px" }} className="snapshot__function-content__row">
-                    <div style={{ fontSize: ".8rem", color: "gray" }}>HOUR</div>
-                    <div></div>
-                  </div>
+                  {appState.ethereum.erc20_displayOwned_Array ? (
+                    <>
+                      {appState.ethereum.erc20_displayOwned_Array.map((object, index) => {
+                        return (
+                          <div key={index} style={{ minHeight: "55.5px", maxHeight: "55.5px" }} className="snapshot__function-content__row">
+                            <div style={{ fontSize: ".8rem", color: "gray" }}>{object.symbol}</div>
+                            <div>{object.balanceOf}</div>
+                          </div>
+                        )
+                      })}
+                    </>
+                  ) : (
+                    <div style={{ minHeight: "55.5px", maxHeight: "55.5px" }} className="snapshot__function-content__row">
+                      <div style={{ fontSize: ".8rem", color: "gray" }}>No ERC20 tokens owned.</div>
+                      <div></div>
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -262,7 +323,7 @@ function Erc20Overview() {
               <div style={{ marginTop: "10px" }} className="input-container">
                 <MdContentPasteGo onClick={() => handlePaste()} style={{ zIndex: "1", right: "15px", transform: "scaleX(-1)" }} className="icon icon--position-absolute" />
                 {isContractAddressValid && validContractAddress ? <MdSearch onClick={() => handleTokenSearch()} style={{ zIndex: "1", right: "60px", transform: "scaleX(-1)" }} className="icon icon--position-absolute" /> : ""}
-                <input onChange={e => handleInputContractAddress(e.target.value)} id="contract-address-input" className="input-purple" type="text" />
+                <input onChange={(e) => handleInputContractAddress(e.target.value)} id="contract-address-input" className="input-purple" type="text" />
                 <div className="input-validation">Input Contract Address</div>
                 {inputContractAddressError ? (
                   <div className="input-validation input-validation--error">
@@ -300,7 +361,7 @@ function Erc20Overview() {
                       <span>
                         ${tokenInfo.symbol} <MdVerified style={{ color: "lightgreen", width: "23px", height: "23px" }} />
                       </span>
-                      <button onClick={e => handleAddToken(e)} style={{ height: "30px", width: "140px", borderRadius: "7px", fontSize: ".7rem", backgroundColor: "#DB00FF", border: "none" }} className="display-flex">
+                      <button onClick={(e) => handleAddToken(e)} style={{ height: "30px", width: "140px", borderRadius: "7px", fontSize: ".7rem", backgroundColor: "#DB00FF", border: "none" }} className="display-flex">
                         <MdAddCircle style={{ width: "20px", height: "20px", color: "white", marginRight: "3px" }} /> Add ERC20
                       </button>
                     </div>
