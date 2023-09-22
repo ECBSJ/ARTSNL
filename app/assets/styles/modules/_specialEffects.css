@@ -35,3 +35,13 @@
 .box-selected {
   background-color: #eb00ff;
 }
+
+.hover {
+  &--font-change {
+    &:hover {
+      color: #eb00ff;
+      letter-spacing: 2px;
+      transition: all 200ms linear;
+    }
+  }
+}

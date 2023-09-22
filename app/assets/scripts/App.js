@@ -504,8 +504,16 @@ function App() {
       case "setErc20OwnedArray":
         draft.ethereum.erc20_owned_Array = action.value
         return
+      case "setNewTokenToErc20OwnedArray":
+        draft.ethereum.erc20_owned_Array.push(action.value)
+
+        localStorage.setItem("erc20_List", JSON.stringify(draft.ethereum.erc20_owned_Array))
+        return
       case "setErc20DisplayOwnedArray":
         draft.ethereum.erc20_displayOwned_Array = action.value
+        return
+      case "setNewTokenToErc20DisplayOwnedArray":
+        draft.ethereum.erc20_displayOwned_Array.push(action.value)
         return
     }
   }

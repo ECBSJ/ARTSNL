@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react"
 import QRCode from "react-qr-code"
 import { CopyToClipboard } from "react-copy-to-clipboard"
-import { MdError, MdCheckCircle, MdLibraryBooks, MdMenu, MdContentPasteGo, MdSearch, MdVerified, MdAddCircle } from "react-icons/md"
+import { MdError, MdCheckCircle, MdLibraryBooks, MdMenu, MdContentPasteGo, MdSearch, MdVerified, MdAddCircle, MdDelete } from "react-icons/md"
 import { BsHddNetworkFill, BsHddNetwork, BsReception1, BsReception4 } from "react-icons/bs"
 import { TbWalletOff, TbRefresh } from "react-icons/tb"
 import { VscBracketError } from "react-icons/vsc"
@@ -60,7 +60,7 @@ function Erc20Overview() {
             symbol: value.symbol,
             name: value.name,
             contractAddress: value.contractAddress,
-            contractInstance: "contractInstance",
+            contractInstance: null,
             balanceOf: formatEther(balanceOf),
           }
         } catch (err) {
@@ -164,6 +164,7 @@ function Erc20Overview() {
     symbol: "",
     name: "",
     balanceOf: "",
+    address: "",
   })
 
   async function getTokenInfo(contractInstance) {
@@ -178,6 +179,7 @@ function Erc20Overview() {
           symbol: symbol,
           name: name,
           balanceOf: balanceOf == 0n ? 0 : formatEther(balanceOf),
+          address: validContractAddress,
         })
 
         setIsSearchingToken(false)
@@ -192,10 +194,99 @@ function Erc20Overview() {
   }
 
   function handleAddToken(e) {
-    // add to local storage array
-    // add to appState
+    // add below object struct to appState
+    let newDisplayTokenObject = {
+      symbol: tokenInfo.symbol,
+      name: tokenInfo.name,
+      contractAddress: tokenInfo.address,
+      contractInstance: null,
+      balanceOf: tokenInfo.balanceOf,
+    }
+    appDispatch({ type: "setNewTokenToErc20DisplayOwnedArray", value: newDisplayTokenObject })
+
     // display added status on button
-    // display on Your ERC20s list
+    e.currentTarget.innerText = "Added!"
+
+    // add to local storage array
+    let newStorageTokenObject = {
+      symbol: tokenInfo.symbol,
+      name: tokenInfo.name,
+      contractAddress: tokenInfo.address,
+    }
+    appDispatch({ type: "setNewTokenToErc20OwnedArray", value: newStorageTokenObject })
+  }
+
+  const [inputTokenTickerError, setInputTokenTickerError] = useState(false)
+  const [inputTokenTickerFound, setInputTokenTickerFound] = useState(false)
+  // type: erc20 displayOwned object
+  const [tokenObjectToRemove, setTokenObjectToRemove] = useState({
+    symbol: "",
+    name: "",
+    contractAddress: "",
+    contractInstance: "",
+    balanceOf: "",
+  })
+
+  function handleSearchTokenToRemove(ticker) {
+    if (!ticker.trim()) {
+      setInputTokenTickerError(false)
+      setInputTokenTickerFound(false)
+    } else {
+      let tokenObjectFound = appState.ethereum.erc20_displayOwned_Array.filter(function (tokenObject) {
+        // erc20 displayOwned array structure:
+        // {
+        //   symbol: "",
+        //   name: "",
+        //   contractAddress: "",
+        //   contractInstance: contractInstance,
+        //   balanceOf: "",
+        // }
+
+        return ticker.toUpperCase() == tokenObject.symbol
+      })
+
+      switch (tokenObjectFound.length) {
+        case 0:
+          setInputTokenTickerError(true)
+          setInputTokenTickerFound(false)
+          break
+        case 1:
+          setInputTokenTickerError(false)
+          setInputTokenTickerFound(true)
+          setTokenObjectToRemove(tokenObjectFound[0])
+          break
+        default:
+          // needs handling improvement in event of multiple matching tickers
+          null
+          break
+      }
+    }
+  }
+
+  function handleRemoveToken(e) {
+    // remove from local storage
+
+    // erc20 owned array structure: list of objects to be stored in browser
+    // {
+    //   symbol: "",
+    //   name: "",
+    //   contractAddress: "",
+    // }
+    let newStorageArray = appState.ethereum.erc20_owned_Array.filter(function (object) {
+      return object.symbol != tokenObjectToRemove.symbol
+    })
+
+    localStorage.setItem("erc20_List", JSON.stringify(newStorageArray))
+
+    // calling this dispatch should trigger handleDisplayErc20Owned() function in useEffect
+    appDispatch({ type: "setErc20OwnedArray", value: newStorageArray })
+
+    // update button text to reflect removed
+    e.currentTarget.innerText = "Removed!"
+  }
+
+  function handleOpenTokenPage(e) {
+    console.log("go to token page")
   }
 
   // async function handleWrite(e) {
@@ -296,7 +387,7 @@ function Erc20Overview() {
                     <>
                       {appState.ethereum.erc20_displayOwned_Array.map((object, index) => {
                         return (
-                          <div key={index} style={{ minHeight: "55.5px", maxHeight: "55.5px" }} className="snapshot__function-content__row">
+                          <div key={index} onClick={(e) => handleOpenTokenPage(e)} style={{ minHeight: "55.5px", maxHeight: "55.5px", cursor: "pointer" }} className="snapshot__function-content__row hover--font-change">
                             <div style={{ fontSize: ".8rem", color: "gray" }}>{object.symbol}</div>
                             <div>{object.balanceOf}</div>
                           </div>
@@ -379,14 +470,51 @@ function Erc20Overview() {
             <div onClick={() => setOpenFunctionView(2)} className={"snapshot__function-titlebar snapshot__function-titlebar--blue " + (openFunctionView == 2 ? "snapshot__function-titlebar--blue--active" : "")}>
               REMOVE
             </div>
-            <div className={"snapshot__function-content " + (openFunctionView == 2 ? "snapshot__function-content--display" : "snapshot__function-content--hide")}>
-              <div style={{ paddingBottom: "10px" }}>
-                You do not have <br /> any {appState.isTestnet ? "gETH" : "ETH"} to send.
+            <div style={{ justifyContent: "flex-start" }} className={"snapshot__function-content " + (openFunctionView == 2 ? "snapshot__function-content--display" : "snapshot__function-content--hide")}>
+              <div style={{ margin: "20px 0px 7px 0px" }}>Remove {appState.isTestnet ? "Goerli" : "Mainnet"} ERC20</div>
+              <div style={{ fontSize: ".5rem", color: "gray", width: "80%", textAlign: "justify" }}>To remove an ERC20 token from your wallet, input it&#39;s ticker or contract address in the field below.</div>
+              <div style={{ marginTop: "10px" }} className="input-container">
+                <input onChange={(e) => handleSearchTokenToRemove(e.target.value)} id="Tooltip" data-tooltip-content={"Use uppercase characters to search for token ticker/symbol."} className="input-purple" type="text" />
+                <div className="input-validation">Search Token Ticker/Symbol</div>
+                {inputTokenTickerError ? (
+                  <div className="input-validation input-validation--error">
+                    <MdError style={{ width: "12px", height: "12px" }} className="icon--error" />
+                    &nbsp;{"Unable to find this ERC20 in your wallet."}
+                  </div>
+                ) : (
+                  ""
+                )}
+                {inputTokenTickerFound ? (
+                  <div className="input-validation input-validation--success">
+                    <MdCheckCircle style={{ width: "14px", height: "14px" }} className="icon--checked" /> {"You currently own this token."}
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
-              <TbWalletOff onClick={() => setOpenFunctionView(1)} style={{ width: "80px", height: "80px" }} className="icon" />
-              <div style={{ width: "80%", fontSize: ".56rem", color: "gray", textAlign: "justify", paddingTop: "10px" }}>
-                <p>&#x2022;Navigate to the Receive tab to fund your ETH wallet in order to construct a transaction.</p>
-                <p>&#x2022;If you don&#39;t want to fund this wallet with mainnet ETH, you can switch to the testnet to use Goerli ETH.</p>
+
+              <div style={{ width: "100%", height: "120px", translate: "0px 30px", padding: "17px 23px 0px 36px" }} id="token-search-results-container">
+                {inputTokenTickerFound ? (
+                  <>
+                    <div style={{ fontSize: ".4rem", color: "lightgray" }}>SEARCH RESULTS</div>
+                    <div style={{ fontSize: "1.1rem", color: "white" }} className="font--russo-one">
+                      {tokenObjectToRemove.name}
+                    </div>
+                    <div style={{ fontSize: "1.8rem", color: "#DB00FF" }} className="font--russo-one display-flex display-flex--space-between">
+                      <span>
+                        ${tokenObjectToRemove.symbol} <MdVerified style={{ color: "lightgreen", width: "23px", height: "23px" }} />
+                      </span>
+                      <button onClick={(e) => handleRemoveToken(e)} style={{ height: "30px", width: "140px", borderRadius: "7px", fontSize: ".7rem", backgroundColor: "#DB00FF", border: "none" }} className="display-flex">
+                        <MdDelete style={{ width: "20px", height: "20px", color: "white", marginRight: "3px" }} /> Remove token
+                      </button>
+                    </div>
+                    <div style={{ fontSize: ".6rem", color: "lightgray" }}>
+                      Tokens Owned: <span style={{ color: "white" }}>{tokenObjectToRemove.balanceOf}</span>
+                    </div>
+                  </>
+                ) : (
+                  ""
+                )}
               </div>
             </div>
           </div>
