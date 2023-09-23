@@ -28,6 +28,10 @@
       transform: translateX(400px);
       transition: transform 300ms ease-in-out;
     }
+
+    &__single-token-page {
+      z-index: 101;
+    }
   }
 
   &__asset-display {

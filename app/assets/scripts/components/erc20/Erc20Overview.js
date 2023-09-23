@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react"
 import QRCode from "react-qr-code"
 import { CopyToClipboard } from "react-copy-to-clipboard"
-import { MdError, MdCheckCircle, MdLibraryBooks, MdMenu, MdContentPasteGo, MdSearch, MdVerified, MdAddCircle, MdDelete, MdHome } from "react-icons/md"
+import { MdError, MdCheckCircle, MdLibraryBooks, MdMenu, MdContentPasteGo, MdSearch, MdVerified, MdAddCircle, MdDelete, MdHome, MdKeyboardReturn } from "react-icons/md"
 import { BsHddNetworkFill, BsHddNetwork, BsReception1, BsReception4 } from "react-icons/bs"
 import { TbWalletOff, TbRefresh } from "react-icons/tb"
 import { VscBracketError } from "react-icons/vsc"
@@ -11,6 +11,8 @@ import StateContext from "../../StateContext"
 import DispatchContext from "../../DispatchContext"
 import LazyLoadFallback from "../LazyLoadFallback"
 import { Tooltip } from "react-tooltip"
+import { CSSTransition } from "react-transition-group"
+import SingleTokenPageOverview from "./SingleTokenPageOverview"
 
 function Erc20Overview() {
   const appState = useContext(StateContext)
@@ -35,6 +37,8 @@ function Erc20Overview() {
 
   // getter to populate and return an expanded list from the browser's erc20_List. This new list will be used to interact & display within app.
   async function handleDisplayErc20Owned() {
+    setIsTokenPageOpen(false)
+
     if (appState.ethereum.erc20_owned_Array) {
       try {
         setIsFetching_Erc20(true)
@@ -298,8 +302,16 @@ function Erc20Overview() {
   }
 
   const [isTokenPageOpen, setIsTokenPageOpen] = useState(false)
+  const [tokenObjectToOpen, setTokenObjectToOpen] = useState({
+    symbol: "",
+    name: "",
+    contractAddress: "",
+    contractInstance: "",
+    balanceOf: ""
+  })
 
   function handleOpenTokenPage(e, object, index) {
+    setTokenObjectToOpen(object)
     setIsTokenPageOpen(true)
   }
 
@@ -378,6 +390,10 @@ function Erc20Overview() {
 
   return (
     <>
+      <CSSTransition in={isTokenPageOpen} timeout={300} classNames="wallet-main__overlay" unmountOnExit>
+        <SingleTokenPageOverview tokenObjectToOpen={tokenObjectToOpen} />
+      </CSSTransition>
+
       <div className="wallet-main__overlay">
         <div className="snapshot__overlay">
           <div className="snapshot__function-wrapper">
@@ -562,13 +578,13 @@ function Erc20Overview() {
         <div className="interface__block-cell"></div>
         <div className="interface__block-cell interface__block-cell__footer">
           <TbRefresh onClick={() => handleDisplayErc20Owned()} id="Tooltip" data-tooltip-content={"Refresh"} className="icon" />
-          <MdHome onClick={() => navigate("/WalletMain")} id="Tooltip" data-tooltip-content={"Return to home"} className="icon" />
+          {isTokenPageOpen ? <MdKeyboardReturn onClick={() => setIsTokenPageOpen(!isTokenPageOpen)} id="Tooltip" data-tooltip-content={"Return to ERC20 overview"} className="icon" /> : <MdHome onClick={() => navigate("/WalletMain")} id="Tooltip" data-tooltip-content={"Return to home"} className="icon" />}
           <div className="icon">ARTSNL</div>
           <BsReception4 id="Tooltip" data-tooltip-content={appState.bitcoin.activeProvider && appState.ethereum.activeProvider ? "Network Status: Connected" : "Network Status: Disconnected"} className="icon" />
           <MdLibraryBooks className="icon" />
         </div>
       </div>
-      <Tooltip anchorSelect="#Tooltip" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" />
+      <Tooltip anchorSelect="#Tooltip" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word", zIndex: "101" }} variant="info" />
     </>
   )
 }

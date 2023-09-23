@@ -462,6 +462,7 @@ function App() {
         draft.ethereum.txBuilder.txDataStruct = new Transaction()
         return
       case "setCurrentBalance":
+        // type: bigint
         draft.ethereum.currentBalance = action.value
         return
       case "setChainId":

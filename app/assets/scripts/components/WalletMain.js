@@ -157,9 +157,11 @@ function WalletMain() {
     let txCountResult = null
 
     try {
+      // balanceResult type: bigint
       balanceResult = await appState.ethereum.activeProvider?.getBalance(appState.ethereum.address)
       txCountResult = await appState.ethereum.activeProvider?.getTransactionCount(appState.ethereum.address)
       setEthAddressBalance(balanceResult)
+      appDispatch({ type: "setCurrentBalance", value: balanceResult })
       setEthAddressTxCount(txCountResult)
       setIsFetching_Eth(false)
 
