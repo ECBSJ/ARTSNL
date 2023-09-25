@@ -69,7 +69,7 @@ function Erc20Overview() {
               name: value.name,
               contractAddress: value.contractAddress,
               contractInstance: null,
-              balanceOf: formatEther(balanceOf)
+              balanceOf: formatEther(balanceOf),
             }
           } catch (err) {
             console.error(err)
@@ -97,7 +97,7 @@ function Erc20Overview() {
   function handlePaste() {
     navigator.clipboard
       .readText()
-      .then(res => {
+      .then((res) => {
         document.getElementById("contract-address-input").value = res
         handleInputContractAddress(res)
       })
@@ -175,7 +175,7 @@ function Erc20Overview() {
     symbol: "",
     name: "",
     balanceOf: "",
-    address: ""
+    address: "",
   })
 
   async function getTokenInfo(contractInstance) {
@@ -190,7 +190,7 @@ function Erc20Overview() {
           symbol: symbol,
           name: name,
           balanceOf: balanceOf == 0n ? 0 : formatEther(balanceOf),
-          address: validContractAddress
+          address: validContractAddress,
         })
 
         setIsSearchingToken(false)
@@ -211,7 +211,7 @@ function Erc20Overview() {
       name: tokenInfo.name,
       contractAddress: tokenInfo.address,
       contractInstance: null,
-      balanceOf: tokenInfo.balanceOf
+      balanceOf: tokenInfo.balanceOf,
     }
     appDispatch({ type: "setNewTokenToErc20DisplayOwnedArray", value: newDisplayTokenObject })
 
@@ -222,7 +222,7 @@ function Erc20Overview() {
     let newStorageTokenObject = {
       symbol: tokenInfo.symbol,
       name: tokenInfo.name,
-      contractAddress: tokenInfo.address
+      contractAddress: tokenInfo.address,
     }
     appDispatch({ type: "setNewTokenToErc20OwnedArray", value: newStorageTokenObject })
   }
@@ -235,7 +235,7 @@ function Erc20Overview() {
     name: "",
     contractAddress: "",
     contractInstance: "",
-    balanceOf: ""
+    balanceOf: "",
   })
 
   function handleSearchTokenToRemove(ticker) {
@@ -307,53 +307,13 @@ function Erc20Overview() {
     name: "",
     contractAddress: "",
     contractInstance: "",
-    balanceOf: ""
+    balanceOf: "",
   })
 
   function handleOpenTokenPage(e, object, index) {
     setTokenObjectToOpen(object)
     setIsTokenPageOpen(true)
   }
-
-  // async function handleWrite(e) {
-  //   try {
-  //     // METHOD 1
-  //     // let txResponse = await contract.transfer.send(otherAccountAddress, parseEther("1"))
-  //     // let txReceipt = await txResponse.wait()
-  //     // console.log(txReceipt)
-
-  //     // METHOD 2
-  //     let txResponse = await contract.transfer.populateTransaction(otherAccountAddress, parseEther("1"))
-  //     let staticGasLimit = await contract.transfer.estimateGas(otherAccountAddress, parseEther("1"))
-  //     let nonce = await wallet.getNonce()
-  //     let feeResult = await provider.getFeeData()
-
-  //     let tx = new Transaction()
-  //     tx.chainId = 5
-  //     tx.data = txResponse.data
-  //     tx.gasLimit = staticGasLimit
-  //     tx.maxFeePerGas = feeResult.maxFeePerGas
-  //     tx.maxPriorityFeePerGas = feeResult.maxPriorityFeePerGas
-  //     tx.nonce = nonce
-  //     tx.to = txResponse.to
-  //     tx.type = 2
-  //     tx.value = 0n
-
-  //     let txPreImageHash = keccak256(tx.unsignedSerialized)
-  //     let signedResult = wallet.signingKey.sign(txPreImageHash)
-  //     tx.signature = signedResult
-
-  //     let txBroadcast = await wallet.sendTransaction(tx)
-  //     console.log(txBroadcast)
-
-  //     // RETRIEVING TOKEN INFO
-  //     // let result = await contract.symbol()
-  //     // let result = await contract.name()
-  //     // let result1 = await contract.balanceOf(accountAddress)
-  //   } catch (err) {
-  //     console.error(err)
-  //   }
-  // }
 
   useEffect(() => {
     appDispatch({ type: "initWalletClass" })
@@ -417,7 +377,7 @@ function Erc20Overview() {
                     <>
                       {appState.ethereum.erc20_displayOwned_Array.map((object, index) => {
                         return (
-                          <div key={index} onClick={e => handleOpenTokenPage(e, object, index)} style={{ minHeight: "55.5px", maxHeight: "55.5px", cursor: "pointer" }} className="snapshot__function-content__row hover--font-change">
+                          <div key={index} onClick={(e) => handleOpenTokenPage(e, object, index)} style={{ minHeight: "55.5px", maxHeight: "55.5px", cursor: "pointer" }} className="snapshot__function-content__row hover--font-change">
                             <div style={{ fontSize: ".8rem", color: "gray" }}>{object.symbol}</div>
                             <div>{object.balanceOf}</div>
                           </div>
@@ -444,7 +404,7 @@ function Erc20Overview() {
               <div style={{ marginTop: "10px" }} className="input-container">
                 <MdContentPasteGo onClick={() => handlePaste()} style={{ zIndex: "1", right: "15px", transform: "scaleX(-1)" }} className="icon icon--position-absolute" />
                 {isContractAddressValid && validContractAddress ? <MdSearch onClick={() => handleTokenSearch()} style={{ zIndex: "1", right: "60px", transform: "scaleX(-1)" }} className="icon icon--position-absolute" /> : ""}
-                <input onChange={e => handleInputContractAddress(e.target.value)} id="contract-address-input" className="input-purple" type="text" />
+                <input onChange={(e) => handleInputContractAddress(e.target.value)} id="contract-address-input" className="input-purple" type="text" />
                 <div className="input-validation">Input Contract Address</div>
                 {inputContractAddressError ? (
                   <div className="input-validation input-validation--error">
@@ -482,7 +442,7 @@ function Erc20Overview() {
                       <span>
                         ${tokenInfo.symbol} <MdVerified style={{ color: "lightgreen", width: "23px", height: "23px" }} />
                       </span>
-                      <button onClick={e => handleAddToken(e)} style={{ height: "30px", width: "140px", borderRadius: "7px", fontSize: ".7rem", backgroundColor: "#DB00FF", border: "none" }} className="display-flex">
+                      <button onClick={(e) => handleAddToken(e)} style={{ height: "30px", width: "140px", borderRadius: "7px", fontSize: ".7rem", backgroundColor: "#DB00FF", border: "none" }} className="display-flex">
                         <MdAddCircle style={{ width: "20px", height: "20px", color: "white", marginRight: "3px" }} /> Add ERC20
                       </button>
                     </div>
@@ -504,7 +464,7 @@ function Erc20Overview() {
               <div style={{ margin: "20px 0px 7px 0px" }}>Remove {appState.isTestnet ? "Goerli" : "Mainnet"} ERC20</div>
               <div style={{ fontSize: ".5rem", color: "gray", width: "80%", textAlign: "justify" }}>To remove an ERC20 token from your wallet, input it&#39;s ticker or contract address in the field below.</div>
               <div style={{ marginTop: "10px" }} className="input-container">
-                <input onChange={e => handleSearchTokenToRemove(e.target.value)} id="Tooltip" data-tooltip-content={"Use uppercase characters to search for token ticker/symbol."} className="input-purple" type="text" />
+                <input onChange={(e) => handleSearchTokenToRemove(e.target.value)} id="Tooltip" data-tooltip-content={"Use uppercase characters to search for token ticker/symbol."} className="input-purple" type="text" />
                 <div className="input-validation">Search Token Ticker/Symbol</div>
                 {inputTokenTickerError ? (
                   <div className="input-validation input-validation--error">
@@ -534,7 +494,7 @@ function Erc20Overview() {
                       <span>
                         ${tokenObjectToRemove.symbol} <MdVerified style={{ color: "lightgreen", width: "23px", height: "23px" }} />
                       </span>
-                      <button onClick={e => handleRemoveToken(e)} style={{ height: "30px", width: "140px", borderRadius: "7px", fontSize: ".7rem", backgroundColor: "#DB00FF", border: "none" }} className="display-flex">
+                      <button onClick={(e) => handleRemoveToken(e)} style={{ height: "30px", width: "140px", borderRadius: "7px", fontSize: ".7rem", backgroundColor: "#DB00FF", border: "none" }} className="display-flex">
                         <MdDelete style={{ width: "20px", height: "20px", color: "white", marginRight: "3px" }} /> Remove token
                       </button>
                     </div>

@@ -5,6 +5,8 @@ import QRCode from "react-qr-code"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import { MdCopyAll, MdOutlineArrowCircleRight, MdOpenInNew } from "react-icons/md"
 import { TbWalletOff } from "react-icons/tb"
+import { CSSTransition } from "react-transition-group"
+import SendTokenPage from "./SendTokenPage"
 
 function SingleTokenPageOverview({ tokenObjectToOpen }) {
   const appState = useContext(StateContext)
@@ -22,8 +24,18 @@ function SingleTokenPageOverview({ tokenObjectToOpen }) {
     }, 1000)
   }
 
+  const [isSendTokenPageOpen, setIsSendTokenPageOpen] = useState(false)
+
+  function navigateSendTokenPage() {
+    setIsSendTokenPageOpen(true)
+  }
+
   return (
     <>
+      <CSSTransition in={isSendTokenPageOpen} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
+        <SendTokenPage tokenObjectToOpen={tokenObjectToOpen} setIsSendTokenPageOpen={setIsSendTokenPageOpen} isSendTokenPageOpen={isSendTokenPageOpen} />
+      </CSSTransition>
+
       <div style={{ position: "absolute", backgroundColor: "#101115" }} className="wallet-main__overlay wallet-main__overlay__single-token-page">
         <div className="snapshot__overlay">
           <div className="snapshot__function-wrapper">
@@ -87,7 +99,7 @@ function SingleTokenPageOverview({ tokenObjectToOpen }) {
               {appState.ethereum.currentBalance > 0 && tokenObjectToOpen.balanceOf > 0 ? (
                 <>
                   <div style={{ paddingBottom: "10px" }}>Start ${tokenObjectToOpen?.symbol} TX</div>
-                  <MdOutlineArrowCircleRight onClick={() => null} style={{ width: "80px", height: "80px" }} className="icon" />
+                  <MdOutlineArrowCircleRight onClick={() => navigateSendTokenPage()} style={{ width: "80px", height: "80px" }} className="icon" />
                   <div style={{ width: "80%", fontSize: ".56rem", color: "gray", textAlign: "justify", paddingTop: "10px" }}>
                     <p>&#x2022;Before proceeding to the transaction process, please have a valid EVM compatible receiving address ready.</p>
                     <p>&#x2022;You still can leave ${tokenObjectToOpen?.symbol} in this wallet as the browser&#39;s secure storage will store your key pair encrypted.</p>
