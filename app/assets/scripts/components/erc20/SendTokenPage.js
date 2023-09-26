@@ -10,11 +10,43 @@ import { isAddress, formatEther, Contract, parseEther } from "ethers"
 
 import QRreaderPopup from "../QRreaderPopup"
 import LazyLoadFallback from "../LazyLoadFallback"
+import { CSSTransition } from "react-transition-group"
+import SendTokenReceipt from "./SendTokenReceipt"
 
 function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenPageOpen }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
+  // init contractInstance on component render
+  const [tokenContractInstance, setTokenContractInstance] = useState()
+  const [loadingContractInstance, setLoadingContractInstance] = useState(true)
+  const [contractInstanceError, setContractInstanceError] = useState(false)
+
+  async function initContractInstance() {
+    try {
+      // fetch token ABI
+      let response = await fetch(`https://api${appState.isTestnet ? "-goerli" : ""}.etherscan.io/api?module=contract&action=getabi&address=${tokenObjectToOpen.contractAddress}&apikey=${process.env.ETHERSCAN_API_KEY_TOKEN}`)
+      let data = await response.json()
+
+      // init contract instance
+      let contractInstance = new Contract(tokenObjectToOpen.contractAddress, JSON.parse(data?.result), appState.ethereum.txBuilder.wallet)
+      contractInstance && setTokenContractInstance(contractInstance)
+      console.log(contractInstance)
+
+      setLoadingContractInstance(false)
+      setContractInstanceError(false)
+    } catch (err) {
+      console.error(err)
+      setLoadingContractInstance(false)
+      setContractInstanceError(true)
+    }
+  }
+
+  useMemo(() => {
+    initContractInstance()
+  }, [])
+
+  // to field validation
   const [toInputError, setToInputError] = useState("")
   const [isToInputValid, setIsToInputValid] = useState(false)
   const [inputtedValidTo, setInputtedValidTo] = useState("")
@@ -68,34 +100,6 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
       .catch(console.error)
   }
 
-  const [tokenContractInstance, setTokenContractInstance] = useState()
-  const [loadingContractInstance, setLoadingContractInstance] = useState(true)
-  const [contractInstanceError, setContractInstanceError] = useState(false)
-
-  async function initContractInstance() {
-    try {
-      // fetch token ABI
-      let response = await fetch(`https://api${appState.isTestnet ? "-goerli" : ""}.etherscan.io/api?module=contract&action=getabi&address=${tokenObjectToOpen.contractAddress}&apikey=${process.env.ETHERSCAN_API_KEY_TOKEN}`)
-      let data = await response.json()
-
-      // init contract instance
-      let contractInstance = new Contract(tokenObjectToOpen.contractAddress, JSON.parse(data?.result), appState.ethereum.txBuilder.wallet)
-      contractInstance && setTokenContractInstance(contractInstance)
-      console.log(contractInstance)
-
-      setLoadingContractInstance(false)
-      setContractInstanceError(false)
-    } catch (err) {
-      console.error(err)
-      setLoadingContractInstance(false)
-      setContractInstanceError(true)
-    }
-  }
-
-  useMemo(() => {
-    initContractInstance()
-  }, [])
-
   // async function handleWrite(e) {
   //   try {
   //     // METHOD 1
@@ -136,6 +140,7 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
   //   }
   // }
 
+  // gas & fee validation
   // below types: bigint
   const [gasLimit, setGasLimit] = useState()
   const [maxFeePerGas, setMaxFeePerGas] = useState()
@@ -173,7 +178,7 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
     }
   }, [tokenContractInstance])
 
-  // both totalFee & maxAmnt in bigint wei
+  // type of maxAmnt: bigint wei
   const [maxAmnt, setMaxAmnt] = useState()
 
   function handleMaxAmnt(e) {
@@ -189,6 +194,7 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
     }, 1000)
   }
 
+  // send field validation
   const [inputSendAmntError, setInputSendAmntError] = useState(false)
   const [inputtedValidSendAmnt, setInputtedValidSendAmnt] = useState(null)
 
@@ -213,6 +219,7 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
     }
   }
 
+  // final check for complete validation
   const [preparedToSend, setPreparedToSend] = useState(false)
 
   useEffect(() => {
@@ -223,8 +230,34 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
     }
   }, [isToInputValid, inputtedValidSendAmnt, totalFee])
 
+  const [isSendingToken, setIsSendingToken] = useState(false)
+  const [sendingTokenProgress, setSendingTokenProgress] = useState("")
+
+  async function handleSendToken() {
+    // navigate to token receipt page
+    setIsSendingToken(true)
+
+    try {
+      // set loading status
+      setSendingTokenProgress("loading")
+
+      // broadcast tx
+      null
+
+      // when success
+      setSendingTokenProgress("success")
+    } catch (err) {
+      console.error(err)
+      setSendingTokenProgress("error")
+    }
+  }
+
   return (
     <>
+      <CSSTransition in={isSendingToken} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
+        <SendTokenReceipt tokenObjectToOpen={tokenObjectToOpen} sendingTokenProgress={sendingTokenProgress} />
+      </CSSTransition>
+
       {openQRreader ? <QRreaderPopup setInputValue={handleToInput} setScannedValue={setScannedValue} openQRreader={openQRreader} setOpenQRreader={setOpenQRreader} /> : ""}
 
       <div style={{ backgroundColor: "#101115", zIndex: "102" }} className="tx-builder__overlay">
@@ -350,7 +383,7 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
             </>
           )}
 
-          <div className="tx-builder__overlay__outer">{preparedToSend ? <button>Send</button> : ""}</div>
+          <div className="tx-builder__overlay__outer">{preparedToSend ? <button onClick={() => handleSendToken()}>Send</button> : ""}</div>
         </IconContext.Provider>
       </div>
       <Tooltip anchorSelect="#Tooltip" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word", zIndex: "103" }} variant="info" />
