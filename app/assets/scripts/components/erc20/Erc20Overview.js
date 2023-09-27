@@ -378,8 +378,8 @@ function Erc20Overview() {
                       {appState.ethereum.erc20_displayOwned_Array.map((object, index) => {
                         return (
                           <div key={index} onClick={(e) => handleOpenTokenPage(e, object, index)} style={{ minHeight: "55.5px", maxHeight: "55.5px", cursor: "pointer" }} className="snapshot__function-content__row hover--font-change">
-                            <div style={{ fontSize: ".8rem", color: "gray" }}>{object.symbol}</div>
-                            <div>{object.balanceOf}</div>
+                            <div style={{ fontSize: ".8rem", color: "gray" }}>{object?.symbol}</div>
+                            <div>{object?.balanceOf}</div>
                           </div>
                         )
                       })}

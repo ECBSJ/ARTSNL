@@ -230,6 +230,25 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
     }
   }, [isToInputValid, inputtedValidSendAmnt, totalFee])
 
+  const [txHash, setTxHash] = useState("")
+
+  async function broadcastTx() {
+    setSendingTokenProgress("loading")
+
+    try {
+      let txResponse = await tokenContractInstance.transfer.send(inputtedValidTo, parseEther(inputtedValidSendAmnt))
+      txResponse && setTxHash(txResponse.hash)
+      setSendingTokenProgress("success")
+      console.log(txResponse)
+
+      let txReceipt = await txResponse.wait()
+      console.log(txReceipt)
+    } catch (err) {
+      setSendingTokenProgress("error")
+      console.error(err)
+    }
+  }
+
   const [isSendingToken, setIsSendingToken] = useState(false)
   const [sendingTokenProgress, setSendingTokenProgress] = useState("")
 
@@ -242,10 +261,7 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
       setSendingTokenProgress("loading")
 
       // broadcast tx
-      null
-
-      // when success
-      setSendingTokenProgress("success")
+      await broadcastTx()
     } catch (err) {
       console.error(err)
       setSendingTokenProgress("error")
@@ -255,7 +271,7 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
   return (
     <>
       <CSSTransition in={isSendingToken} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
-        <SendTokenReceipt tokenObjectToOpen={tokenObjectToOpen} sendingTokenProgress={sendingTokenProgress} />
+        <SendTokenReceipt tokenObjectToOpen={tokenObjectToOpen} sendingTokenProgress={sendingTokenProgress} txHash={txHash} inputtedValidTo={inputtedValidTo} inputtedValidSendAmnt={inputtedValidSendAmnt} broadcastTx={broadcastTx} />
       </CSSTransition>
 
       {openQRreader ? <QRreaderPopup setInputValue={handleToInput} setScannedValue={setScannedValue} openQRreader={openQRreader} setOpenQRreader={setOpenQRreader} /> : ""}

@@ -36,7 +36,7 @@ function SingleTokenPageOverview({ tokenObjectToOpen }) {
         <SendTokenPage tokenObjectToOpen={tokenObjectToOpen} setIsSendTokenPageOpen={setIsSendTokenPageOpen} isSendTokenPageOpen={isSendTokenPageOpen} />
       </CSSTransition>
 
-      <div style={{ position: "absolute", backgroundColor: "#101115" }} className="wallet-main__overlay wallet-main__overlay__single-token-page">
+      <div style={{ position: "absolute", backgroundColor: "#101115", zIndex: "101" }} className="wallet-main__overlay">
         <div className="snapshot__overlay">
           <div className="snapshot__function-wrapper">
             <div onClick={() => setOpenFunctionView(0)} className={"snapshot__function-titlebar snapshot__function-titlebar--blue " + (openFunctionView == 0 ? "snapshot__function-titlebar--blue--active" : "")}>

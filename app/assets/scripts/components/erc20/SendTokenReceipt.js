@@ -1,7 +1,6 @@
 import React, { useContext, useState, useMemo } from "react"
 import { useNavigate } from "react-router-dom"
 import StateContext from "../../StateContext"
-import DispatchContext from "../../DispatchContext"
 
 import { MdCopyAll, MdOpenInNew } from "react-icons/md"
 import { BsFillSendExclamationFill, BsSend } from "react-icons/bs"
@@ -10,11 +9,9 @@ import { IconContext } from "react-icons"
 import { Tooltip } from "react-tooltip"
 
 import LazyLoadFallback from "../LazyLoadFallback"
-import { formatEther } from "ethers"
 
-function SendTokenReceipt({ sendingTokenProgress }) {
+function SendTokenReceipt({ tokenObjectToOpen, sendingTokenProgress, txHash, inputtedValidTo, inputtedValidSendAmnt, broadcastTx }) {
   const appState = useContext(StateContext)
-  const appDispatch = useContext(DispatchContext)
 
   const navigate = useNavigate()
 
@@ -60,9 +57,9 @@ function SendTokenReceipt({ sendingTokenProgress }) {
                   <h3 style={{ marginBottom: "0", color: "red" }}>TX Broadcast Failed!</h3>
                   <div style={{ overflowWrap: "anywhere", fontSize: ".62rem", textAlign: "justify", color: "lightblue" }} className="tx-builder__blueprint__review-overlay__column-gap">
                     <IconContext.Provider value={{ size: "2.5rem" }}>
-                      <BsSend id="Tooltip" data-tooltip-content={"Rebroadcast TX Hex"} onClick={() => broadcastTX()} style={{ width: "100px" }} className="icon" />
-                      Rebroadcast or broadcast TX Hex using etherscan web app.
-                      <a href={null} target="_blank">
+                      <BsSend id="Tooltip" data-tooltip-content={"Click to rebroadcast TX"} onClick={() => broadcastTx()} style={{ width: "100px" }} className="icon" />
+                      Rebroadcast or execute transfer using etherscan web app.
+                      <a href={appState.isTestnet ? `https://goerli.etherscan.io/address/${tokenObjectToOpen?.contractAddress}` : `https://etherscan.io/address/${tokenObjectToOpen?.contractAddress}`} target="_blank">
                         <MdOpenInNew id="Tooltip" data-tooltip-content={"Try sending token by interacting with the smart contract on etherscan instead."} className="icon" />
                       </a>
                     </IconContext.Provider>
@@ -95,11 +92,11 @@ function SendTokenReceipt({ sendingTokenProgress }) {
                 <h3 style={{ marginBottom: "0", color: "greenyellow" }}>TX Broadcasted!</h3>
                 <div style={{ overflowWrap: "anywhere", fontSize: ".62rem", textAlign: "justify" }} className="tx-builder__blueprint__review-overlay__column-gap">
                   <IconContext.Provider value={{ size: "2.5rem" }}>
-                    <CopyToClipboard text={null} onCopy={() => handleCopyPopup_modal()}>
-                      <MdCopyAll id="Tooltip" data-tooltip-content={"Copy TX id"} style={{ width: "100px" }} className="icon icon-copy icon-copy-modal" />
+                    <CopyToClipboard text={txHash} onCopy={() => handleCopyPopup_modal()}>
+                      <MdCopyAll id="Tooltip" data-tooltip-content={"Copy TX hash"} style={{ width: "100px" }} className="icon icon-copy icon-copy-modal" />
                     </CopyToClipboard>
-                    {"tx hash is here"}
-                    <a href={null} target="_blank">
+                    {txHash}
+                    <a href={lookupTxURL + txHash} target="_blank">
                       <MdOpenInNew id="Tooltip" data-tooltip-content={"View in explorer"} className="icon" />
                     </a>
                   </IconContext.Provider>
@@ -108,11 +105,11 @@ function SendTokenReceipt({ sendingTokenProgress }) {
                   <ul className="tx-builder__blueprint__review-overlay__content-no-ul-format">
                     <li className="tx-builder__blueprint__review-overlay__content-row">
                       <span className="tx-builder__blueprint__review-overlay__content-row-label">To</span>
-                      <span className="tx-builder__blueprint__review-overlay__content-row-value">{"to address"}</span>
+                      <span className="tx-builder__blueprint__review-overlay__content-row-value">{inputtedValidTo.slice(0, 7) + "..." + inputtedValidTo.slice(-7)}</span>
                     </li>
                     <li className="tx-builder__blueprint__review-overlay__content-row">
                       <span className="tx-builder__blueprint__review-overlay__content-row-label">Total Value</span>
-                      <span className="tx-builder__blueprint__review-overlay__content-row-value">{"send amount"}</span>
+                      <span className="tx-builder__blueprint__review-overlay__content-row-value">{inputtedValidSendAmnt}</span>
                     </li>
                     <li className="tx-builder__blueprint__review-overlay__content-row">
                       <span className="tx-builder__blueprint__review-overlay__content-row-label">Network</span>
