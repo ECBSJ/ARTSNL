@@ -109,7 +109,7 @@ function App() {
   // immerReducer config
   const initialState = {
     hasBrowserStorage: false,
-    isTestnet: true,
+    isTestnet: false,
     keys: {
       bufferPrivKey: null,
       bufferPubKey: null,
@@ -514,8 +514,14 @@ function App() {
           draft.ethereum.erc20_owned_Array.push(action.value)
         }
 
-        localStorage.setItem("hasErc20_goerli", "true")
-        localStorage.setItem("erc20_List_goerli", JSON.stringify(draft.ethereum.erc20_owned_Array))
+        if (draft.isTestnet) {
+          localStorage.setItem("hasErc20_goerli", "true")
+          localStorage.setItem("erc20_List_goerli", JSON.stringify(draft.ethereum.erc20_owned_Array))
+        } else {
+          localStorage.setItem("hasErc20_mainnet", "true")
+          localStorage.setItem("erc20_List_mainnet", JSON.stringify(draft.ethereum.erc20_owned_Array))
+        }
+
         return
       case "setErc20DisplayOwnedArray":
         draft.ethereum.erc20_displayOwned_Array = action.value
@@ -527,7 +533,10 @@ function App() {
         } else {
           draft.ethereum.erc20_displayOwned_Array.push(action.value)
         }
-
+        return
+      case "clearErc20State":
+        draft.ethereum.erc20_owned_Array = null
+        draft.ethereum.erc20_displayOwned_Array = null
         return
     }
   }
@@ -584,17 +593,18 @@ function App() {
     }
   }, [])
 
-  // useEffect(() => {
-  //   dispatch({ type: "setBitcoinJsNetwork" })
-  // }, [state.isTestnet])
+  useEffect(() => {
+    dispatch({ type: "setBitcoinJsNetwork" })
+  }, [state.isTestnet])
 
   useEffect(() => {
-    // dispatch({ type: "setBitcoinProviders" })
+    dispatch({ type: "setBitcoinProviders" })
     dispatch({ type: "setEthereumProviders" })
   }, [])
 
   useEffect(() => {
     dispatch({ type: "setActiveProvider" })
+    dispatch({ type: "clearErc20State" })
   }, [state.isTestnet])
 
   return (
@@ -614,8 +624,7 @@ function App() {
                 </CSSTransition>
                 <Suspense fallback={<LazyLoadFallback />}>
                   <Routes>
-                    {/* <Route path="/" element={state.hasBrowserStorage ? <WalletMain /> : <Main />} /> */}
-                    <Route path="/" element={<Erc20Overview />} />
+                    <Route path="/" element={state.hasBrowserStorage ? <WalletMain /> : <Main />} />
                     <Route path="/CreateKeys" element={<CreateKeys />} />
                     <Route path="/AddressSelection" element={<AddressSelection />} />
                     <Route path="/BitcoinAddress" element={<BitcoinAddress />} />

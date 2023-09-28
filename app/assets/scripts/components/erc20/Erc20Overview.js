@@ -294,14 +294,25 @@ function Erc20Overview() {
 
     if (newStorageArray.length == 0) {
       // if no erc20 remaining in list, remove from local storage
-      localStorage.removeItem("erc20_List_goerli")
-      localStorage.removeItem("hasErc20_goerli")
+      if (appState.isTestnet) {
+        localStorage.removeItem("erc20_List_goerli")
+        localStorage.removeItem("hasErc20_goerli")
+      } else {
+        localStorage.removeItem("erc20_List_mainnet")
+        localStorage.removeItem("hasErc20_mainnet")
+      }
 
       // calling this dispatch should trigger handleDisplayErc20Owned() function in useEffect because array length changes
       // erc20_displayOwned_Array will then be init to null
       appDispatch({ type: "setErc20OwnedArray", value: newStorageArray })
     } else {
-      localStorage.setItem("erc20_List_goerli", JSON.stringify(newStorageArray))
+      // if there are erc20 remaining in list
+
+      if (appState.isTestnet) {
+        localStorage.setItem("erc20_List_goerli", JSON.stringify(newStorageArray))
+      } else {
+        localStorage.setItem("erc20_List_mainnet", JSON.stringify(newStorageArray))
+      }
 
       // calling this dispatch should trigger handleDisplayErc20Owned() function in useEffect
       appDispatch({ type: "setErc20OwnedArray", value: newStorageArray })
@@ -331,17 +342,33 @@ function Erc20Overview() {
 
   useEffect(() => {
     // retrieve erc20 list from local storage
-    let hasErc20_goerli = localStorage.getItem("hasErc20_goerli")
 
-    if (hasErc20_goerli === "true") {
-      let erc20_List = localStorage.getItem("erc20_List_goerli")
-      let array = JSON.parse(erc20_List)
+    if (appState.isTestnet) {
+      let hasErc20 = localStorage.getItem("hasErc20_goerli")
 
-      // set to appState
-      appDispatch({ type: "setErc20OwnedArray", value: array })
+      if (hasErc20 === "true") {
+        let erc20_List = localStorage.getItem("erc20_List_goerli")
+        let array = JSON.parse(erc20_List)
+
+        // set to appState
+        appDispatch({ type: "setErc20OwnedArray", value: array })
+      } else {
+        setIsFetching_Erc20(false)
+        setHasErrors_Erc20(false)
+      }
     } else {
-      setIsFetching_Erc20(false)
-      setHasErrors_Erc20(false)
+      let hasErc20 = localStorage.getItem("hasErc20_mainnet")
+
+      if (hasErc20 === "true") {
+        let erc20_List = localStorage.getItem("erc20_List_mainnet")
+        let array = JSON.parse(erc20_List)
+
+        // set to appState
+        appDispatch({ type: "setErc20OwnedArray", value: array })
+      } else {
+        setIsFetching_Erc20(false)
+        setHasErrors_Erc20(false)
+      }
     }
   }, [])
 
