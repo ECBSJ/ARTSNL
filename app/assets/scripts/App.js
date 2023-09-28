@@ -514,8 +514,8 @@ function App() {
           draft.ethereum.erc20_owned_Array.push(action.value)
         }
 
-        localStorage.setItem("hasErc20", "true")
-        localStorage.setItem("erc20_List", JSON.stringify(draft.ethereum.erc20_owned_Array))
+        localStorage.setItem("hasErc20_goerli", "true")
+        localStorage.setItem("erc20_List_goerli", JSON.stringify(draft.ethereum.erc20_owned_Array))
         return
       case "setErc20DisplayOwnedArray":
         draft.ethereum.erc20_displayOwned_Array = action.value

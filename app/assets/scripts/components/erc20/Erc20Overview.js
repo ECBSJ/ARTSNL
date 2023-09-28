@@ -39,7 +39,7 @@ function Erc20Overview() {
   async function handleDisplayErc20Owned() {
     setIsTokenPageOpen(false)
 
-    if (appState.ethereum.erc20_owned_Array) {
+    if (appState.ethereum.erc20_owned_Array?.length > 0) {
       try {
         setIsFetching_Erc20(true)
         setHasErrors_Erc20(false)
@@ -90,7 +90,7 @@ function Erc20Overview() {
         setHasErrors_Erc20(true)
       }
     } else {
-      null
+      appDispatch({ type: "setErc20DisplayOwnedArray", value: null })
     }
   }
 
@@ -292,10 +292,20 @@ function Erc20Overview() {
       return object.symbol != tokenObjectToRemove.symbol
     })
 
-    localStorage.setItem("erc20_List", JSON.stringify(newStorageArray))
+    if (newStorageArray.length == 0) {
+      // if no erc20 remaining in list, remove from local storage
+      localStorage.removeItem("erc20_List_goerli")
+      localStorage.removeItem("hasErc20_goerli")
 
-    // calling this dispatch should trigger handleDisplayErc20Owned() function in useEffect
-    appDispatch({ type: "setErc20OwnedArray", value: newStorageArray })
+      // calling this dispatch should trigger handleDisplayErc20Owned() function in useEffect because array length changes
+      // erc20_displayOwned_Array will then be init to null
+      appDispatch({ type: "setErc20OwnedArray", value: newStorageArray })
+    } else {
+      localStorage.setItem("erc20_List_goerli", JSON.stringify(newStorageArray))
+
+      // calling this dispatch should trigger handleDisplayErc20Owned() function in useEffect
+      appDispatch({ type: "setErc20OwnedArray", value: newStorageArray })
+    }
 
     // update button text to reflect removed
     e.currentTarget.innerText = "Removed!"
@@ -321,10 +331,10 @@ function Erc20Overview() {
 
   useEffect(() => {
     // retrieve erc20 list from local storage
-    let hasErc20 = localStorage.getItem("hasErc20")
+    let hasErc20_goerli = localStorage.getItem("hasErc20_goerli")
 
-    if (hasErc20 === "true") {
-      let erc20_List = localStorage.getItem("erc20_List")
+    if (hasErc20_goerli === "true") {
+      let erc20_List = localStorage.getItem("erc20_List_goerli")
       let array = JSON.parse(erc20_List)
 
       // set to appState
