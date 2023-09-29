@@ -5,10 +5,14 @@ import QRCode from "react-qr-code"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import { MdCopyAll, MdOutlineArrowCircleRight, MdOpenInNew } from "react-icons/md"
 import { TbWalletOff } from "react-icons/tb"
+import { VscBracketError } from "react-icons/vsc"
+import { RiRefreshFill } from "react-icons/ri"
 import { CSSTransition } from "react-transition-group"
 import SendTokenPage from "./SendTokenPage"
+import { Contract, formatEther } from "ethers"
+import LazyLoadFallback from "../LazyLoadFallback"
 
-function SingleTokenPageOverview({ tokenObjectToOpen }) {
+function SingleTokenPageOverview({ tokenObjectToOpen, setTokenObjectToOpen }) {
   const appState = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
@@ -23,6 +27,46 @@ function SingleTokenPageOverview({ tokenObjectToOpen }) {
       document.querySelector(".icon-copy").classList.toggle("icon-copy--active")
     }, 1000)
   }
+
+  const [fetchAbiProgress, setFetchAbiProgress] = useState("loading")
+
+  // fetches token abi and balance
+  async function fetchAbi() {
+    try {
+      setFetchAbiProgress("loading")
+
+      // fetch token ABI
+      let response = await fetch(`https://api${appState.isTestnet ? "-goerli" : ""}.etherscan.io/api?module=contract&action=getabi&address=${tokenObjectToOpen.contractAddress}&apikey=${process.env.ETHERSCAN_API_KEY_TOKEN}`)
+      let data = await response.json()
+
+      // init contract instance
+      let contractInstance = new Contract(tokenObjectToOpen.contractAddress, JSON.parse(data?.result), appState.ethereum.txBuilder.wallet)
+
+      // fetch token balance
+      // typeof balanceOf: bigint
+      let balanceOf = await contractInstance.balanceOf(appState.ethereum.address)
+
+      balanceOf &&
+        setTokenObjectToOpen(prevState => {
+          // Create a new object by spreading the previous state
+          const newState = { ...prevState }
+
+          // Update the specific item
+          newState.balanceOf = formatEther(balanceOf)
+
+          return newState // Set the state to the new object
+        })
+
+      setFetchAbiProgress("success")
+    } catch (err) {
+      console.error(err)
+      setFetchAbiProgress("error")
+    }
+  }
+
+  useEffect(() => {
+    fetchAbi()
+  }, [])
 
   const [isSendTokenPageOpen, setIsSendTokenPageOpen] = useState(false)
 
@@ -51,9 +95,21 @@ function SingleTokenPageOverview({ tokenObjectToOpen }) {
                   <MdOpenInNew style={{ width: "15px", height: "15px", marginRight: "3px" }} /> View Smart Contract
                 </a>
               </div>
+
               <div className="snapshot__function-content__row">
-                <div style={{ fontSize: ".8rem", color: "gray" }}>Balance</div>
-                <div>{tokenObjectToOpen.balanceOf}</div>
+                {fetchAbiProgress == "loading" ? (
+                  <LazyLoadFallback />
+                ) : fetchAbiProgress == "error" ? (
+                  <>
+                    <div style={{ fontSize: ".8rem", color: "red" }}>Error. Click refresh icon to the right.</div>
+                    <RiRefreshFill onClick={() => fetchAbi()} id="Tooltip" data-tooltip-content={"Click to refetch token data."} style={{ width: "23px", height: "23px", color: "lightgreen" }} className="icon" />
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontSize: ".8rem", color: "gray" }}>Balance</div>
+                    <div>{tokenObjectToOpen.balanceOf}</div>
+                  </>
+                )}
               </div>
               <div className="snapshot__function-content__row"></div>
               <div className="snapshot__function-content__row">
