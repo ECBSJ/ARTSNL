@@ -25,13 +25,13 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
   async function initContractInstance() {
     try {
       // fetch token ABI
-      let response = await fetch(`https://api${appState.isTestnet ? "-goerli" : ""}.etherscan.io/api?module=contract&action=getabi&address=${tokenObjectToOpen.contractAddress}&apikey=${process.env.ETHERSCAN_API_KEY_TOKEN}`)
-      let data = await response.json()
+      // let response = await fetch(`https://api${appState.isTestnet ? "-goerli" : ""}.etherscan.io/api?module=contract&action=getabi&address=${tokenObjectToOpen.contractAddress}&apikey=${process.env.ETHERSCAN_API_KEY_TOKEN}`)
+      // let data = await response.json()
 
       // init contract instance
-      let contractInstance = new Contract(tokenObjectToOpen.contractAddress, JSON.parse(data?.result), appState.ethereum.txBuilder.wallet)
-      contractInstance && setTokenContractInstance(contractInstance)
-      console.log(contractInstance)
+      // let contractInstance = new Contract(tokenObjectToOpen.contractAddress, JSON.parse(data?.result), appState.ethereum.txBuilder.wallet)
+      // contractInstance && setTokenContractInstance(contractInstance)
+      // console.log(contractInstance)
 
       setLoadingContractInstance(false)
       setContractInstanceError(false)
@@ -93,7 +93,7 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
   function handlePaste() {
     navigator.clipboard
       .readText()
-      .then((res) => {
+      .then(res => {
         document.getElementById("to-input-grab").value = res
         handleToInput(res)
       })
@@ -153,7 +153,7 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
       setFetchFeeDataProgress("loading")
 
       // all result types in bigint
-      let staticGasLimit = await tokenContractInstance?.transfer.estimateGas("0x38f5c4ca0db4b79a87257e06657e371bbba5ff99", parseEther("1"))
+      let staticGasLimit = await tokenObjectToOpen.contractInstance?.transfer.estimateGas("0x38f5c4ca0db4b79a87257e06657e371bbba5ff99", parseEther("1"))
       let feeResult = await appState.ethereum.activeProvider.getFeeData()
 
       if (staticGasLimit && feeResult) {
@@ -173,10 +173,10 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
   }
 
   useEffect(() => {
-    if (tokenContractInstance) {
+    if (tokenObjectToOpen.contractInstance) {
       fetchNetworkFeeData()
     }
-  }, [tokenContractInstance])
+  }, [tokenObjectToOpen.contractInstance])
 
   // type of maxAmnt: bigint wei
   const [maxAmnt, setMaxAmnt] = useState()
@@ -236,7 +236,7 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
     setSendingTokenProgress("loading")
 
     try {
-      let txResponse = await tokenContractInstance.transfer.send(inputtedValidTo, parseEther(inputtedValidSendAmnt))
+      let txResponse = await tokenObjectToOpen.contractInstance.transfer.send(inputtedValidTo, parseEther(inputtedValidSendAmnt))
       txResponse && setTxHash(txResponse.hash)
       setSendingTokenProgress("success")
       console.log(txResponse)
@@ -315,7 +315,7 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
                       )}
                     </div>
                     <div className="tx-builder__blueprint-dashboard__input-field-bottom">
-                      <input autoFocus id="to-input-grab" onChange={(e) => handleToInput(e.target.value)} className="eth-txBuilder-input" value={scannedValue ? scannedValue : undefined} onFocus={() => setScannedValue()} type="text" />
+                      <input autoFocus id="to-input-grab" onChange={e => handleToInput(e.target.value)} className="eth-txBuilder-input" value={scannedValue ? scannedValue : undefined} onFocus={() => setScannedValue()} type="text" />
                     </div>
                   </div>
                   <div className="tx-builder__blueprint-dashboard__input-field">
@@ -323,7 +323,7 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
                       <span>tx.value</span>
                       <FaQuestionCircle id="Tooltip" data-tooltip-content="Input the amount of tokens you want to send" className="icon" />
                       <div className="data-type-selector-container display-flex">
-                        <span style={{ color: "white" }} onClick={(e) => handleMaxAmnt(e)} className={"data-type-selector-container--box"}>
+                        <span style={{ color: "white" }} onClick={e => handleMaxAmnt(e)} className={"data-type-selector-container--box"}>
                           MAX AMNT
                         </span>
                       </div>
@@ -347,7 +347,7 @@ function SendTokenPage({ tokenObjectToOpen, setIsSendTokenPageOpen, isSendTokenP
                       )}
                     </div>
                     <div className="tx-builder__blueprint-dashboard__input-field-bottom">
-                      <input onChange={(e) => inputSendAmntValidation(e.target.value)} className="eth-txBuilder-input" value={maxAmnt ? maxAmnt : undefined} onFocus={() => setMaxAmnt()} type="number" />
+                      <input onChange={e => inputSendAmntValidation(e.target.value)} className="eth-txBuilder-input" value={maxAmnt ? maxAmnt : undefined} onFocus={() => setMaxAmnt()} type="number" />
                     </div>
                   </div>
                   <div className="tx-builder__blueprint-dashboard__input-field">

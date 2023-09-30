@@ -183,7 +183,7 @@ function BtcTxBuilder() {
         <div className="interface__block-cell interface__block-cell--space-between">
           <div style={{ cursor: "default" }} className="title-font title-font--large">
             <div className="title__subtitle">
-              Build your own <span className="orange-font">{appState.isTestnet ? "bitcoin testnet" : "bitcoin"}</span> transaction for {"x" + (appState.isTestnet ? appState.bitcoin.testnetAddress.slice(-4) : appState.bitcoin.address.slice(-4))}.
+              Build your own <span className="orange-font">{appState.isTestnet ? "BTC testnet" : "BTC"}</span> tx for {"x" + (appState.isTestnet ? appState.bitcoin.testnetAddress.slice(-4) : appState.bitcoin.address.slice(-4))}.
             </div>
             <div style={{ display: "inline-block" }} className="purple-font">
               🏗️ TX

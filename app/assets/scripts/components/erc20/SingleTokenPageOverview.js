@@ -53,6 +53,7 @@ function SingleTokenPageOverview({ tokenObjectToOpen, setTokenObjectToOpen }) {
 
           // Update the specific item
           newState.balanceOf = formatEther(balanceOf)
+          newState.contractInstance = contractInstance
 
           return newState // Set the state to the new object
         })

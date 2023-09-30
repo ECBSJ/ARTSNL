@@ -288,7 +288,7 @@ function WalletMain() {
           <MdLibraryBooks className="icon" />
         </div>
       </div>
-      <Tooltip anchorSelect="#Tooltip" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word" }} variant="info" />
+      <Tooltip anchorSelect="#Tooltip" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word", zIndex: "101" }} variant="info" />
     </>
   )
 }
