@@ -109,7 +109,7 @@ function SendTokenReceipt({ tokenObjectToOpen, sendingTokenProgress, txHash, inp
                     </li>
                     <li className="tx-builder__blueprint__review-overlay__content-row">
                       <span className="tx-builder__blueprint__review-overlay__content-row-label">Total Value</span>
-                      <span className="tx-builder__blueprint__review-overlay__content-row-value">{inputtedValidSendAmnt}</span>
+                      <span className="tx-builder__blueprint__review-overlay__content-row-value">{inputtedValidSendAmnt + " " + tokenObjectToOpen?.symbol}</span>
                     </li>
                     <li className="tx-builder__blueprint__review-overlay__content-row">
                       <span className="tx-builder__blueprint__review-overlay__content-row-label">Network</span>
