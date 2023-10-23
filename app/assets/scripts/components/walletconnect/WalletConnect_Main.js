@@ -2,8 +2,15 @@ import React, { useContext, useEffect, useState } from "react"
 import StateContext from "../../StateContext"
 import DispatchContext from "../../DispatchContext"
 
-// WalletConnect Process Components
+// WalletConnect UI Components
 import WC_Scanner from "./WC_Scanner"
+
+// WalletConnect Function Components
+import { Core, RELAYER_EVENTS } from "@walletconnect/core"
+import { Web3Wallet } from "@walletconnect/web3wallet"
+import { buildApprovedNamespaces, getSdkError } from "@walletconnect/utils"
+import { Wallet, InfuraProvider } from "ethers"
+import { formatJsonRpcResult, formatJsonRpcError } from "@walletconnect/jsonrpc-utils"
 
 // REACT NPM TOOLS
 import { MdMenu, MdLibraryBooks } from "react-icons/md"
