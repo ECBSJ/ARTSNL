@@ -28,6 +28,10 @@
   &--russo-one {
     font-family: $title;
   }
+
+  &--michroma {
+    font-family: $text;
+  }
 }
 
 .overflow {

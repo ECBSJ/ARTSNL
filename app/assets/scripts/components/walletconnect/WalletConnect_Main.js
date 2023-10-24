@@ -21,6 +21,7 @@ import { IoIosApps } from "react-icons/io"
 import { Tooltip } from "react-tooltip"
 import { CSSTransition } from "react-transition-group"
 import { useNavigate } from "react-router-dom"
+import LazyLoadFallback from "../LazyLoadFallback"
 
 function WalletConnect_Main() {
   const appState = useContext(StateContext)
@@ -28,10 +29,11 @@ function WalletConnect_Main() {
   const navigate = useNavigate()
 
   const [txStatus, setTxStatus] = useState(0)
+  const [progress, setProgress] = useState(null)
 
   // WALLETCONNECT_PROJECT_ID=d2f7fad8d0481469a4d421d508e54f1f
   const core = new Core({
-    projectId: "d2f7fad8d0481469a4d421d508e54f1f",
+    projectId: "d2f7fad8d0481469a4d421d508e54f1f"
   })
 
   const [web3wallet, setWeb3Wallet] = useState()
@@ -43,8 +45,8 @@ function WalletConnect_Main() {
         name: "ARTSNL",
         description: "An open-sourced DIY wallet concept.",
         url: "https://artsnl.xyz",
-        icons: [],
-      },
+        icons: []
+      }
     })
 
     setWeb3Wallet(web3wallet)
@@ -66,20 +68,20 @@ function WalletConnect_Main() {
         eip155: {
           methods: ["eth_sendTransaction", "personal_sign"],
           chains: ["eip155:5"],
-          events: ["chainChanged", "accountsChanged"],
-        },
+          events: ["chainChanged", "accountsChanged"]
+        }
       },
       optionalNamespaces: {
         eip155: {
           methods: ["eth_signTransaction", "eth_sign", "eth_signTypedData", "eth_signTypedData_v4"],
           chains: ["eip155:5"],
-          events: [],
-        },
+          events: []
+        }
       },
       relays: [
         {
-          protocol: "irn",
-        },
+          protocol: "irn"
+        }
       ],
       proposer: {
         publicKey: "ce8f22bf6d16f1ec4186cf3bac144f34dd81cc075fcb7d6dcc11f56d3570d928",
@@ -88,29 +90,29 @@ function WalletConnect_Main() {
           url: "https://react-app.walletconnect.com",
           icons: ["https://avatars.githubusercontent.com/u/37784886"],
           name: "React App",
-          verifyUrl: "https://verify.walletconnect.com",
-        },
-      },
+          verifyUrl: "https://verify.walletconnect.com"
+        }
+      }
     },
     verifyContext: {
       verified: {
         verifyUrl: "https://verify.walletconnect.com",
         validation: "VALID",
         origin: "https://react-app.walletconnect.com",
-        isScam: null,
-      },
-    },
+        isScam: null
+      }
+    }
   }
 
   const [authObject, setAuthObject] = useState({
     request: null,
     iss: null,
-    message: null,
+    message: null
   })
   const [attemptSIWE, setAttemptSIWE] = useState(false)
 
   useEffect(() => {
-    web3wallet?.on("session_proposal", async (sessionProposal) => {
+    web3wallet?.on("session_proposal", async sessionProposal => {
       console.log(sessionProposal)
       setHasProposal(true)
       setSessionProposal(sessionProposal)
@@ -141,7 +143,7 @@ function WalletConnect_Main() {
       }
     })
 
-    web3wallet?.on("auth_request", async (request) => {
+    web3wallet?.on("auth_request", async request => {
       const authRequestObject_struct = {
         id: 1697944971564319,
         topic: "3bd54564920744d1dfcdad50013a732d6bb2c4d0b254dc3810dada4c3e22b4d6",
@@ -152,8 +154,8 @@ function WalletConnect_Main() {
               name: "react-dapp-auth",
               description: "React Example Dapp for Auth",
               url: "react-auth-dapp.walletconnect.com",
-              icons: [],
-            },
+              icons: []
+            }
           },
           cacaoPayload: {
             type: "eip4361",
@@ -163,16 +165,16 @@ function WalletConnect_Main() {
             domain: "walletconnect.com",
             version: "1",
             nonce: "W0ihqtlCRkIseWlKl",
-            iat: "2023-10-22T03:22:51.564Z",
-          },
+            iat: "2023-10-22T03:22:51.564Z"
+          }
         },
         verifyContext: {
           verified: {
             verifyUrl: "",
             validation: "UNKNOWN",
-            origin: "www.walletconnect.com",
-          },
-        },
+            origin: "www.walletconnect.com"
+          }
+        }
       }
       console.log(request)
 
@@ -187,6 +189,7 @@ function WalletConnect_Main() {
 
       let newObject = { request: request, iss: iss, message: message }
       setAuthObject(newObject)
+      setProgress("success")
       setAttemptSIWE(true)
     })
   }, [web3wallet])
@@ -198,7 +201,7 @@ function WalletConnect_Main() {
   function handlePaste() {
     navigator.clipboard
       .readText()
-      .then((res) => {
+      .then(res => {
         inputRef.current.value = res
       })
       .catch(console.error)
@@ -212,8 +215,10 @@ function WalletConnect_Main() {
       null
     } else {
       try {
+        setProgress("loading")
         await web3wallet.pair({ uri })
       } catch (error) {
+        setProgress("error")
         console.error(error)
       }
     }
@@ -231,8 +236,8 @@ function WalletConnect_Main() {
         id: authObject.request.id,
         signature: {
           s: signature,
-          t: "eip191",
-        },
+          t: "eip191"
+        }
       },
       authObject.iss
     )
@@ -244,7 +249,7 @@ function WalletConnect_Main() {
     await web3wallet.respondAuthRequest(
       {
         id: authObject.request.id,
-        error: getSdkError("USER_REJECTED"),
+        error: getSdkError("USER_REJECTED")
       },
       authObject.iss
     )
@@ -283,19 +288,19 @@ function WalletConnect_Main() {
           {attemptSIWE ? (
             <>
               <div className="wc-dashboard__top display-flex display-flex--column">
-                {authObject.request.params.requester.metadata.icons.length > 0 ? authObject.request.params.requester.metadata.icons : <IoIosApps />}
+                <div style={{ width: "45px", height: "45px", marginBottom: "4px" }}>{authObject.request.params.requester.metadata.icons.length > 0 ? authObject.request.params.requester.metadata.icons : <IoIosApps />}</div>
                 {authObject.request.params.requester.metadata.name}
                 <br />
                 wants to authenticate your
                 <br />
                 address ownership
                 <br />
-                <span>
-                  <MdVerifiedUser />
+                <span style={{ fontSize: ".7rem", color: "darkgray" }} className="display-flex font--michroma">
+                  <MdVerifiedUser style={{ width: "17px", height: "17px", marginRight: "4px", color: "#27bf77" }} />
                   {authObject.request.params.requester.metadata.url}
                 </span>
               </div>
-              <div className="wc-dashboard__bottom display-flex display-flex--column">{authObject.message}</div>
+              <div className="wc-dashboard__bottom">{authObject.message}</div>
             </>
           ) : (
             ""
@@ -310,9 +315,9 @@ function WalletConnect_Main() {
               </IconContext.Provider>
 
               <IconContext.Provider value={{ size: "40px" }}>
-                <MdPhonelinkRing onClick={(e) => handleConnect(e)} id="Tooltip" data-tooltip-content="Submit inputted URI for WalletConnect connection" style={{ zIndex: "1", top: "6", right: "7" }} className="icon position-absolute" />
+                <MdPhonelinkRing onClick={e => handleConnect(e)} id="Tooltip" data-tooltip-content="Submit inputted URI for WalletConnect connection" style={{ zIndex: "1", top: "6", right: "7" }} className="icon position-absolute" />
               </IconContext.Provider>
-              <form onSubmit={(e) => handleConnect(e)}>
+              <form onSubmit={e => handleConnect(e)}>
                 <input id="uri-input" ref={inputRef} style={{ borderRadius: "10px", height: "100%", position: "inherit" }} value={scannedValue ? scannedValue : undefined} onFocus={() => setScannedValue()} placeholder="Input URI" type="text" />
               </form>
             </>
@@ -335,7 +340,7 @@ function WalletConnect_Main() {
         </div>
 
         <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-end" }} className="wc-logo">
-          <img style={{ width: "70px" }} src="https://walletconnect.com/_next/static/media/brand_logo_blue.60e0f59b.svg" alt="wc-logo" />
+          {progress == "loading" ? <LazyLoadFallback /> : <img style={{ width: "70px" }} src="https://walletconnect.com/_next/static/media/brand_logo_blue.60e0f59b.svg" alt="wc-logo" />}
         </div>
       </div>
 

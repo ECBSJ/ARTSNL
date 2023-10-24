@@ -7,14 +7,35 @@
   &__top {
     flex: 1;
     width: 100%;
-    background: red;
+    min-height: 136px;
+    max-height: 136px;
+    padding: 10px;
+    text-align: center;
+    font-family: $title;
   }
 
   &__bottom {
+    position: relative;
     flex: 1.6;
     width: 100%;
-    background: blue;
     overflow-y: scroll;
+    font-size: 0.8rem;
+    text-align: left;
+    min-height: 217px;
+    line-height: 1.3rem;
+    padding: 10px;
+    color: darkgray;
+    word-break: break-all;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 18;
+      width: 90%;
+      height: 1px;
+      background-color: rgb(66, 66, 66);
+    }
   }
 }
 
