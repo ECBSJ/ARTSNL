@@ -45,3 +45,29 @@
     }
   }
 }
+
+.pulse-me {
+  animation: pulse infinite 1.5s linear;
+}
+
+@keyframes pulse {
+  0% {
+    color: gray;
+  }
+
+  68% {
+    color: gray;
+  }
+
+  70% {
+    color: lightblue;
+  }
+
+  80% {
+    color: gray;
+  }
+
+  90% {
+    color: lightblue;
+  }
+}
