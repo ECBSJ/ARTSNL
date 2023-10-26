@@ -25,12 +25,12 @@ const CreateKeys = React.lazy(() => import("./components/CreateKeys"))
 const AddressSelection = React.lazy(() => import("./components/AddressSelection"))
 const WalletMain = React.lazy(() => import("./components/WalletMain"))
 import Menu from "./components/Menu"
-import WalletConnect_Main from "./components/walletconnect/WalletConnect_Main"
 const BitcoinAddress = React.lazy(() => import("./components/BitcoinAddress"))
 const EthereumAddress = React.lazy(() => import("./components/EthereumAddress"))
 const BtcTxBuilder = React.lazy(() => import("./components/BtcTxBuilder"))
 const EthTxBuilder = React.lazy(() => import("./components/EthTxBuilder"))
 const Erc20Overview = React.lazy(() => import("./components/erc20/Erc20Overview"))
+const WalletConnect_Main = React.lazy(() => import("./components/walletconnect/WalletConnect_Main"))
 
 function App() {
   // cookie setter/getter
@@ -635,6 +635,7 @@ function App() {
                     <Route path="/BtcTxBuilder" element={<BtcTxBuilder />} />
                     <Route path="/EthTxBuilder" element={<EthTxBuilder />} />
                     <Route path="/Erc20Overview" element={<Erc20Overview />} />
+                    <Route path="/WalletConnect" element={<WalletConnect_Main />} />
                   </Routes>
                 </Suspense>
               </BrowserRouter>

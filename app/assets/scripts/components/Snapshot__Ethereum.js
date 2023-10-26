@@ -41,6 +41,10 @@ function Snapshot__Ethereum({ hasErrors_Eth, setHasErrors_Eth, isFetching_Eth, s
     navigate("/Erc20Overview")
   }
 
+  function navigateToWalletConnectPage() {
+    navigate("/WalletConnect")
+  }
+
   return (
     <>
       <div className="snapshot__overlay">
@@ -70,13 +74,14 @@ function Snapshot__Ethereum({ hasErrors_Eth, setHasErrors_Eth, isFetching_Eth, s
                   <div>{ethAddressTxCount == null ? 0 : ethAddressTxCount}</div>
                 </div>
                 <div className="snapshot__function-content__row">
-                  <button onClick={(e) => navigateToViewErc20Page(e)} className="font--russo-one" style={{ fontSize: "1rem", backgroundColor: "#B01AF7", border: "none", borderRadius: "9px" }}>
+                  <button onClick={e => navigateToViewErc20Page(e)} className="font--russo-one" style={{ fontSize: "1rem", backgroundColor: "#B01AF7", border: "none", borderRadius: "9px" }}>
                     View ERC20s
                   </button>
                 </div>
                 <div className="snapshot__function-content__row">
-                  <div style={{ fontSize: ".8rem", color: "gray" }}></div>
-                  <div></div>
+                  <button onClick={e => navigateToWalletConnectPage(e)} className="font--russo-one" style={{ fontSize: "1rem", backgroundColor: "#B01AF7", border: "none", borderRadius: "9px" }}>
+                    <img style={{ width: "175px" }} src="https://walletconnect.com/_next/static/media/brand_lockup_white.72886c28.svg" alt="WalletConnect" />
+                  </button>
                 </div>
                 <div className="snapshot__function-content__row">
                   <div style={{ fontSize: ".8rem", color: "gray" }}></div>

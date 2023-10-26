@@ -461,6 +461,7 @@ function WalletConnect_Main() {
 
       setResultModalCode(4)
       setIsResultModalOpen(true)
+      console.log("[ARTSNL]: You have successfully disconnected your WalletConnect session.")
 
       setTimeout(() => {
         setProgress(null)
