@@ -15,7 +15,7 @@ import { formatJsonRpcResult, formatJsonRpcError } from "@walletconnect/jsonrpc-
 // REACT NPM TOOLS
 import { IconContext } from "react-icons"
 import { MdMenu, MdLibraryBooks, MdQrCodeScanner, MdContentPasteGo, MdPhonelinkRing, MdVerifiedUser, MdOutlineWarning, MdAppBlocking, MdOutlineConnectWithoutContact } from "react-icons/md"
-import { TbRefresh, TbActivityHeartbeat, TbPlugConnected } from "react-icons/tb"
+import { TbRefresh, TbActivityHeartbeat, TbPlugConnected, TbError404 } from "react-icons/tb"
 import { BsHddNetworkFill, BsHddNetwork, BsReception4, BsQuestionOctagonFill, BsFillSignStopFill } from "react-icons/bs"
 import { IoIosApps } from "react-icons/io"
 import { FaSignature, FaUserCircle, FaLink } from "react-icons/fa"
@@ -23,7 +23,7 @@ import { Tooltip } from "react-tooltip"
 import { CSSTransition } from "react-transition-group"
 import { useNavigate } from "react-router-dom"
 import LazyLoadFallback from "../LazyLoadFallback"
-import { CodeBlock, tomorrowNightBlue } from "react-code-blocks"
+import { CodeBlock, tomorrowNightBlue, tomorrowNightBright } from "react-code-blocks"
 
 function WalletConnect_Main() {
   const appState = useContext(StateContext)
@@ -34,7 +34,7 @@ function WalletConnect_Main() {
 
   // WALLETCONNECT_PROJECT_ID=d2f7fad8d0481469a4d421d508e54f1f
   const core = new Core({
-    projectId: "d2f7fad8d0481469a4d421d508e54f1f",
+    projectId: "d2f7fad8d0481469a4d421d508e54f1f"
   })
 
   const [web3wallet, setWeb3Wallet] = useState()
@@ -46,8 +46,8 @@ function WalletConnect_Main() {
         name: "ARTSNL",
         description: "An open-sourced DIY wallet concept.",
         url: "https://artsnl.xyz",
-        icons: [],
-      },
+        icons: []
+      }
     })
 
     setWeb3Wallet(web3wallet)
@@ -70,20 +70,20 @@ function WalletConnect_Main() {
         eip155: {
           methods: ["eth_sendTransaction", "personal_sign"],
           chains: ["eip155:5"],
-          events: ["chainChanged", "accountsChanged"],
-        },
+          events: ["chainChanged", "accountsChanged"]
+        }
       },
       optionalNamespaces: {
         eip155: {
           methods: ["eth_signTransaction", "eth_sign", "eth_signTypedData", "eth_signTypedData_v4"],
           chains: ["eip155:5"],
-          events: [],
-        },
+          events: []
+        }
       },
       relays: [
         {
-          protocol: "irn",
-        },
+          protocol: "irn"
+        }
       ],
       proposer: {
         publicKey: "ce8f22bf6d16f1ec4186cf3bac144f34dd81cc075fcb7d6dcc11f56d3570d928",
@@ -92,30 +92,30 @@ function WalletConnect_Main() {
           url: "https://react-app.walletconnect.com",
           icons: ["https://avatars.githubusercontent.com/u/37784886"],
           name: "React App",
-          verifyUrl: "https://verify.walletconnect.com",
-        },
-      },
+          verifyUrl: "https://verify.walletconnect.com"
+        }
+      }
     },
     verifyContext: {
       verified: {
         verifyUrl: "https://verify.walletconnect.com",
         validation: "VALID",
         origin: "https://react-app.walletconnect.com",
-        isScam: null,
-      },
-    },
+        isScam: null
+      }
+    }
   }
 
   const [authObject, setAuthObject] = useState({
     request: null,
     iss: null,
-    message: null,
+    message: null
   })
   const [attemptSIWE, setAttemptSIWE] = useState(false)
 
   const [verifyState, setVerifyState] = useState({
     state: "",
-    message: "",
+    message: ""
   })
 
   function determineVerifyState(verifyContext) {
@@ -135,7 +135,7 @@ function WalletConnect_Main() {
     if (isScam) {
       setVerifyState({
         state: "SCAM",
-        message: "This domain is flagged as malicious and potentially harmful.",
+        message: "This domain is flagged as malicious and potentially harmful."
       })
 
       return
@@ -145,26 +145,26 @@ function WalletConnect_Main() {
       case "VALID":
         setVerifyState({
           state: "VALID",
-          message: "The domain linked to this request has been verified as this application's domain.",
+          message: "The domain linked to this request has been verified as this application's domain."
         })
         break
       case "INVALID":
         setVerifyState({
           state: "INVALID",
-          message: "The application's domain doesn't match the sender of this request.",
+          message: "The application's domain doesn't match the sender of this request."
         })
         break
       case "UNKNOWN":
         setVerifyState({
           state: "UNKNOWN",
-          message: "The domain sending the request cannot be verified.",
+          message: "The domain sending the request cannot be verified."
         })
         break
     }
   }
 
   useEffect(() => {
-    web3wallet?.on("session_proposal", async (sessionProposal) => {
+    web3wallet?.on("session_proposal", async sessionProposal => {
       console.log(sessionProposal)
       setHasProposal(true)
       setSessionProposal(sessionProposal)
@@ -174,7 +174,7 @@ function WalletConnect_Main() {
       setProgress("success")
     })
 
-    web3wallet?.on("auth_request", async (request) => {
+    web3wallet?.on("auth_request", async request => {
       const authRequestObject_struct = {
         id: 1697944971564319,
         topic: "3bd54564920744d1dfcdad50013a732d6bb2c4d0b254dc3810dada4c3e22b4d6",
@@ -185,8 +185,8 @@ function WalletConnect_Main() {
               name: "react-dapp-auth",
               description: "React Example Dapp for Auth",
               url: "react-auth-dapp.walletconnect.com",
-              icons: [],
-            },
+              icons: []
+            }
           },
           cacaoPayload: {
             type: "eip4361",
@@ -196,16 +196,16 @@ function WalletConnect_Main() {
             domain: "walletconnect.com",
             version: "1",
             nonce: "W0ihqtlCRkIseWlKl",
-            iat: "2023-10-22T03:22:51.564Z",
-          },
+            iat: "2023-10-22T03:22:51.564Z"
+          }
         },
         verifyContext: {
           verified: {
             verifyUrl: "",
             validation: "UNKNOWN",
-            origin: "www.walletconnect.com",
-          },
-        },
+            origin: "www.walletconnect.com"
+          }
+        }
       }
       console.log(request)
 
@@ -234,7 +234,7 @@ function WalletConnect_Main() {
   function handlePaste() {
     navigator.clipboard
       .readText()
-      .then((res) => {
+      .then(res => {
         inputRef.current.value = res
       })
       .catch(console.error)
@@ -271,8 +271,8 @@ function WalletConnect_Main() {
           id: authObject.request.id,
           signature: {
             s: signature,
-            t: "eip191",
-          },
+            t: "eip191"
+          }
         },
         authObject.iss
       )
@@ -299,7 +299,7 @@ function WalletConnect_Main() {
       await web3wallet.respondAuthRequest(
         {
           id: authObject.request.id,
-          error: getSdkError("USER_REJECTED"),
+          error: getSdkError("USER_REJECTED")
         },
         authObject.iss
       )
@@ -310,11 +310,11 @@ function WalletConnect_Main() {
       setAuthObject({
         request: null,
         iss: null,
-        message: null,
+        message: null
       })
       setVerifyState({
         state: "",
-        message: "",
+        message: ""
       })
 
       setIsResultModalOpen(true)
@@ -335,14 +335,14 @@ function WalletConnect_Main() {
       setProgress("loading")
       await web3wallet.rejectSession({
         id: sessionProposal.id,
-        reason: getSdkError("USER_REJECTED_METHODS"),
+        reason: getSdkError("USER_REJECTED_METHODS")
       })
 
       setHasProposal(false)
       setSessionProposal(null)
       setVerifyState({
         state: "",
-        message: "",
+        message: ""
       })
 
       setIsResultModalOpen(true)
@@ -361,29 +361,29 @@ function WalletConnect_Main() {
   const [session, setSession] = useState(null)
   const session_Struct = {
     relay: {
-      protocol: "irn",
+      protocol: "irn"
     },
     namespaces: {
       eip155: {
         chains: ["eip155:5"],
         methods: ["eth_sendTransaction", "personal_sign", "eth_sign", "eth_signTransaction"],
         events: ["accountsChanged", "chainChanged"],
-        accounts: ["eip155:5:0x58e2534aaf92c018e8838d5c1d2adef358160161"],
-      },
+        accounts: ["eip155:5:0x58e2534aaf92c018e8838d5c1d2adef358160161"]
+      }
     },
     requiredNamespaces: {
       eip155: {
         methods: ["eth_sendTransaction", "personal_sign"],
         chains: ["eip155:5"],
-        events: ["chainChanged", "accountsChanged"],
-      },
+        events: ["chainChanged", "accountsChanged"]
+      }
     },
     optionalNamespaces: {
       eip155: {
         methods: ["eth_signTransaction", "eth_sign", "eth_signTypedData", "eth_signTypedData_v4"],
         chains: ["eip155:5"],
-        events: [],
-      },
+        events: []
+      }
     },
     pairingTopic: "4c826f3a3d8bc8ae5ffa17fdf9496dfe8149f45f7b4462b26d6df50148c5c19f",
     controller: "70c09bda721849774ff96a31859fe50606d8d4d3c35e0876621a10cc63b3b51c",
@@ -396,8 +396,8 @@ function WalletConnect_Main() {
         name: "Demo app",
         description: "Demo Client as Wallet/Peer",
         url: "www.walletconnect.com",
-        icons: [],
-      },
+        icons: []
+      }
     },
     peer: {
       publicKey: "0e99577975613af66c8294a608505da4c9aee836f46d86fc88c1ef1b3701672e",
@@ -406,9 +406,9 @@ function WalletConnect_Main() {
         url: "https://react-app.walletconnect.com",
         icons: ["https://avatars.githubusercontent.com/u/37784886"],
         name: "React App",
-        verifyUrl: "https://verify.walletconnect.com",
-      },
-    },
+        verifyUrl: "https://verify.walletconnect.com"
+      }
+    }
   }
 
   async function approveSesh() {
@@ -424,15 +424,15 @@ function WalletConnect_Main() {
             chains: ["eip155:1", "eip155:5", "eip155:10", "eip155:137", "eip155:42161"],
             methods: ["eth_sendTransaction", "personal_sign", "eth_signTransaction"],
             events: ["accountsChanged", "chainChanged"],
-            accounts: [`eip155:1:${appState.ethereum.address}`, `eip155:5:${appState.ethereum.address}`, `eip155:10:${appState.ethereum.address}`, `eip155:137:${appState.ethereum.address}`, `eip155:42161:${appState.ethereum.address}`],
-          },
-        },
+            accounts: [`eip155:1:${appState.ethereum.address}`, `eip155:5:${appState.ethereum.address}`, `eip155:10:${appState.ethereum.address}`, `eip155:137:${appState.ethereum.address}`, `eip155:42161:${appState.ethereum.address}`]
+          }
+        }
       })
       // ------- end namespaces builder util ------------ //
 
       const session = await web3wallet.approveSession({
         id,
-        namespaces: approvedNamespaces,
+        namespaces: approvedNamespaces
       })
       console.log(session)
       setSession(session)
@@ -449,14 +449,14 @@ function WalletConnect_Main() {
       setProgress("loading")
       await web3wallet.disconnectSession({
         topic: session.topic,
-        reason: getSdkError("USER_DISCONNECTED"),
+        reason: getSdkError("USER_DISCONNECTED")
       })
 
       setSession(null)
       setSessionProposal(null)
       setVerifyState({
         state: "",
-        message: "",
+        message: ""
       })
 
       setResultModalCode(4)
@@ -515,13 +515,13 @@ function WalletConnect_Main() {
   const [requestPayloadMessage, setRequestPayloadMessage] = useState(null)
 
   useEffect(() => {
-    web3wallet?.on("session_request", async (event) => {
+    web3wallet?.on("session_request", async event => {
       console.log(event)
       setSessionRequestReceived(true)
       setSessionEvent(event)
 
       const { topic, params, id } = event
-      const { request } = params
+      const { request, chainId } = params
       const requestParamsMessage = request.params[0]
 
       switch (request?.method) {
@@ -548,7 +548,7 @@ function WalletConnect_Main() {
       }
     })
 
-    web3wallet?.engine.signClient.on("session_ping", (event) => {
+    web3wallet?.engine.signClient.on("session_ping", event => {
       // interface Event {
       //   id: number
       //   topic: string
@@ -571,7 +571,7 @@ function WalletConnect_Main() {
       }
     })
 
-    web3wallet?.on("session_delete", async (event) => {
+    web3wallet?.on("session_delete", async event => {
       setProgress("loading")
       console.log(event)
       // interface Event {
@@ -585,7 +585,7 @@ function WalletConnect_Main() {
 
       setVerifyState({
         state: "",
-        message: "",
+        message: ""
       })
 
       setResultModalCode(4)
@@ -602,6 +602,107 @@ function WalletConnect_Main() {
     })
   }, [web3wallet])
 
+  async function handleApproveRequest() {
+    try {
+      setProgress("loading")
+      const { topic, params, id } = sessionEvent
+      const { request, chainId } = params
+      const requestParamsMessage = request.params[0]
+      // chainId_struct = "eip155:10"
+      let splitString = chainId.split(":")
+      let parsedChainId = Number(splitString[1])
+      let key_string = appState.keys.bufferPrivKey.toString("hex")
+
+      const provider = new InfuraProvider(parsedChainId, process.env.INFURA)
+      const wallet = new Wallet(key_string, provider)
+
+      let response
+
+      switch (request?.method) {
+        case "personal_sign":
+          // convert `requestParamsMessage` by using a method like hexToUtf8
+          let buffered = Buffer.from(requestParamsMessage.slice(2), "hex")
+          let message = buffered.toString("utf8")
+          let signedMessage = await wallet.signMessage(message)
+          console.log("[ARTSNL]: " + signedMessage)
+          // const response = { id, result: signedMessage, jsonrpc: "2.0" }
+          response = formatJsonRpcResult(id, signedMessage)
+          break
+        case "eth_sendTransaction":
+          const { hash } = await wallet.sendTransaction(requestParamsMessage)
+          console.log("[ARTSNL]: " + hash)
+          // const response = { id, result: hash, jsonrpc: "2.0" }
+          response = formatJsonRpcResult(id, hash)
+          break
+        case "eth_signTransaction":
+          const signature = await wallet.signTransaction(requestParamsMessage)
+          console.log("[ARTSNL]: " + signature)
+          // const response = { id, result: signature, jsonrpc: "2.0" }
+          response = formatJsonRpcResult(id, signature)
+          break
+        default:
+          console.error("[ARTSNL]: Request method invalid or unsupported.")
+          break
+      }
+
+      await web3wallet.respondSessionRequest({
+        topic,
+        response
+      })
+
+      setSessionRequestReceived(false)
+      setSessionEvent(null)
+      setRequestPayloadMessage(null)
+
+      setResultModalCode(1)
+      setIsResultModalOpen(true)
+
+      setTimeout(() => {
+        setProgress(null)
+        setIsResultModalOpen(false)
+      }, 3000)
+    } catch (err) {
+      console.error(err)
+      setProgress("error")
+    }
+  }
+
+  async function handleRejectRequest() {
+    try {
+      setProgress("loading")
+      const { topic, params, id } = sessionEvent
+
+      const response = {
+        id,
+        jsonrpc: "2.0",
+        error: {
+          code: 5000,
+          message: "User rejected!"
+        }
+      }
+
+      await web3wallet.respondSessionRequest({
+        topic,
+        response: formatJsonRpcError(id, response.error)
+      })
+
+      setSessionRequestReceived(false)
+      setSessionEvent(null)
+      setRequestPayloadMessage(null)
+
+      setResultModalCode(2)
+      setIsResultModalOpen(true)
+
+      setTimeout(() => {
+        setProgress(null)
+        setIsResultModalOpen(false)
+      }, 3000)
+    } catch (err) {
+      console.error(err)
+      setProgress("error")
+    }
+  }
+
   function navigateToWalletHome() {
     navigate("/WalletMain")
   }
@@ -616,9 +717,14 @@ function WalletConnect_Main() {
 
   return (
     <>
-      {/* <CSSTransition in={txStatus === 0} timeout={300} classNames="tx-builder__overlay" unmountOnExit>
-        <WC_Scanner setTxStatus={setTxStatus} />
-      </CSSTransition> */}
+      <CSSTransition in={progress == "error"} timeout={300} classNames="wc--error" unmountOnExit>
+        <div className="wc--error">
+          <IconContext.Provider value={{ size: "120px", color: "white" }}>
+            <TbError404 onClick={() => navigateToWalletHome()} className="icon" />
+          </IconContext.Provider>
+          Uh oh, looks like an unexpected error happened with your WalletConnect instance. Please check browser console and try again.
+        </div>
+      </CSSTransition>
 
       {openQRreader ? <QRreaderPopup setInputValue={setScannedValue} setScannedValue={setScannedValue} openQRreader={openQRreader} setOpenQRreader={setOpenQRreader} /> : ""}
 
@@ -699,10 +805,10 @@ function WalletConnect_Main() {
                 <IconContext.Provider value={{ size: "53px" }}>
                   <TbActivityHeartbeat className="pulse-me" />
                 </IconContext.Provider>
-                <button onClick={(e) => onSessionPing()} style={{ color: "lightblue", height: "50px", marginTop: "20px" }} className="button-blue">
+                <button onClick={e => onSessionPing()} style={{ color: "lightblue", height: "50px", marginTop: "20px" }} className="button-blue">
                   Ping
                 </button>
-                <button onClick={(e) => disconnectSesh()} style={{ color: "pink", height: "50px", marginTop: "10px" }} className="button-red">
+                <button onClick={e => disconnectSesh()} style={{ color: "pink", height: "50px", marginTop: "10px" }} className="button-red">
                   Disconnect
                 </button>
               </div>
@@ -711,7 +817,30 @@ function WalletConnect_Main() {
             ""
           )}
 
-          {session && sessionRequestReceived ? <>session request shit</> : ""}
+          {session && sessionRequestReceived ? (
+            <>
+              <div className="wc-dashboard__top display-flex display-flex--column">
+                <div style={{ width: "45px", height: "45px", marginBottom: "4px" }}>{session.peer.metadata.icons.length > 0 ? <IoIosApps /> : <IoIosApps />}</div>
+                {session.peer.metadata.name}
+                <br />
+                wants you to
+                <br />
+                sign a transaction
+                <br />
+                <span id="Tooltip" data-tooltip-content={verifyState.message} style={{ fontSize: ".7rem", color: "darkgray", columnGap: "5px" }} className="display-flex font--michroma">
+                  <IconContext.Provider value={{ size: "17px" }}>{verifyState.state == "SCAM" ? <BsFillSignStopFill style={{ color: "red" }} /> : verifyState.state == "VALID" ? <MdVerifiedUser style={{ color: "#27bf77" }} /> : verifyState.state == "INVALID" ? <MdOutlineWarning style={{ color: "orange" }} /> : <BsQuestionOctagonFill style={{ color: "gray" }} />}</IconContext.Provider>
+
+                  {session.peer.metadata.url}
+                </span>
+              </div>
+              <div className="wc-dashboard__bottom">
+                <CodeBlock text={sessionEvent.params.chainId} language={"json"} theme={tomorrowNightBright} />
+                <CodeBlock text={JSON.stringify(requestPayloadMessage, null, 2)} language={"json"} showLineNumbers={true} theme={tomorrowNightBlue} wrapLongLines={true} />
+              </div>
+            </>
+          ) : (
+            ""
+          )}
 
           <CSSTransition in={isResultModalOpen} timeout={300} classNames="wc-modal" unmountOnExit>
             <IconContext.Provider value={{ size: "120px", color: "white" }}>
@@ -766,9 +895,9 @@ function WalletConnect_Main() {
               </IconContext.Provider>
 
               <IconContext.Provider value={{ size: "40px" }}>
-                <MdPhonelinkRing onClick={(e) => handleConnect(e)} id="Tooltip" data-tooltip-content="Submit inputted URI for WalletConnect connection" style={{ zIndex: "1", top: "6", right: "7" }} className="icon position-absolute" />
+                <MdPhonelinkRing onClick={e => handleConnect(e)} id="Tooltip" data-tooltip-content="Submit inputted URI for WalletConnect connection" style={{ zIndex: "1", top: "6", right: "7" }} className="icon position-absolute" />
               </IconContext.Provider>
-              <form onSubmit={(e) => handleConnect(e)}>
+              <form onSubmit={e => handleConnect(e)}>
                 <input id="uri-input" ref={inputRef} style={{ borderRadius: "10px", height: "100%", position: "inherit" }} value={scannedValue ? scannedValue : undefined} onFocus={() => setScannedValue()} placeholder="Input URI" type="text" />
               </form>
             </>
@@ -791,10 +920,10 @@ function WalletConnect_Main() {
 
           {hasProposal ? (
             <>
-              <button onClick={(e) => rejectSesh()} style={{ color: "pink" }} className="button-red">
+              <button onClick={e => rejectSesh()} style={{ color: "pink" }} className="button-red">
                 Reject
               </button>
-              <button onClick={(e) => approveSesh()} style={{ color: "lightblue" }} className="button-blue">
+              <button onClick={e => approveSesh()} style={{ color: "lightblue" }} className="button-blue">
                 Approve
               </button>
             </>
@@ -812,11 +941,22 @@ function WalletConnect_Main() {
             ""
           )}
 
-          {session && sessionRequestReceived ? <>buttons</> : ""}
+          {session && sessionRequestReceived ? (
+            <>
+              <button onClick={e => handleRejectRequest()} style={{ color: "pink" }} className="button-red">
+                Reject
+              </button>
+              <button onClick={e => handleApproveRequest()} style={{ color: "lightblue" }} className="button-blue">
+                Approve
+              </button>
+            </>
+          ) : (
+            ""
+          )}
         </div>
 
         <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-end" }} className="wc-logo">
-          {progress == "loading" ? <LazyLoadFallback /> : <img style={{ width: "70px" }} src="https://walletconnect.com/_next/static/media/brand_logo_blue.60e0f59b.svg" alt="wc-logo" />}
+          {progress == "loading" ? <LazyLoadFallback /> : <img id="Tooltip" data-tooltip-content={"ARTSNL with WalletConnect currently only supports the following EIP155 chains: mainnet, goerli, optimism, polygon, arbitrum"} style={{ width: "70px" }} src="https://walletconnect.com/_next/static/media/brand_logo_blue.60e0f59b.svg" alt="wc-logo" />}
         </div>
       </div>
 
@@ -843,14 +983,16 @@ function WalletConnect_Main() {
                   </div>
                   <div style={{ bottom: "-37px" }} className="title__subtitle display-flex">
                     <FaLink style={{ marginRight: "6px" }} />
-                    {session.namespaces.eip155.chains[0]}
+                    {session.namespaces.eip155.chains.map((chain, index) => {
+                      return chain
+                    })}
                   </div>
                 </>
               ) : (
                 ""
               )}
               <div style={{ display: "inline-block" }} className="purple-font">
-                Connect to
+                🌐dive into
               </div>{" "}
               web3
             </IconContext.Provider>
@@ -869,13 +1011,13 @@ function WalletConnect_Main() {
         <div className="interface__block-cell"></div>
         <div className="interface__block-cell"></div>
         <div className="interface__block-cell interface__block-cell__footer">
-          <TbRefresh id="Tooltip" data-tooltip-content={"Refresh"} onClick={null} className="icon" />
-          {appState.isTestnet ? <BsHddNetwork id="Tooltip" data-tooltip-content={"On Testnet"} className={"icon"} /> : <BsHddNetworkFill id="Tooltip" data-tooltip-content={"On Mainnet"} className={"icon"} />}
+          <TbRefresh style={{ visibility: "hidden" }} />
+          <BsHddNetworkFill style={{ visibility: "hidden" }} />
           <div onClick={() => navigateToWalletHome()} id="Tooltip" data-tooltip-content={"Home"} className="icon">
             ARTSNL
           </div>
-          <BsReception4 id="Tooltip" data-tooltip-content={appState.bitcoin.activeProvider && appState.ethereum.activeProvider ? "Network Status: Connected" : "Network Status: Disconnected"} className="icon" />
-          <MdLibraryBooks className="icon" />
+          <BsReception4 style={{ visibility: "hidden" }} />
+          <MdLibraryBooks id="Tooltip" data-tooltip-content={"Guide currently unavailable."} className="icon" />
         </div>
       </div>
       <Tooltip anchorSelect="#Tooltip" style={{ fontSize: "0.7rem", maxWidth: "100%", overflowWrap: "break-word", zIndex: "101" }} variant="info" />

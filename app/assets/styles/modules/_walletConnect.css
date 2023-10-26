@@ -77,3 +77,39 @@
     transition: transform 300ms;
   }
 }
+
+.wc--error {
+  position: absolute;
+  inset: 0;
+  background-color: red;
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  font-family: $title;
+  padding: 0 40px;
+  text-align: left;
+
+  &-enter {
+    transform: scale(4);
+    opacity: 0;
+  }
+
+  &-enter-active {
+    transform: scale(1);
+    opacity: 1;
+    transition: transform opacity 300ms ease-in;
+  }
+
+  &-exit {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  &-exit-active {
+    transform: scale(4);
+    opacity: 0;
+    transition: transform opacity 300ms ease-in;
+  }
+}
