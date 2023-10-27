@@ -7,6 +7,13 @@ ARTSNL is a fully open-sourced, DIY’ed approached cryptocurrency wallet entire
 
 Try out the Beta release [here](https://artsnl.app/)!
 
+## QUICK DEMO VIDEOS
+
+- [Using WalletConnect with ARTSNL](https://twitter.com/ARTSNL/status/1717743872032301406)
+- [Building & broadcasting ether transactions](https://twitter.com/ARTSNL/status/1711952805265645866)
+- [Managing ERC20 tokens in ARTSNL](https://twitter.com/ARTSNL/status/1711928038416613652)
+- [Constructing P2PKH pay-to-multiple bitcoin testnet transactions](https://twitter.com/ARTSNL/status/1704086686207242733)
+
 ## INTRODUCTION
 
 ARTSNL is a fully open-sourced, DIY’ed approached cryptocurrency wallet. Common wallet UX processes, such as key generation and transaction structuring, are expanded upon for a more educational hands-on manner. More control is given to the end user making the entire crypto wallet experience more artisanal.
