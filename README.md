@@ -135,6 +135,10 @@ let finalETHpubAdd = "0x" + uint8arraytools.toHex(ETHpubAdd)
 - Compressed Public Key address derivation
 - BIP39 external seed phrase import
 
+## Design
+
+- For the original custom designs of artsnl.app and artsnl.xyz, check out the Figma file [here](https://www.figma.com/file/0Uwx9Ur3lPq7BjZy9sIeGO/ARTSNL?type=design&mode=design&t=8eJ8AaSH0yhNQ0Sl-1).
+
 ## TECHNOLOGY TOOLING SUPPORT
 
 - [bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib)
